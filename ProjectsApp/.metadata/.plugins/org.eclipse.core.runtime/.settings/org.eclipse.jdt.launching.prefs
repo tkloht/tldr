@@ -1,3 +1,0 @@
-PREF_VM_INSTALL_SYSTEM_PROPERTY.org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType.1368554122641.java.specification.version=1.6
-eclipse.preferences.version=1
-org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<vmSettings defaultVM\="57,org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType13,1368554122641">\n<vmType id\="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">\n<vm id\="1368554122641" javadocURL\="http\://download.oracle.com/javase/6/docs/api/" name\="java-6-openjdk-amd64" path\="/usr/lib/jvm/java-6-openjdk-amd64"/>\n</vmType>\n</vmSettings>\n
