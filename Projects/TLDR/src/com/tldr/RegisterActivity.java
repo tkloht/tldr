@@ -67,8 +67,20 @@ public class RegisterActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
 
-		Button regButton = (Button) findViewById(R.id.regButton);
+		Button regButton = (Button) findViewById(R.id.btnRegister);
 
+        TextView loginScreen = (TextView) findViewById(R.id.link_to_login);
+        
+        // Listening to Login Screen link
+        loginScreen.setOnClickListener(new View.OnClickListener() {
+ 
+            public void onClick(View arg0) {
+                                // Closing registration screen
+                // Switching to Login Screen/closing register screen
+                finish();
+            }
+        });
+		
 		registerListener = new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -191,7 +203,7 @@ public class RegisterActivity extends Activity {
 	}
 
 	private void updateState(State newState) {
-		Button registerButton = (Button) findViewById(R.id.regButton);
+		Button registerButton = (Button) findViewById(R.id.btnRegister);
 		switch (newState) {
 		case REGISTERED:
 			registerButton.setText("Unregister");
@@ -266,14 +278,15 @@ public class RegisterActivity extends Activity {
 				showDialog("Failed to retrieve the last 5 messages from "
 						+ "the endpoint at " + messageEndpoint.getBaseUrl()
 						+ ", check log for details");
-			} else {
-				TextView messageView = (TextView) findViewById(R.id.msgView);
-				messageView.setText("Last 5 Messages read from "
-						+ messageEndpoint.getBaseUrl() + ":\n");
-				for (MessageData message : messages.getItems()) {
-					messageView.append(message.getMessage() + "\n");
-				}
-			}
+			} 
+//			else {
+//				TextView messageView = (TextView) findViewById(R.id.);
+//				messageView.setText("Last 5 Messages read from "
+//						+ messageEndpoint.getBaseUrl() + ":\n");
+//				for (MessageData message : messages.getItems()) {
+//					messageView.append(message.getMessage() + "\n");
+//				}
+//			}
 		}
 	}
 }
