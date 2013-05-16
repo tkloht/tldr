@@ -5,10 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -126,25 +129,43 @@ public class LoginActivity extends Activity {
 
 		boolean cancel = false;
 		View focusView = null;
+		
+		int ecolor = Color.RED; // whatever color you want
+		ForegroundColorSpan fgcspan = new ForegroundColorSpan(ecolor);
+		SpannableStringBuilder ssbuilder; 
+
+		
 
 		// Check for a valid password.
 		if (TextUtils.isEmpty(mPassword)) {
-			mPasswordView.setError(getString(R.string.error_field_required));
+			String errorString=getString(R.string.error_field_required);
+			ssbuilder= new SpannableStringBuilder(errorString);
+			ssbuilder.setSpan(fgcspan, 0, errorString.length(), 0);
+			mPasswordView.setError(ssbuilder);
 			focusView = mPasswordView;
 			cancel = true;
 		} else if (mPassword.length() < 4) {
-			mPasswordView.setError(getString(R.string.error_invalid_password));
+			String errorString=getString(R.string.error_invalid_password);
+			ssbuilder= new SpannableStringBuilder(errorString);
+			ssbuilder.setSpan(fgcspan, 0, errorString.length(), 0);
+			mPasswordView.setError(ssbuilder);
 			focusView = mPasswordView;
 			cancel = true;
 		}
 
 		// Check for a valid email address.
 		if (TextUtils.isEmpty(mEmail)) {
-			mEmailView.setError(getString(R.string.error_field_required));
+			String errorString=getString(R.string.error_field_required);
+			ssbuilder= new SpannableStringBuilder(errorString);
+			ssbuilder.setSpan(fgcspan, 0, errorString.length(), 0);
+			mEmailView.setError(ssbuilder);
 			focusView = mEmailView;
 			cancel = true;
 		} else if (!mEmail.contains("@")) {
-			mEmailView.setError(getString(R.string.error_invalid_email));
+			String errorString=getString(R.string.error_invalid_email);
+			ssbuilder= new SpannableStringBuilder(errorString);
+			ssbuilder.setSpan(fgcspan, 0, errorString.length(), 0);
+			mEmailView.setError(ssbuilder);
 			focusView = mEmailView;
 			cancel = true;
 		}
