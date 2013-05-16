@@ -20,88 +20,95 @@ package com.tldr.messageEndpoint.model;
 
 /**
  * Model definition for MessageData.
- *
- * <p> This is the Java data model class that specifies how to parse/serialize into the JSON that is
- * transmitted over HTTP when working with the . For a detailed explanation see:
- * <a href="http://code.google.com/p/google-api-java-client/wiki/Json">http://code.google.com/p/google-api-java-client/wiki/Json</a>
+ * 
+ * <p>
+ * This is the Java data model class that specifies how to parse/serialize into
+ * the JSON that is transmitted over HTTP when working with the . For a detailed
+ * explanation see: <a
+ * href="http://code.google.com/p/google-api-java-client/wiki/Json"
+ * >http://code.google.com/p/google-api-java-client/wiki/Json</a>
  * </p>
- *
+ * 
  * @author Google, Inc.
  */
 @SuppressWarnings("javadoc")
 public final class MessageData extends com.google.api.client.json.GenericJson {
 
-  /**
-   * The value may be {@code null}.
-   */
-  @com.google.api.client.util.Key
-  private Key key;
+	/**
+	 * The value may be {@code null}.
+	 */
+	@com.google.api.client.util.Key
+	private Key key;
 
-  /**
-   * The value may be {@code null}.
-   */
-  @com.google.api.client.util.Key
-  private java.lang.String message;
+	/**
+	 * The value may be {@code null}.
+	 */
+	@com.google.api.client.util.Key
+	private java.lang.String message;
 
-  /**
-   * The value may be {@code null}.
-   */
-  @com.google.api.client.util.Key @com.google.api.client.json.JsonString
-  private java.lang.Long timestamp;
+	/**
+	 * The value may be {@code null}.
+	 */
+	@com.google.api.client.util.Key
+	@com.google.api.client.json.JsonString
+	private java.lang.Long timestamp;
 
-  /**
-   * @return value or {@code null} for none
-   */
-  public Key getKey() {
-    return key;
-  }
+	/**
+	 * @return value or {@code null} for none
+	 */
+	public Key getKey() {
+		return key;
+	}
 
-  /**
-   * @param key key or {@code null} for none
-   */
-  public MessageData setKey(Key key) {
-    this.key = key;
-    return this;
-  }
+	/**
+	 * @param key
+	 *            key or {@code null} for none
+	 */
+	public MessageData setKey(Key key) {
+		this.key = key;
+		return this;
+	}
 
-  /**
-   * @return value or {@code null} for none
-   */
-  public java.lang.String getMessage() {
-    return message;
-  }
+	/**
+	 * @return value or {@code null} for none
+	 */
+	public java.lang.String getMessage() {
+		return message;
+	}
 
-  /**
-   * @param message message or {@code null} for none
-   */
-  public MessageData setMessage(java.lang.String message) {
-    this.message = message;
-    return this;
-  }
+	/**
+	 * @param message
+	 *            message or {@code null} for none
+	 */
+	public MessageData setMessage(java.lang.String message) {
+		this.message = message;
+		return this;
+	}
 
-  /**
-   * @return value or {@code null} for none
-   */
-  public java.lang.Long getTimestamp() {
-    return timestamp;
-  }
+	/**
+	 * @return value or {@code null} for none
+	 */
+	public java.lang.Long getTimestamp() {
+		return timestamp;
+	}
 
-  /**
-   * @param timestamp timestamp or {@code null} for none
-   */
-  public MessageData setTimestamp(java.lang.Long timestamp) {
-    this.timestamp = timestamp;
-    return this;
-  }
+	/**
+	 * @param timestamp
+	 *            timestamp or {@code null} for none
+	 */
+	public MessageData setTimestamp(java.lang.Long timestamp) {
+		this.timestamp = timestamp;
+		return this;
+	}
 
-  @Override
-  public MessageData set(String fieldName, Object value) {
-    return (MessageData) super.set(fieldName, value);
-  }
+	@Override
+	public MessageData set(String fieldName, Object value) {
+		return (MessageData) super.set(fieldName, value);
+	}
 
-  @Override
-  public MessageData clone() {
-    return (MessageData) super.clone();
-  }
+	@Override
+	public MessageData clone() {
+		return (MessageData) super.clone();
+	}
 
 }
