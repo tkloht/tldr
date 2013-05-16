@@ -58,7 +58,8 @@
         <activity
             android:name="com.tldr.LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:theme="@style/android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
     </application>
 

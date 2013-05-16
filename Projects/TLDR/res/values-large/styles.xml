@@ -6,5 +6,10 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:padding">16dp</item>
     </style>
+    
+    <style name="MyApp.Theme.Light.NoTitleBar.Fullscreen" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+     <item name="android:textColorPrimaryInverse">@android:color/primary_text_light
+     </item>
+</style>
 
 </resources>

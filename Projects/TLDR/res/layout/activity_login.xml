@@ -34,15 +34,16 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:background="#ffffff" >
 		<RelativeLayout
 		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content" >
+		    android:layout_height="wrap_content"
+			android:background="#ffffff" >
 		    <!--  Header Starts -->
 			<LinearLayout android:id="@+id/header"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
-			    android:background="#ffffff"
 			    android:paddingTop="5dip"
 			    android:paddingBottom="5dip">
 			    <ImageView android:src="@drawable/logo_tldr"
@@ -57,7 +58,7 @@
 	        <LinearLayout android:id="@+id/footer"
 	                android:layout_width="fill_parent"
 	                android:layout_height="90dip"
-	                android:background="#72a8ec"
+	                android:background="#ffffcc"
 	                android:layout_alignParentBottom="true">
 	        </LinearLayout>
 	        <!-- Footer Ends -->
@@ -79,7 +80,7 @@
 			                android:layout_marginTop="5dip"
 			                android:layout_marginBottom="20dip"
 			                android:singleLine="true"
-			                android:inputType="textWebEmailAddress"
+			                android:inputType="textEmailAddress"
 			                android:hint="@string/prompt_email"/>
 			          <!--  Password Label -->
 			          <TextView android:layout_width="fill_parent"
