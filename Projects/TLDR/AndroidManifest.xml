@@ -35,8 +35,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.tldr.GCMIntentService" />
-
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >

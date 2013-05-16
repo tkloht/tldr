@@ -26,8 +26,6 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.jackson.JacksonFactory;
-import com.tldr.messageEndpoint.MessageEndpoint;
-import com.tldr.messageEndpoint.model.CollectionResponseMessageData;
 import com.tldr.sqlite.TLDRDatabaseHelper;
 import com.tldr.tools.ToolBox;
 
@@ -61,7 +59,6 @@ import com.tldr.tools.ToolBox;
 public class RegisterActivity extends Activity {
 
 
-	private MessageEndpoint messageEndpoint = null;
 	private SQLiteDatabase db;
 
 	@Override
@@ -102,19 +99,7 @@ public class RegisterActivity extends Activity {
 			
 		});
 
-		/*
-		 * build the messaging endpoint so we can access old messages via an
-		 * endpoint call
-		 */
-		MessageEndpoint.Builder endpointBuilder = new MessageEndpoint.Builder(
-				AndroidHttp.newCompatibleTransport(), new JacksonFactory(),
-				new HttpRequestInitializer() {
-					public void initialize(HttpRequest httpRequest) {
-					}
-				});
 
-		messageEndpoint = CloudEndpointUtils.updateBuilder(endpointBuilder)
-				.build();
 	}
 
 //	@Override
@@ -261,54 +246,4 @@ public class RegisterActivity extends Activity {
 	}
 
 
-	
-	/*
-	 * Need to run this in background so we don't hold up the UI thread, this
-	 * task will ask the App Engine backend for the last 5 messages sent to it
-	 */
-	private class QueryMessagesTask extends
-			AsyncTask<Void, Void, CollectionResponseMessageData> {
-		Exception exceptionThrown = null;
-		Activity activity;
-		MessageEndpoint messageEndpoint;
-
-		public QueryMessagesTask(Activity activity,
-				MessageEndpoint messageEndpoint) {
-			this.activity = activity;
-			this.messageEndpoint = messageEndpoint;
-		}
-
-		@Override
-		protected CollectionResponseMessageData doInBackground(Void... params) {
-			try {
-				CollectionResponseMessageData messages = messageEndpoint
-						.listMessages().setLimit(5).execute();
-				return messages;
-			} catch (IOException e) {
-				exceptionThrown = e;
-				return null;
-				// Handle exception in PostExecute
-			}
-		}
-
-		protected void onPostExecute(CollectionResponseMessageData messages) {
-			// Check if exception was thrown
-			if (exceptionThrown != null) {
-				Log.e(RegisterActivity.class.getName(),
-						"Exception when listing Messages", exceptionThrown);
-				showDialog("Failed to retrieve the last 5 messages from "
-						+ "the endpoint at " + messageEndpoint.getBaseUrl()
-						+ ", check log for details");
-			} 
-//			else {
-//				TextView messageView = (TextView) findViewById(R.id.);
-//				messageView.setText("Last 5 Messages read from "
-//						+ messageEndpoint.getBaseUrl() + ":\n");
-//				for (MessageData message : messages.getItems()) {
-//					messageView.append(message.getMessage() + "\n");
-//				}
-//			}
-		}
-		
-	}
 }
