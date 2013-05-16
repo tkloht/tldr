@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,17 +21,14 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tldr.sqlite.TLDRDatabaseHelper;
+import com.tldr.tools.ToolBox;
+
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
 public class LoginActivity extends Activity {
-	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
 
 	/**
 	 * The default email to populate the email field with.
@@ -51,6 +50,7 @@ public class LoginActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+	private SQLiteDatabase db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,18 +88,22 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
-		
-		 TextView registerScreen = (TextView) findViewById(R.id.link_to_register);
-		 
-	        // Listening to register new account link
-	        registerScreen.setOnClickListener(new View.OnClickListener() {
-	 
-	            public void onClick(View v) {
-	                // Switching to Register screen
-	                Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
-	                startActivity(i);
-	            }
-	        });
+
+		TextView registerScreen = (TextView) findViewById(R.id.link_to_register);
+
+		// Listening to register new account link
+		registerScreen.setOnClickListener(new View.OnClickListener() {
+
+			public void onClick(View v) {
+				// Switching to Register screen
+				Intent i = new Intent(getApplicationContext(),
+						RegisterActivity.class);
+				startActivity(i);
+			}
+		});
+
+		TLDRDatabaseHelper db_helper = new TLDRDatabaseHelper(this);
+		db = db_helper.getReadableDatabase();
 	}
 
 	@Override
@@ -129,43 +133,29 @@ public class LoginActivity extends Activity {
 
 		boolean cancel = false;
 		View focusView = null;
-		
-		int ecolor = Color.RED; // whatever color you want
-		ForegroundColorSpan fgcspan = new ForegroundColorSpan(ecolor);
-		SpannableStringBuilder ssbuilder; 
-
-		
 
 		// Check for a valid password.
 		if (TextUtils.isEmpty(mPassword)) {
-			String errorString=getString(R.string.error_field_required);
-			ssbuilder= new SpannableStringBuilder(errorString);
-			ssbuilder.setSpan(fgcspan, 0, errorString.length(), 0);
-			mPasswordView.setError(ssbuilder);
+			String errorString = getString(R.string.error_field_required);
+			ToolBox.showErrorMessage(mPasswordView, errorString);
 			focusView = mPasswordView;
 			cancel = true;
 		} else if (mPassword.length() < 4) {
-			String errorString=getString(R.string.error_invalid_password);
-			ssbuilder= new SpannableStringBuilder(errorString);
-			ssbuilder.setSpan(fgcspan, 0, errorString.length(), 0);
-			mPasswordView.setError(ssbuilder);
+			String errorString = getString(R.string.error_invalid_password);
+			ToolBox.showErrorMessage(mPasswordView, errorString);
 			focusView = mPasswordView;
 			cancel = true;
 		}
 
 		// Check for a valid email address.
 		if (TextUtils.isEmpty(mEmail)) {
-			String errorString=getString(R.string.error_field_required);
-			ssbuilder= new SpannableStringBuilder(errorString);
-			ssbuilder.setSpan(fgcspan, 0, errorString.length(), 0);
-			mEmailView.setError(ssbuilder);
+			String errorString = getString(R.string.error_field_required);
+			ToolBox.showErrorMessage(mEmailView, errorString);
 			focusView = mEmailView;
 			cancel = true;
 		} else if (!mEmail.contains("@")) {
-			String errorString=getString(R.string.error_invalid_email);
-			ssbuilder= new SpannableStringBuilder(errorString);
-			ssbuilder.setSpan(fgcspan, 0, errorString.length(), 0);
-			mEmailView.setError(ssbuilder);
+			String errorString = getString(R.string.error_invalid_email);
+			ToolBox.showErrorMessage(mEmailView, errorString);
 			focusView = mEmailView;
 			cancel = true;
 		}
@@ -241,14 +231,15 @@ public class LoginActivity extends Activity {
 				return false;
 			}
 
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mEmail)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
-				}
+			Cursor mCursor = db.query(true,
+					TLDRDatabaseHelper.USERAUTH_TABLE_NAME, new String[] {
+							"password", "user_name", "email" }, "email='"
+							+ mEmail + "' AND password='" + mPassword + "'",
+					null, null, null, null, null);
+			if (!(mCursor.moveToFirst()) || mCursor.getCount() ==0){
+				return false;
 			}
-
+			
 			// TODO: register the new account here.
 			return true;
 		}
@@ -261,8 +252,7 @@ public class LoginActivity extends Activity {
 			if (success) {
 				finish();
 			} else {
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
+				ToolBox.showErrorMessage(mPasswordView, getString(R.string.error_incorrect_password));
 				mPasswordView.requestFocus();
 			}
 		}

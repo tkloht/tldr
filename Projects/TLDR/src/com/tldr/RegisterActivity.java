@@ -2,27 +2,34 @@ package com.tldr;
 
 import java.io.IOException;
 
-import com.tldr.messageEndpoint.MessageEndpoint;
-import com.tldr.messageEndpoint.model.CollectionResponseMessageData;
-import com.tldr.messageEndpoint.model.MessageData;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.jackson.JacksonFactory;
-
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.tldr.messageEndpoint.MessageEndpoint;
+import com.tldr.messageEndpoint.model.CollectionResponseMessageData;
+import com.tldr.sqlite.TLDRDatabaseHelper;
+import com.tldr.tools.ToolBox;
 
 /**
  * An activity that communicates with your App Engine backend via Cloud
@@ -53,14 +60,9 @@ import android.widget.TextView;
  */
 public class RegisterActivity extends Activity {
 
-	enum State {
-		REGISTERED, REGISTERING, UNREGISTERED, UNREGISTERING
-	}
 
-	private State curState = State.UNREGISTERED;
-	private OnTouchListener registerListener = null;
-	private OnTouchListener unregisterListener = null;
 	private MessageEndpoint messageEndpoint = null;
+	private SQLiteDatabase db;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,61 +82,25 @@ public class RegisterActivity extends Activity {
                 finish();
             }
         });
+        SQLiteOpenHelper Appdatabase = new TLDRDatabaseHelper(this);
+        db=Appdatabase.getWritableDatabase();
 		
-		registerListener = new OnTouchListener() {
+
+		regButton.setOnTouchListener(new OnTouchListener(){
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction() & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN:
-					if (GCMIntentService.PROJECT_NUMBER == null
-							|| GCMIntentService.PROJECT_NUMBER.length() == 0) {
-						showDialog("Unable to register for Google Cloud Messaging. "
-								+ "Your application's PROJECT_NUMBER field is unset! You can change "
-								+ "it in GCMIntentService.java");
-					} else {
-						updateState(State.REGISTERING);
-						try {
-							GCMIntentService.register(getApplicationContext());
-						} catch (Exception e) {
-							Log.e(RegisterActivity.class.getName(),
-									"Exception received when attempting to register for Google Cloud "
-											+ "Messaging. Perhaps you need to set your virtual device's "
-											+ " target to Google APIs? "
-											+ "See https://developers.google.com/eclipse/docs/cloud_endpoints_android"
-											+ " for more information.", e);
-							showDialog("There was a problem when attempting to register for "
-									+ "Google Cloud Messaging. If you're running in the emulator, "
-									+ "is the target of your virtual device set to 'Google APIs?' "
-									+ "See the Android log for more details.");
-							updateState(State.UNREGISTERED);
-						}
-					}
-					return true;
-				case MotionEvent.ACTION_UP:
-					return true;
-				default:
-					return false;
-				}
+				// TODO Auto-generated method stub
+				EditText first_name=((EditText) findViewById(R.id.reg_username));
+				EditText password = ((EditText) findViewById(R.id.reg_password));
+				EditText email = ((EditText) findViewById(R.id.reg_email));
+				boolean success=insertContact(first_name, email, password);
+				if(success)
+					finish();
+				return success;
 			}
-		};
-
-		unregisterListener = new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction() & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN:
-					updateState(State.UNREGISTERING);
-					GCMIntentService.unregister(getApplicationContext());
-					return true;
-				case MotionEvent.ACTION_UP:
-					return true;
-				default:
-					return false;
-				}
-			}
-		};
-
-		regButton.setOnTouchListener(registerListener);
+			
+		});
 
 		/*
 		 * build the messaging endpoint so we can access old messages via an
@@ -151,84 +117,86 @@ public class RegisterActivity extends Activity {
 				.build();
 	}
 
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
+//	@Override
+//	protected void onNewIntent(Intent intent) {
+//		super.onNewIntent(intent);
+//
+//		/*
+//		 * If we are dealing with an intent generated by the GCMIntentService
+//		 * class, then display the provided message.
+//		 */
+//		if (intent.getBooleanExtra("gcmIntentServiceMessage", false)) {
+//
+//			showDialog(intent.getStringExtra("message"));
+//
+//			if (intent.getBooleanExtra("registrationMessage", false)) {
+//
+//				if (intent.getBooleanExtra("error", false)) {
+//					/*
+//					 * If we get a registration/unregistration-related error,
+//					 * and we're in the process of registering, then we move
+//					 * back to the unregistered state. If we're in the process
+//					 * of unregistering, then we move back to the registered
+//					 * state.
+//					 */
+//					if (curState == State.REGISTERING) {
+//						updateState(State.UNREGISTERED);
+//					} else {
+//						updateState(State.REGISTERED);
+//					}
+//				} else {
+//					/*
+//					 * If we get a registration/unregistration-related success,
+//					 * and we're in the process of registering, then we move to
+//					 * the registered state. If we're in the process of
+//					 * unregistering, the we move back to the unregistered
+//					 * state.
+//					 */
+//					if (curState == State.REGISTERING) {
+//						updateState(State.REGISTERED);
+//					} else {
+//						updateState(State.UNREGISTERED);
+//					}
+//				}
+//			} else {
+//				/*
+//				 * if we didn't get a registration/unregistration message then
+//				 * go get the last 5 messages from app-engine
+//				 */
+//				new QueryMessagesTask(this, messageEndpoint).execute();
+//			}
+//		}
+//	}
 
-		/*
-		 * If we are dealing with an intent generated by the GCMIntentService
-		 * class, then display the provided message.
-		 */
-		if (intent.getBooleanExtra("gcmIntentServiceMessage", false)) {
+//	private void updateState(State newState) {
+//		Button registerButton = (Button) findViewById(R.id.btnRegister);
+//		switch (newState) {
+//		case REGISTERED:
+//			registerButton.setText("Unregister");
+//			registerButton.setOnTouchListener(unregisterListener);
+//			registerButton.setEnabled(true);
+//			break;
+//
+//		case REGISTERING:
+//			registerButton.setText("Registering...");
+//			registerButton.setEnabled(false);
+//			break;
+//
+//		case UNREGISTERED:
+//			registerButton.setText("Register");
+//			registerButton.setOnTouchListener(registerListener);
+//			registerButton.setEnabled(true);
+//			break;
+//
+//		case UNREGISTERING:
+//			registerButton.setText("Unregistering...");
+//			registerButton.setEnabled(false);
+//			break;
+//		}
+//		curState = newState;
+//	}
 
-			showDialog(intent.getStringExtra("message"));
 
-			if (intent.getBooleanExtra("registrationMessage", false)) {
-
-				if (intent.getBooleanExtra("error", false)) {
-					/*
-					 * If we get a registration/unregistration-related error,
-					 * and we're in the process of registering, then we move
-					 * back to the unregistered state. If we're in the process
-					 * of unregistering, then we move back to the registered
-					 * state.
-					 */
-					if (curState == State.REGISTERING) {
-						updateState(State.UNREGISTERED);
-					} else {
-						updateState(State.REGISTERED);
-					}
-				} else {
-					/*
-					 * If we get a registration/unregistration-related success,
-					 * and we're in the process of registering, then we move to
-					 * the registered state. If we're in the process of
-					 * unregistering, the we move back to the unregistered
-					 * state.
-					 */
-					if (curState == State.REGISTERING) {
-						updateState(State.REGISTERED);
-					} else {
-						updateState(State.UNREGISTERED);
-					}
-				}
-			} else {
-				/*
-				 * if we didn't get a registration/unregistration message then
-				 * go get the last 5 messages from app-engine
-				 */
-				new QueryMessagesTask(this, messageEndpoint).execute();
-			}
-		}
-	}
-
-	private void updateState(State newState) {
-		Button registerButton = (Button) findViewById(R.id.btnRegister);
-		switch (newState) {
-		case REGISTERED:
-			registerButton.setText("Unregister");
-			registerButton.setOnTouchListener(unregisterListener);
-			registerButton.setEnabled(true);
-			break;
-
-		case REGISTERING:
-			registerButton.setText("Registering...");
-			registerButton.setEnabled(false);
-			break;
-
-		case UNREGISTERED:
-			registerButton.setText("Register");
-			registerButton.setOnTouchListener(registerListener);
-			registerButton.setEnabled(true);
-			break;
-
-		case UNREGISTERING:
-			registerButton.setText("Unregistering...");
-			registerButton.setEnabled(false);
-			break;
-		}
-		curState = newState;
-	}
 
 	private void showDialog(String message) {
 		new AlertDialog.Builder(this)
@@ -240,7 +208,60 @@ public class RegisterActivity extends Activity {
 							}
 						}).show();
 	}
+	
+	protected boolean insertContact(EditText mUsernameView, EditText mEmailView, EditText mPasswordView) {
+		//validate
+		String mUsername=mUsernameView.getText().toString();
+		String mEmail = mEmailView.getText().toString();
+		String mPassword = mPasswordView.getText().toString();
+		View focusView=null;
+		boolean cancel=false;
+		// Check for a valid username.
+		if (TextUtils.isEmpty(mUsername)) {
+			String errorString=getString(R.string.error_field_required);
+			ToolBox.showErrorMessage(mUsernameView, errorString);
+			focusView = mPasswordView;
+			cancel = true;
+		}
+		// Check for a valid password.
+		if (TextUtils.isEmpty(mPassword)) {
+			String errorString=getString(R.string.error_field_required);
+			ToolBox.showErrorMessage(mPasswordView, errorString);
+			focusView = mPasswordView;
+			cancel = true;
+		} else if (mPassword.length() < 4) {
+			String errorString=getString(R.string.error_invalid_password);
+			ToolBox.showErrorMessage(mPasswordView, errorString);
+			focusView = mPasswordView;
+			cancel = true;
+		}
 
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(mEmail)) {
+			String errorString=getString(R.string.error_field_required);
+			ToolBox.showErrorMessage(mPasswordView, errorString);
+
+			focusView = mEmailView;
+			cancel = true;
+		} else if (!mEmail.contains("@")) {
+			String errorString=getString(R.string.error_invalid_email);
+			ToolBox.showErrorMessage(mPasswordView, errorString);
+
+			focusView = mEmailView;
+			cancel = true;
+		}		
+		if(!cancel){
+		ContentValues initialValues = new ContentValues();
+	    initialValues.put("user_name", mUsername);
+	    initialValues.put("email", mEmail);
+	    initialValues.put("password", mPassword);
+		db.insert(TLDRDatabaseHelper.USERAUTH_TABLE_NAME, null, initialValues);
+		}
+		return !cancel;
+	}
+
+
+	
 	/*
 	 * Need to run this in background so we don't hold up the UI thread, this
 	 * task will ask the App Engine backend for the last 5 messages sent to it
@@ -288,5 +309,6 @@ public class RegisterActivity extends Activity {
 //				}
 //			}
 		}
+		
 	}
 }
