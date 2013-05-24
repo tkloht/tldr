@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"_eRzJ5rb6y2Sm1GT1st-3xOUuXg/r88z0acGWw09R14ro5JupLOxqkU\"",
+ "etag": "\"_eRzJ5rb6y2Sm1GT1st-3xOUuXg/Zh2nwM7RjwNvhgpR2qwFPBjzUiE\"",
  "discoveryVersion": "v1",
  "id": "userinfoendpoint:v1",
  "name": "userinfoendpoint",
@@ -14,9 +14,9 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rest",
- "baseUrl": "https://myapp.appspot.com/_ah/api/userinfoendpoint/v1/",
+ "baseUrl": "https://swp-tldr.appspot.com/_ah/api/userinfoendpoint/v1/",
  "basePath": "/_ah/api/userinfoendpoint/v1/",
- "rootUrl": "https://myapp.appspot.com/_ah/api/",
+ "rootUrl": "https://swp-tldr.appspot.com/_ah/api/",
  "servicePath": "userinfoendpoint/v1/",
  "batchPath": "batch",
  "parameters": {

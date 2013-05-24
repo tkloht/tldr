@@ -1,12 +1,12 @@
 {
   "extends" : "thirdParty.api",
   "abstract" : false,
-  "root" : "https://myapp.appspot.com/_ah/api",
+  "root" : "https://swp-tldr.appspot.com/_ah/api",
   "name" : "userinfoendpoint",
   "version" : "v1",
   "defaultVersion" : false,
   "adapter" : {
-    "bns" : "https://myapp.appspot.com/_ah/spi",
+    "bns" : "https://swp-tldr.appspot.com/_ah/spi",
     "deadline" : 10.0,
     "type" : "lily"
   },
@@ -82,21 +82,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "userinfoendpoint.registerUserInfo" : {
-      "path" : "register",
-      "httpMethod" : "POST",
-      "scopes" : [ ],
-      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
-      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.tldr.UserInfoEndpoint.register",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "userinfoendpoint.listUserInfo" : {
       "path" : "userinfo",
       "httpMethod" : "GET",
@@ -116,6 +101,21 @@
           }
         },
         "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userinfoendpoint.registerUserInfo" : {
+      "path" : "register",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.tldr.UserInfoEndpoint.register",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -202,17 +202,17 @@
           "$ref" : "UserInfo"
         }
       },
+      "com.tldr.UserInfoEndpoint.listUserInfo" : {
+        "response" : {
+          "$ref" : "CollectionResponse_UserInfo"
+        }
+      },
       "com.tldr.UserInfoEndpoint.register" : {
         "request" : {
           "$ref" : "UserInfo"
         },
         "response" : {
           "$ref" : "UserInfo"
-        }
-      },
-      "com.tldr.UserInfoEndpoint.listUserInfo" : {
-        "response" : {
-          "$ref" : "CollectionResponse_UserInfo"
         }
       }
     }

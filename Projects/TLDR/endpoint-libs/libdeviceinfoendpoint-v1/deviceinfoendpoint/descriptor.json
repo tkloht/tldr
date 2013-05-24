@@ -1,11 +1,11 @@
 {
   "files": [
     {
-      "path": "myapp-deviceinfoendpoint-v1-20130524152643-java-1.14.2-beta-sources.jar", 
+      "path": "swp-tldr-deviceinfoendpoint-v1-20130524163000-java-1.14.2-beta-sources.jar", 
       "type": "source"
     }, 
     {
-      "path": "myapp-deviceinfoendpoint-v1-20130524152643-java-1.14.2-beta.jar.properties", 
+      "path": "swp-tldr-deviceinfoendpoint-v1-20130524163000-java-1.14.2-beta.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -689,7 +689,7 @@
     }
   ], 
   "language_version": "1.14.2-beta", 
-  "revision": 20130524152643, 
+  "revision": 20130524163000, 
   "id": "deviceinfoendpoint:v1", 
   "modulePath": "com/tldr"
 }

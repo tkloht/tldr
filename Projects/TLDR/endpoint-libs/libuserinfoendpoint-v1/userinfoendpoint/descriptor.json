@@ -1,11 +1,11 @@
 {
   "files": [
     {
-      "path": "myapp-userinfoendpoint-v1-20130524152649-java-1.14.2-beta-sources.jar", 
+      "path": "swp-tldr-userinfoendpoint-v1-20130524163010-java-1.14.2-beta-sources.jar", 
       "type": "source"
     }, 
     {
-      "path": "myapp-userinfoendpoint-v1-20130524152649-java-1.14.2-beta.jar.properties", 
+      "path": "swp-tldr-userinfoendpoint-v1-20130524163010-java-1.14.2-beta.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -689,7 +689,7 @@
     }
   ], 
   "language_version": "1.14.2-beta", 
-  "revision": 20130524152649, 
+  "revision": 20130524163010, 
   "id": "userinfoendpoint:v1", 
   "modulePath": "com/tldr/com/tldr"
 }
