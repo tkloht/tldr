@@ -2,7 +2,11 @@
 <resources>
 
     <string name="app_name">TLDR</string>
-    <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_section1">Map</string>
+    <string name="title_section2">Task List</string>
+    <string name="title_section3">Community</string>
 
 </resources>

@@ -1,0 +1,220 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://myapp.appspot.com/_ah/api",
+  "name" : "userinfoendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://myapp.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "tldr.com",
+  "ownerName" : "tldr.com",
+  "packagePath" : "com.tldr",
+  "methods" : {
+    "userinfoendpoint.getUserInfo" : {
+      "path" : "userinfo/{id}",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.tldr.UserInfoEndpoint.getUserInfo",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userinfoendpoint.updateUserInfo" : {
+      "path" : "userinfo",
+      "httpMethod" : "PUT",
+      "scopes" : [ ],
+      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.tldr.UserInfoEndpoint.updateUserInfo",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userinfoendpoint.removeUserInfo" : {
+      "path" : "userinfo/{id}",
+      "httpMethod" : "DELETE",
+      "scopes" : [ ],
+      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.tldr.UserInfoEndpoint.removeUserInfo",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userinfoendpoint.registerUserInfo" : {
+      "path" : "register",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.tldr.UserInfoEndpoint.register",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userinfoendpoint.listUserInfo" : {
+      "path" : "userinfo",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.tldr.UserInfoEndpoint.listUserInfo",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "UserInfo" : {
+        "id" : "UserInfo",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "$ref" : "Key"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Key" : {
+        "id" : "Key",
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string"
+          },
+          "appId" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "Key"
+          },
+          "complete" : {
+            "type" : "boolean"
+          },
+          "namespace" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CollectionResponse_UserInfo" : {
+        "id" : "CollectionResponse_UserInfo",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "UserInfo"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.tldr.UserInfoEndpoint.getUserInfo" : {
+        "response" : {
+          "$ref" : "UserInfo"
+        }
+      },
+      "com.tldr.UserInfoEndpoint.updateUserInfo" : {
+        "request" : {
+          "$ref" : "UserInfo"
+        },
+        "response" : {
+          "$ref" : "UserInfo"
+        }
+      },
+      "com.tldr.UserInfoEndpoint.removeUserInfo" : {
+        "response" : {
+          "$ref" : "UserInfo"
+        }
+      },
+      "com.tldr.UserInfoEndpoint.register" : {
+        "request" : {
+          "$ref" : "UserInfo"
+        },
+        "response" : {
+          "$ref" : "UserInfo"
+        }
+      },
+      "com.tldr.UserInfoEndpoint.listUserInfo" : {
+        "response" : {
+          "$ref" : "CollectionResponse_UserInfo"
+        }
+      }
+    }
+  }
+}
