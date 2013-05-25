@@ -1,5 +1,9 @@
 package com.tldr.tools;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.Color;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -17,4 +21,14 @@ public final class ToolBox {
 		view.setError(ssbuilder);
 	}
 
+	
+	public static void showAlert(Activity context, String title, String message, String closeButtonText, OnClickListener l) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title)
+        .setMessage(message)
+        .setCancelable(false)
+        .setNegativeButton(closeButtonText,l);
+        AlertDialog alert = builder.create();
+        alert.show();
+	}
 }

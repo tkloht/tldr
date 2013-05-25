@@ -258,14 +258,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 	 */
 	private void sendNotificationIntent(Context context, String message,
 			boolean isError, boolean isRegistrationMessage) {
-		Intent notificationIntent = new Intent(context, RegisterActivity.class);
-		notificationIntent.putExtra("gcmIntentServiceMessage", true);
-		notificationIntent.putExtra("registrationMessage",
-				isRegistrationMessage);
-		notificationIntent.putExtra("error", isError);
-		notificationIntent.putExtra("message", message);
-		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(notificationIntent);
+//		Intent notificationIntent = new Intent(context, RegisterActivity.class);
+//		notificationIntent.putExtra("gcmIntentServiceMessage", true);
+//		notificationIntent.putExtra("registrationMessage",
+//				isRegistrationMessage);
+//		notificationIntent.putExtra("error", isError);
+//		notificationIntent.putExtra("message", message);
+//		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//		startActivity(notificationIntent);
 	}
 
 	private String getWebSampleUrl(String endpointUrl) {

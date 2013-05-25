@@ -9,12 +9,14 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_forgot_password">Recover lost password</string>
     <string name="login_progress_signing_in">Signing in&#8230;</string>
+    <string name="register_progress_signing_in">Registering User&#8230;</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">No matching credentials were found</string>
     <string name="error_field_required">This field is required</string>
+    <string name="login_error_signing_in">Request timed out. Please try again.</string>
     <string name="description_logo">TLDR Logo</string>
-    <string name="button_login">Login</string>
+    <string name="button_login_retry">Try again</string>
     <string name="link_register">New to TL;DR?? Register here!</string>
 
 </resources>

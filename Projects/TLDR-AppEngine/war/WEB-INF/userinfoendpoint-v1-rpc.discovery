@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"_eRzJ5rb6y2Sm1GT1st-3xOUuXg/Zh2nwM7RjwNvhgpR2qwFPBjzUiE\"",
+ "etag": "\"381e4s_8vUCNPclzPT4yxtto0eA/ZGOEW-iz8NbyVfQVItOM7tUsrFY\"",
  "discoveryVersion": "v1",
  "id": "userinfoendpoint:v1",
  "name": "userinfoendpoint",
@@ -78,34 +78,6 @@
     }
    }
   },
-  "Key": {
-   "id": "Key",
-   "type": "object",
-   "properties": {
-    "appId": {
-     "type": "string"
-    },
-    "complete": {
-     "type": "boolean"
-    },
-    "id": {
-     "type": "string",
-     "format": "int64"
-    },
-    "kind": {
-     "type": "string"
-    },
-    "name": {
-     "type": "string"
-    },
-    "namespace": {
-     "type": "string"
-    },
-    "parent": {
-     "$ref": "Key"
-    }
-   }
-  },
   "UserInfo": {
    "id": "UserInfo",
    "type": "object",
@@ -113,8 +85,9 @@
     "email": {
      "type": "string"
     },
-    "key": {
-     "$ref": "Key"
+    "id": {
+     "type": "string",
+     "format": "int64"
     },
     "username": {
      "type": "string"
