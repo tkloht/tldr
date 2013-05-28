@@ -21,7 +21,9 @@ import com.google.appengine.datanucleus.query.JPACursorHelper;
 
 @Api(name = "userinfoendpoint", namespace = @ApiNamespace(ownerDomain = "tldr.com", ownerName = "tldr.com", packagePath = "com.tldr"), clientIds = {
 		"511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com",
-		"511171351776.apps.googleusercontent.com" }, audiences = { "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" })
+		"511171351776.apps.googleusercontent.com",
+		"511171351776-7hr5u4c8s578l88ba8h5l4960h4dej84.apps.googleusercontent.com",
+		"511171351776-12uklecjd0f6m12b8odhp4snc42albu7.apps.googleusercontent.com"}, audiences = { "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" })
 public class UserInfoEndpoint {
 
 	
