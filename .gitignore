@@ -34,3 +34,6 @@ dist
 
 #OS10 stuff
 .DS_Store
+
+#datenbank
+local_db.bin
