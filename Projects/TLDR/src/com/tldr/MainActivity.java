@@ -1,16 +1,9 @@
 package com.tldr;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,10 +12,9 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.json.gson.GsonFactory;
-import com.tldr.com.tldr.userinfoendpoint.Userinfoendpoint;
+import com.auth.AccountHelper;
+import com.datastore.DatastoreResultHandler;
+import com.datastore.UserInfoDatastore;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.tools.ToolBox;
 
@@ -35,11 +27,7 @@ import com.tldr.tools.ToolBox;
  * 
  * Check out RegisterActivity.java for more details.
  */
-public class MainActivity extends Activity {
-	private SharedPreferences settings;
-	private GoogleAccountCredential credential;
-	private String accountName;
-	private Userinfoendpoint service;
+public class MainActivity extends Activity implements DatastoreResultHandler {
 	private UserInfo user;
 	private View mLoginStatusView;
 	private View mLoginFormView;
@@ -47,8 +35,8 @@ public class MainActivity extends Activity {
 	private View mRegisterStatusView;
 	private Button mTryAgainButton;
 	private EditText mUsernameText;
-	public static final String PREF_ACCOUNT_NAME = "auth_account";
-	static final int REQUEST_ACCOUNT_PICKER = 2;
+	private AccountHelper accountHelper;
+	private UserInfoDatastore userInfoDatastore;
 
 	static final int VIEW_MODE_LOGIN_PROGRESS = 0;
 	static final int VIEW_MODE_ERROR = 1;
@@ -68,9 +56,8 @@ public class MainActivity extends Activity {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
-				startAccountSelection();
 				showProgress(VIEW_MODE_LOGIN_PROGRESS);
-
+				selectAccount();
 				return false;
 			}
 		});
@@ -81,7 +68,7 @@ public class MainActivity extends Activity {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
-			if(event.getAction()==MotionEvent.ACTION_UP){
+				if (event.getAction() == MotionEvent.ACTION_UP) {
 					showProgress(VIEW_MODE_REGISTER_PROGRESS);
 					boolean success = true;
 					// Check Values for EditText
@@ -94,26 +81,37 @@ public class MainActivity extends Activity {
 					} else {
 						if (user != null) {
 							user.setUsername(username);
-							new RegisterUserInfoTask().execute(user);
+							userInfoDatastore.registerUser(user);
 						} else
 							success = false;
 					}
 					return success;
-				}
-			else
-				return false;
+				} else
+					return false;
 			}
 		});
 
 		showProgress(VIEW_MODE_LOGIN_PROGRESS);
-		
+
+		// Init AccountHelper
+		accountHelper = new AccountHelper(this);
+
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		startAccountSelection();
+		selectAccount();
+
+	}
+
+	private void selectAccount() {
+		if (!accountHelper.isAccountSelected()) {
+			accountHelper.startAccountSelection();
+		} else {
+			afterAccountSelection();
+		}
 	}
 
 	private void showProgress(final int mode) {
@@ -138,44 +136,10 @@ public class MainActivity extends Activity {
 
 	}
 
-	private void startAccountSelection() {
-		settings = getSharedPreferences("TLDR", 0);
-		credential = GoogleAccountCredential
-				.usingAudience(
-						this,
-						"server:client_id:511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com");
-		setAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
-		Userinfoendpoint.Builder builder = new Userinfoendpoint.Builder(
-				AndroidHttp.newCompatibleTransport(), new GsonFactory(),
-				credential);
-		service = CloudEndpointUtils.updateBuilder(builder).build();
-
-		if (credential.getSelectedAccountName() != null) {
-			// Already signed in, begin app!
-			Logger.getLogger("tldr-logger").log(Level.INFO, "Logged in!");
-			afterAccountSelection();
-
-		} else {
-			// Not signed in, show login window or request an account.
-			Logger.getLogger("tldr-logger").log(Level.INFO, "Not signed in!");
-			startActivityForResult(credential.newChooseAccountIntent(),
-					REQUEST_ACCOUNT_PICKER);
-
-		}
-	}
-
-	// setAccountName definition
-	private void setAccountName(String accountName) {
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putString(PREF_ACCOUNT_NAME, accountName);
-		editor.commit();
-		credential.setSelectedAccountName(accountName);
-		this.accountName = accountName;
-	}
-
 	private void afterAccountSelection() {
-		new RegisterUserInfoTask()
-				.execute(new UserInfo().setEmail(accountName));
+		userInfoDatastore = new UserInfoDatastore(
+				accountHelper.getCredential(), this);
+		userInfoDatastore.registerUser(new UserInfo().setEmail(accountHelper.getCredential().getSelectedAccountName()));
 	}
 
 	private void showLoginAlert() {
@@ -212,15 +176,12 @@ public class MainActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
-		case REQUEST_ACCOUNT_PICKER:
+		case AccountHelper.REQUEST_ACCOUNT_PICKER:
 			if (data != null && data.getExtras() != null) {
 				String accountName = data.getExtras().getString(
 						AccountManager.KEY_ACCOUNT_NAME);
 				if (accountName != null) {
-					setAccountName(accountName);
-					SharedPreferences.Editor editor = settings.edit();
-					editor.putString(PREF_ACCOUNT_NAME, accountName);
-					editor.commit();
+					accountHelper.setAccountName(accountName);
 					// User is authorized.
 					afterAccountSelection();
 
@@ -230,32 +191,18 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private class RegisterUserInfoTask extends
-			AsyncTask<UserInfo, UserInfo, UserInfo> {
-		@Override
-		protected UserInfo doInBackground(UserInfo... userinfo) {
-			UserInfo registeredUser = null;
-			try {
-				registeredUser = service.registerUserInfo((userinfo[0]))
-						.execute();
-				return registeredUser;
-			} catch (IOException e) {
-				Log.d("TLDR", e.getMessage(), e);
+	@Override
+	public void handleRequestResult(String requestName, Object result) {
+		// TODO Auto-generated method stub
+		if (requestName.equals(UserInfoDatastore.REQUEST_NAME_REGISTER)) {
+			UserInfo registeredUser = (UserInfo) result;
+			if (registeredUser != null) {
+				user = registeredUser;
+				showLoginAlert();
+			} else {
+				Log.w("TLDR", "No User was registered due to an Error!");
+				showProgress(VIEW_MODE_ERROR);
 			}
-			return registeredUser;
-		}
-
-		@Override
-		protected void onPostExecute(UserInfo registeredUser) {
-
-				if (registeredUser != null) {
-					user = registeredUser;
-					showLoginAlert();
-				} else {
-					Log.w("TLDR", "No User was registered due to an Error!");
-					showProgress(VIEW_MODE_ERROR);
-				}
-
 		}
 	}
 }
