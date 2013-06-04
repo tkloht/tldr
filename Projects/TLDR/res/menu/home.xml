@@ -3,7 +3,20 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:showAsAction="always"
+        android:title="@string/action_settings">
+        <menu>
+            <group android:checkableBehavior="all">	        <item
+	            android:id="@+id/menuShowPlayer"
+	            android:title="show other players" />
+	        <item
+	            android:id="@+id/menuOnlyShowAcceptedTasks"
+	            android:title="only show accepted tasks" />
+	        <item
+	            android:id="@+id/menuShowCompass"
+	            android:title="show compass" />
+	        </group>
+    	</menu>
+    </item>
 
 </menu>

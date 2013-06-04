@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -102,6 +103,15 @@ public class HomeActivity extends FragmentActivity implements
 			FragmentTransaction fragmentTransaction) {
 	}
 
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+    	if (item.isChecked()) item.setChecked(false);
+    	else item.setChecked(true);
+    	return true;
+	}
+	
+	
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
