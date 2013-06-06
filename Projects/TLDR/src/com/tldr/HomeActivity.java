@@ -40,7 +40,6 @@ public class HomeActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	UnswipeableViewPager mViewPager;
-//	ViewPager mViewPager;
 	
 
 	@Override
@@ -52,6 +51,10 @@ public class HomeActivity extends FragmentActivity implements
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.setIcon(R.drawable.logo);
+		actionBar.setTitle("TL;DR");
+//		actionBar.setDisplayShowHomeEnabled(false);
+//		actionBar.setDisplayShowTitleEnabled(false);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -60,7 +63,6 @@ public class HomeActivity extends FragmentActivity implements
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (UnswipeableViewPager) findViewById(R.id.pager);
-//		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		mViewPager.setPagingEnabled(false);
 
@@ -75,6 +77,7 @@ public class HomeActivity extends FragmentActivity implements
 					}
 				});
 
+		int[] icons = {R.drawable.ic_menu_mapmode, R.drawable.ic_menu_clear_playlist, R.drawable.ic_menu_allfriends};
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -83,7 +86,7 @@ public class HomeActivity extends FragmentActivity implements
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
+					.setTabListener(this).setIcon(icons[i]));
 		}
 	}
 

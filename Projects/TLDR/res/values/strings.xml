@@ -5,8 +5,11 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="title_section1">Map</string>
-    <string name="title_section2">Task List</string>
-    <string name="title_section3">Community</string>
+    <string name="title_section1"></string>
+    <string name="title_section2"></string>
+    <string name="title_section3"></string>
+    <string name="title_section1_">Map</string>
+    <string name="title_section2_">Task List</string>
+    <string name="title_section3_">Community</string>
 
 </resources>
