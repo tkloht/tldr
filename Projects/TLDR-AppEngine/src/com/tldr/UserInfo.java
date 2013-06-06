@@ -1,10 +1,13 @@
 package com.tldr;
 
+import java.util.List;
+
 import javax.jdo.annotations.Persistent;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 
 /**
@@ -28,36 +31,80 @@ import javax.persistence.SequenceGenerator;
  */
 @Entity
 public class UserInfo {
-	
-	  @Id
-	  @GeneratedValue(strategy=GenerationType.AUTO, generator="user_info_seq_gen")
-	  @SequenceGenerator(name="user_info_seq_gen", sequenceName="USER_INFO_SEQ")
-	  private Long id;
-	  
-	  @Persistent
-	  private String username;
-	  @Persistent
-	  private String email;
 
-	  public String getEmail() {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "user_info_seq_gen")
+	@SequenceGenerator(name = "user_info_seq_gen", sequenceName = "USER_INFO_SEQ")
+	private Long user_id;
+
+	@Persistent
+	private String username;
+	@Persistent
+	private String email;
+	@Persistent
+	private double geoLat;
+	@Persistent
+	private double geoLon;
+	@Persistent
+	private List<Long> acceptedTasks;
+	
+	@Persistent
+	private List<Long> finishedGoals;	
+	
+	
+
+	public double getGeoLat() {
+		return geoLat;
+	}
+
+	public void setGeoLat(double geoLat) {
+		this.geoLat = geoLat;
+	}
+
+	public double getGeoLon() {
+		return geoLon;
+	}
+
+	public void setGeoLon(double geoLon) {
+		this.geoLon = geoLon;
+	}
+
+	public String getEmail() {
 		return email;
 	}
-	
+
 	public Long getId() {
-		  return id;
+		return user_id;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-
 	public String getUsername() {
-	    return username;
-	  }
-	  
+		return username;
+	}
 
-	  public void setUsername(String username) {
-	    this.username = username;
-	  }
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public List<Long> getAcceptedTasks() {
+		return acceptedTasks;
+	}
+
+	public void setAcceptedTasks(List<Long> acceptedTasks) {
+		this.acceptedTasks = acceptedTasks;
+	}
+
+	public List<Long> getFinishedGoals() {
+		return finishedGoals;
+	}
+
+	public void setFinishedGoals(List<Long> finishedGoals) {
+		this.finishedGoals = finishedGoals;
+	}
+	
+	
 
 }

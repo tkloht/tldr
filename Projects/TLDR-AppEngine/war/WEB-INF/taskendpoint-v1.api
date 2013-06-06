@@ -1,0 +1,198 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://swp-tldr.appspot.com/_ah/api",
+  "name" : "taskendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://swp-tldr.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "tldr.com",
+  "ownerName" : "tldr.com",
+  "methods" : {
+    "taskendpoint.removeTask" : {
+      "path" : "task/{id}",
+      "httpMethod" : "DELETE",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.TaskEndpoint.removeTask",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "taskendpoint.insertTask" : {
+      "path" : "task",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.TaskEndpoint.insertTask",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "taskendpoint.listTask" : {
+      "path" : "task",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.TaskEndpoint.listTask",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "taskendpoint.getTask" : {
+      "path" : "task/{id}",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.TaskEndpoint.getTask",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "taskendpoint.updateTask" : {
+      "path" : "task",
+      "httpMethod" : "PUT",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.TaskEndpoint.updateTask",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "Task" : {
+        "id" : "Task",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "geo_lat" : {
+            "type" : "number"
+          },
+          "geo_lon" : {
+            "type" : "number"
+          }
+        }
+      },
+      "CollectionResponse_Task" : {
+        "id" : "CollectionResponse_Task",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Task"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.tldr.TaskEndpoint.removeTask" : {
+        "response" : {
+          "$ref" : "Task"
+        }
+      },
+      "com.tldr.TaskEndpoint.insertTask" : {
+        "request" : {
+          "$ref" : "Task"
+        },
+        "response" : {
+          "$ref" : "Task"
+        }
+      },
+      "com.tldr.TaskEndpoint.listTask" : {
+        "response" : {
+          "$ref" : "CollectionResponse_Task"
+        }
+      },
+      "com.tldr.TaskEndpoint.getTask" : {
+        "response" : {
+          "$ref" : "Task"
+        }
+      },
+      "com.tldr.TaskEndpoint.updateTask" : {
+        "request" : {
+          "$ref" : "Task"
+        },
+        "response" : {
+          "$ref" : "Task"
+        }
+      }
+    }
+  }
+}

@@ -32,7 +32,7 @@
       "httpMethod" : "GET",
       "scopes" : [ ],
       "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
-      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com", "511171351776-7hr5u4c8s578l88ba8h5l4960h4dej84.apps.googleusercontent.com", "511171351776-12uklecjd0f6m12b8odhp4snc42albu7.apps.googleusercontent.com", "511171351776-0jbf6pah393h5pcuq578du7r6uiri36j.apps.googleusercontent.com" ],
       "rosyMethod" : "com.tldr.UserInfoEndpoint.getUserInfo",
       "request" : {
         "parameters" : {
@@ -52,7 +52,7 @@
       "httpMethod" : "PUT",
       "scopes" : [ ],
       "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
-      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com", "511171351776-7hr5u4c8s578l88ba8h5l4960h4dej84.apps.googleusercontent.com", "511171351776-12uklecjd0f6m12b8odhp4snc42albu7.apps.googleusercontent.com", "511171351776-0jbf6pah393h5pcuq578du7r6uiri36j.apps.googleusercontent.com" ],
       "rosyMethod" : "com.tldr.UserInfoEndpoint.updateUserInfo",
       "request" : {
         "body" : "autoTemplate(backendRequest)",
@@ -67,7 +67,7 @@
       "httpMethod" : "DELETE",
       "scopes" : [ ],
       "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
-      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com", "511171351776-7hr5u4c8s578l88ba8h5l4960h4dej84.apps.googleusercontent.com", "511171351776-12uklecjd0f6m12b8odhp4snc42albu7.apps.googleusercontent.com", "511171351776-0jbf6pah393h5pcuq578du7r6uiri36j.apps.googleusercontent.com" ],
       "rosyMethod" : "com.tldr.UserInfoEndpoint.removeUserInfo",
       "request" : {
         "parameters" : {
@@ -87,7 +87,7 @@
       "httpMethod" : "POST",
       "scopes" : [ ],
       "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
-      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com", "511171351776-7hr5u4c8s578l88ba8h5l4960h4dej84.apps.googleusercontent.com", "511171351776-12uklecjd0f6m12b8odhp4snc42albu7.apps.googleusercontent.com", "511171351776-0jbf6pah393h5pcuq578du7r6uiri36j.apps.googleusercontent.com" ],
       "rosyMethod" : "com.tldr.UserInfoEndpoint.register",
       "request" : {
         "body" : "autoTemplate(backendRequest)",
@@ -102,7 +102,7 @@
       "httpMethod" : "GET",
       "scopes" : [ ],
       "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
-      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com", "511171351776-7hr5u4c8s578l88ba8h5l4960h4dej84.apps.googleusercontent.com", "511171351776-12uklecjd0f6m12b8odhp4snc42albu7.apps.googleusercontent.com", "511171351776-0jbf6pah393h5pcuq578du7r6uiri36j.apps.googleusercontent.com" ],
       "rosyMethod" : "com.tldr.UserInfoEndpoint.listUserInfo",
       "request" : {
         "parameters" : {
@@ -128,15 +128,35 @@
         "id" : "UserInfo",
         "type" : "object",
         "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
-          },
           "username" : {
             "type" : "string"
           },
           "email" : {
             "type" : "string"
+          },
+          "geoLat" : {
+            "type" : "number"
+          },
+          "geoLon" : {
+            "type" : "number"
+          },
+          "acceptedTasks" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "int64"
+            }
+          },
+          "finishedGoals" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "int64"
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
           }
         }
       },

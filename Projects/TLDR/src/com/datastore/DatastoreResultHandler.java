@@ -10,6 +10,6 @@ public interface DatastoreResultHandler {
 	 *            Variables.
 	 * @param result - Result of the Request. Varies between Datastore Requests.
 	 */
-	public void handleRequestResult(String requestName, Object result);
+	public void handleRequestResult(int requestId, Object result);
 
 }

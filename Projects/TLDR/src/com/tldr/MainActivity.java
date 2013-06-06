@@ -1,5 +1,7 @@
 package com.tldr;
 
+import java.util.List;
+
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -13,7 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.auth.AccountHelper;
+import com.datastore.BaseDatastore;
 import com.datastore.DatastoreResultHandler;
+import com.datastore.TaskDatastore;
 import com.datastore.UserInfoDatastore;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.tools.ToolBox;
@@ -37,6 +41,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	private EditText mUsernameText;
 	private AccountHelper accountHelper;
 	private UserInfoDatastore userInfoDatastore;
+	private TaskDatastore taskDatastore;
 
 	static final int VIEW_MODE_LOGIN_PROGRESS = 0;
 	static final int VIEW_MODE_ERROR = 1;
@@ -139,6 +144,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	private void afterAccountSelection() {
 		userInfoDatastore = new UserInfoDatastore(
 				accountHelper.getCredential(), this);
+		taskDatastore = new TaskDatastore(this, accountHelper.getCredential());
 		userInfoDatastore.registerUser(new UserInfo().setEmail(accountHelper.getCredential().getSelectedAccountName()));
 	}
 
@@ -192,17 +198,29 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	}
 
 	@Override
-	public void handleRequestResult(String requestName, Object result) {
+	public void handleRequestResult(int requestId, Object result) {
 		// TODO Auto-generated method stub
-		if (requestName.equals(UserInfoDatastore.REQUEST_NAME_REGISTER)) {
+		switch(requestId) {
+		case BaseDatastore.REQUEST_USERINFO_REGISTER:
 			UserInfo registeredUser = (UserInfo) result;
 			if (registeredUser != null) {
 				user = registeredUser;
-				showLoginAlert();
+				Log.d("TLDR", "User Sign In Successfull.. testing nearbyUserDatastore Method...");
+				userInfoDatastore.getNearbyUsers();
 			} else {
 				Log.w("TLDR", "No User was registered due to an Error!");
 				showProgress(VIEW_MODE_ERROR);
 			}
+			break;
+		case BaseDatastore.REQUEST_USERINFO_NEARBYUSERS:
+			List<UserInfo> nearbyUsers = (List<UserInfo>)result;
+			for(UserInfo ui:nearbyUsers){
+				Log.d("TLDR", ui.getEmail()+" "+ui.getUsername());
+			}
+			taskDatastore.createFakeTasks();
+			showLoginAlert();
+			break;
 		}
+		
 	}
 }

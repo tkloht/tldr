@@ -2,25 +2,24 @@ package com.datastore;
 
 import java.io.IOException;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
-import com.tldr.CloudEndpointUtils;
 import com.tldr.com.tldr.userinfoendpoint.Userinfoendpoint;
+import com.tldr.com.tldr.userinfoendpoint.model.CollectionResponseUserInfo;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
+import com.tldr.tools.CloudEndpointUtils;
 
-public class UserInfoDatastore {
+public class UserInfoDatastore extends BaseDatastore{
 	
-	private DatastoreResultHandler context;
 	private Userinfoendpoint service;
-	public final static String REQUEST_NAME_REGISTER = "UserInfoDatastore_registerUser";
+
 	
 	public UserInfoDatastore(GoogleAccountCredential credential, DatastoreResultHandler context) {
-		this.context=context;
+		super(context);
 		Userinfoendpoint.Builder builder = new Userinfoendpoint.Builder(
 				AndroidHttp.newCompatibleTransport(), new GsonFactory(),
 				credential);
@@ -30,6 +29,12 @@ public class UserInfoDatastore {
 	public void registerUser(UserInfo user){
 		new RegisterUserInfoTask().execute(user);
 	}
+	
+	public void getNearbyUsers(){
+		new GetNearbyUsersTask().execute();
+	}
+	
+	
 	
 	private class RegisterUserInfoTask extends
 	AsyncTask<UserInfo, UserInfo, UserInfo> {
@@ -49,7 +54,30 @@ public class UserInfoDatastore {
 	@Override
 	protected void onPostExecute(UserInfo registeredUser) {
 	
-			context.handleRequestResult(REQUEST_NAME_REGISTER, registeredUser);
+			context.handleRequestResult(REQUEST_USERINFO_REGISTER, registeredUser);
+	
+	}
+}
+	
+	private class GetNearbyUsersTask extends
+	AsyncTask<Void, Void, CollectionResponseUserInfo> {
+	@Override
+	protected CollectionResponseUserInfo doInBackground(Void... v) {
+		CollectionResponseUserInfo registeredUser = null;
+		try {
+			registeredUser = service.listUserInfo()
+					.execute();
+			return registeredUser;
+		} catch (IOException e) {
+			Log.d("TLDR", e.getMessage(), e);
+		}
+		return registeredUser;
+	}
+	
+	@Override
+	protected void onPostExecute(CollectionResponseUserInfo registeredUser) {
+	
+			context.handleRequestResult(REQUEST_USERINFO_NEARBYUSERS, registeredUser.getItems());
 	
 	}
 }

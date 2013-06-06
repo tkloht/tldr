@@ -1,4 +1,4 @@
-package com.tldr;
+package com.tldr.tools;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -13,7 +13,6 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.jackson.JacksonFactory;
-
 import com.tldr.deviceinfoendpoint.Deviceinfoendpoint;
 import com.tldr.deviceinfoendpoint.model.DeviceInfo;
 

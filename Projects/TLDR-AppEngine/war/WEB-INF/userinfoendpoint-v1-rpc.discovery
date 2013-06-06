@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"381e4s_8vUCNPclzPT4yxtto0eA/ZGOEW-iz8NbyVfQVItOM7tUsrFY\"",
+ "etag": "\"381e4s_8vUCNPclzPT4yxtto0eA/ou4fAqsaAI0oaSKqgQvlCKPM-VI\"",
  "discoveryVersion": "v1",
  "id": "userinfoendpoint:v1",
  "name": "userinfoendpoint",
@@ -82,8 +82,30 @@
    "id": "UserInfo",
    "type": "object",
    "properties": {
+    "acceptedTasks": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "format": "int64"
+     }
+    },
     "email": {
      "type": "string"
+    },
+    "finishedGoals": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "format": "int64"
+     }
+    },
+    "geoLat": {
+     "type": "number",
+     "format": "double"
+    },
+    "geoLon": {
+     "type": "number",
+     "format": "double"
     },
     "id": {
      "type": "string",

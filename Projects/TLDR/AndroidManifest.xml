@@ -53,7 +53,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.tldr.GCMIntentService" />
+        <service android:name="com.tldr.tools.GCMIntentService" />
 
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
