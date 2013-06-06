@@ -141,11 +141,9 @@ public class MapFragment extends Fragment implements LocationListener {
 
 	private void flyTo(Location location) {
 		if (location != null) {
-//			Toast.makeText(this.getActivity(), location.getProvider(),
-//					Toast.LENGTH_SHORT).show();
+			mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
 			mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(
 					location.getLatitude(), location.getLongitude())));
-			//mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 		}
 	}
 
