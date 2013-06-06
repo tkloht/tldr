@@ -217,7 +217,6 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			for(UserInfo ui:nearbyUsers){
 				Log.d("TLDR", ui.getEmail()+" "+ui.getUsername());
 			}
-			taskDatastore.createFakeTasks();
 			showLoginAlert();
 			break;
 		}
