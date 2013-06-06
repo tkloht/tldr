@@ -2,17 +2,22 @@ package com.tldr;
 
 import java.util.Locale;
 
+import com.tldr.tools.UnswipeableViewPager;
+
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -34,7 +39,9 @@ public class HomeActivity extends FragmentActivity implements
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	ViewPager mViewPager;
+	UnswipeableViewPager mViewPager;
+//	ViewPager mViewPager;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +59,10 @@ public class HomeActivity extends FragmentActivity implements
 				getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager = (UnswipeableViewPager) findViewById(R.id.pager);
+//		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setPagingEnabled(false);
 
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -165,7 +174,8 @@ public class HomeActivity extends FragmentActivity implements
 			}
 			return null;
 		}
+		
+		
 	}
-
-
+	
 }
