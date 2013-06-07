@@ -11,5 +11,8 @@
     <string name="title_section1_">Map</string>
     <string name="title_section2_">Task List</string>
     <string name="title_section3_">Community</string>
+    <string name="menu_map">Map</string>
+    <string name="menu_community">Community</string>
+    <string name="menu_tasks">Tasks</string>
 
 </resources>

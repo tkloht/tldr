@@ -1,12 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
+        <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="always"
+        android:icon="@drawable/ic_menu_mapmode"
         android:title="@string/action_settings">
         <menu>
-            <group android:checkableBehavior="all">	        <item
+            <group android:checkableBehavior="all">
+	        <item
 	            android:id="@+id/menuShowPlayer"
 	            android:title="show other players" />
 	        <item
@@ -18,5 +20,22 @@
 	        </group>
     	</menu>
     </item>
+
+    
+    
+    <item android:id="@+id/menu_map"
+          android:icon="@drawable/ic_menu_mapmode"
+          android:title="@string/menu_map"
+          android:showAsAction="always" />
+    
+    <item android:id="@+id/menu_tasks"
+          android:icon="@drawable/ic_menu_clear_playlist"
+          android:title="@string/menu_tasks"
+          android:showAsAction="always" />
+    
+    <item android:id="@+id/menu_community"
+          android:icon="@drawable/ic_menu_allfriends"
+          android:title="@string/menu_community"
+          android:showAsAction="always" />
 
 </menu>
