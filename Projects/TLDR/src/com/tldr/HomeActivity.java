@@ -26,9 +26,13 @@ public class HomeActivity extends FragmentActivity implements
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setIcon(R.drawable.logo);
 		actionBar.setTitle("TL;DR");
-		// actionBar.setDisplayShowHomeEnabled(false);
-		// actionBar.setDisplayShowTitleEnabled(false);
 
+		FragmentManager fm = getFragmentManager();
+		FragmentTransaction transaction;
+		Fragment fragment = new MapFragment();
+		transaction = fm.beginTransaction();
+		transaction.replace(R.id.homeActivity, fragment);
+		transaction.commit();
 	}
 
 	@Override
