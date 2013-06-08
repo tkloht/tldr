@@ -4,7 +4,7 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:icon="@drawable/ic_menu_mapmode"
+        android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/action_settings">
         <menu>
             <group android:checkableBehavior="all">
@@ -21,10 +21,14 @@
     	</menu>
     </item>
 
-    
+    <item android:id ="@+id/action_speech_to_text"
+        android:orderInCategory="90" 
+        android:showAsAction="always"
+        android:title="@string/menu_stt"
+        android:icon="@android:drawable/ic_btn_speak_now" />"
     
     <item android:id="@+id/menu_map"
-          android:icon="@drawable/ic_menu_mapmode"
+          android:icon="@android:drawable/ic_menu_mapmode"
           android:title="@string/menu_map"
           android:showAsAction="always" />
     
@@ -37,5 +41,6 @@
           android:icon="@drawable/ic_menu_allfriends"
           android:title="@string/menu_community"
           android:showAsAction="always" />
+    
 
 </menu>

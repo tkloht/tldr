@@ -14,20 +14,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tldr.tools.ToolBox;
 
-public class MapFragment extends Fragment implements LocationListener {
+public class MapFragment extends Fragment implements LocationListener,
+		FragmentCommunicator {
 
 	private MapView mMapView;
 	private GoogleMap mMap;
@@ -92,7 +93,7 @@ public class MapFragment extends Fragment implements LocationListener {
 	// DemoCode
 	private void generateMarkers(Location location) {
 		if (location != null) {
-			this.markers = new ArrayList<Marker>();
+			markers = new ArrayList<Marker>();
 			LatLng newPos;
 			Random rand = new Random();
 			for (int i = 0; i <= NUM_MARKERS; i++) {
@@ -112,6 +113,25 @@ public class MapFragment extends Fragment implements LocationListener {
 			}
 		}
 
+	}
+
+	private void acceptAllNearbyTasks() {
+		for (Marker m : markers) {
+			m.setIcon(BitmapDescriptorFactory
+					.fromResource(R.drawable.target_marked));
+		}
+	}
+
+	private void rejectAllNearbyTasks() {
+		for (Marker m : markers) {
+			m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.target));
+		}
+	}
+
+	private void deleteAllTasks() {
+		for (Marker m : markers) {
+			m.remove();
+		}
 	}
 
 	@Override
@@ -186,5 +206,31 @@ public class MapFragment extends Fragment implements LocationListener {
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void receiveMessage(int messageID, Object data) {
+		// TODO Auto-generated method stub
+		if (messageID == SPEECH_REQUEST_MESSAGE) {
+			String message = (String) data;
+			Log.d("TLDR", "Speech Input: " + message);
+			message = message.toLowerCase();
+			if (message.contains("all")
+					&& (message.contains("tasks") || message.contains("task") || message
+							.contains("missions"))) {
+				if ((message.contains("accept") || message.contains("except"))) {
+					acceptAllNearbyTasks();
+				} else if (message.contains("reject")
+						|| message.contains("decline")) {
+					rejectAllNearbyTasks();
+				} else if (message.contains("delete")) {
+					deleteAllTasks();
+				}
+
+			} else
+				ToolBox.showAlert(this.getActivity(), "Speech Result", message,
+						"Dismiss", null);
+
+		}
 	}
 }

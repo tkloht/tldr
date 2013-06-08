@@ -14,5 +14,6 @@
     <string name="menu_map">Map</string>
     <string name="menu_community">Community</string>
     <string name="menu_tasks">Tasks</string>
+    <string name="menu_stt">Speech To Text</string>
 
 </resources>
