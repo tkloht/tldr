@@ -7,7 +7,7 @@ public abstract class BaseDatastore {
 	 */
 	public final static int REQUEST_USERINFO_REGISTER = 0;
 	public final static int REQUEST_USERINFO_NEARBYUSERS = 1;
-	
+	public final static int REQUEST_TASK_FETCHNEARBY=2;
 	public final static int REQUEST_TASK_CREATEFAKETASKS = 999;
 	protected DatastoreResultHandler context;
 	

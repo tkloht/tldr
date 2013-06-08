@@ -2,8 +2,6 @@ package com.tldr;
 
 import java.util.ArrayList;
 
-import com.tldr.tools.ToolBox;
-
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -11,18 +9,21 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 
+import com.auth.AccountHelper;
+import com.datastore.TaskDatastore;
+
 public class HomeActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 	private final static int SPEECH_REQUEST_CODE = 123;
 	private int currentMenu=R.id.menu_map;
 	private FragmentCommunicator currentFragment;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,8 @@ public class HomeActivity extends FragmentActivity implements
 		transaction = fm.beginTransaction();
 		transaction.replace(R.id.homeActivity, fragment);
 		transaction.commit();
+		
+		
 	}
 
 	@Override

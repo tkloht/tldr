@@ -1,6 +1,7 @@
 package com.tldr;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -14,7 +15,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 
+import com.auth.AccountHelper;
+import com.datastore.BaseDatastore;
+import com.datastore.DatastoreResultHandler;
+import com.datastore.TaskDatastore;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,10 +32,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
 
 public class MapFragment extends Fragment implements LocationListener,
-		FragmentCommunicator {
+		FragmentCommunicator, DatastoreResultHandler {
 
 	private MapView mMapView;
 	private GoogleMap mMap;
@@ -36,6 +44,7 @@ public class MapFragment extends Fragment implements LocationListener,
 	private OnLocationChangedListener mListener;
 	private LocationManager locationManager;
 	private Location lastknown = null;
+	private TaskDatastore taskDatastore;
 
 	private List<Marker> markers;
 	private final static int NUM_MARKERS = 10;
@@ -47,6 +56,8 @@ public class MapFragment extends Fragment implements LocationListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		AccountHelper auth = new AccountHelper(getActivity());
+		taskDatastore = new TaskDatastore(this, auth.getCredential());
 		View v = new View(getActivity());
 		v = inflater.inflate(R.layout.map_layout, container, false);
 
@@ -93,7 +104,6 @@ public class MapFragment extends Fragment implements LocationListener,
 	// DemoCode
 	private void generateMarkers(Location location) {
 		if (location != null) {
-			markers = new ArrayList<Marker>();
 			LatLng newPos;
 			Random rand = new Random();
 			for (int i = 0; i <= NUM_MARKERS; i++) {
@@ -154,9 +164,12 @@ public class MapFragment extends Fragment implements LocationListener,
 	private void setUpMap() {
 		mMap.setMyLocationEnabled(true);
 		if (lastknown != null) {
-			generateMarkers(lastknown);
+//			generateMarkers(lastknown);
 			flyTo(lastknown);
 		}
+		markers = new ArrayList<Marker>();
+		taskDatastore.getNearbyTasks();
+
 	}
 
 	private void flyTo(Location location) {
@@ -231,6 +244,23 @@ public class MapFragment extends Fragment implements LocationListener,
 				ToolBox.showAlert(this.getActivity(), "Speech Result", message,
 						"Dismiss", null);
 
+		}
+	}
+
+	@Override
+	public void handleRequestResult(int requestId, Object result) {
+		// TODO Auto-generated method stub
+		if(requestId==BaseDatastore.REQUEST_TASK_FETCHNEARBY){
+			List<Task> tasks= (List<Task>) result;
+			for(Task t:tasks)
+			{
+				Marker newMarker = mMap.addMarker(new MarkerOptions()
+				.position(new LatLng(t.getGeoLat(), t.getGeoLon()))
+				.title(t.getTitle())
+				.snippet((t.getDescription().length()<30?t.getDescription():t.getDescription().substring(0, 29)+".."))
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.target)));
+		this.markers.add(newMarker);			}
 		}
 	}
 }

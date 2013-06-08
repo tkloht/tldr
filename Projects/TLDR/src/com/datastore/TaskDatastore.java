@@ -8,8 +8,9 @@ import android.util.Log;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
-import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
+import com.tldr.com.tldr.userinfoendpoint.model.CollectionResponseUserInfo;
 import com.tldr.taskendpoint.Taskendpoint;
+import com.tldr.taskendpoint.model.CollectionResponseTask;
 import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.CloudEndpointUtils;
 
@@ -27,6 +28,10 @@ public class TaskDatastore extends BaseDatastore {
 	
 	public void createFakeTasks(){
 		new CreateFakeTasksTask().execute();
+	}
+	
+	public void getNearbyTasks(){
+		new GetNearbyTasksTask().execute();
 	}
 	
 	private class CreateFakeTasksTask extends
@@ -47,6 +52,29 @@ public class TaskDatastore extends BaseDatastore {
 
 	}
 
+}
+	
+	private class GetNearbyTasksTask extends
+	AsyncTask<Void, Void, CollectionResponseTask> {
+	@Override
+	protected CollectionResponseTask doInBackground(Void... v) {
+		CollectionResponseTask registeredUser = null;
+		try {
+			registeredUser = service.listTask()
+					.execute();
+			return registeredUser;
+		} catch (IOException e) {
+			Log.d("TLDR", e.getMessage(), e);
+		}
+		return registeredUser;
+	}
+	
+	@Override
+	protected void onPostExecute(CollectionResponseTask tasks) {
+	
+			context.handleRequestResult(REQUEST_TASK_FETCHNEARBY, tasks.getItems());
+	
+	}
 }
 	
 

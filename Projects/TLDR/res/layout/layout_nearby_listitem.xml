@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+ 
+    <!-- Title Label -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dip"
+        android:paddingLeft="8dip"
+        android:paddingBottom="4dip"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/login_progress_signing_in"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textStyle="bold"
+         />
+     
+    <!-- description -->
+    <TextView android:id="@+id/description"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingLeft="8dip"
+        android:paddingBottom="6dip"
+        android:paddingRight="50dip"
+        android:fontFamily="sans-serif-light"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" 
+        android:layout_below="@+id/title"
+        android:textColor="?android:textColorSecondary"
+        />
+    <!-- distance -->
+    <TextView android:id="@+id/distance"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingLeft="8dip"
+        android:paddingBottom="6dip"
+        android:fontFamily="sans-serif-light"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" 
+        android:layout_alignParentRight="true"
+        android:textColor="?android:textColorSecondary"
+        />
+  
+</RelativeLayout>
