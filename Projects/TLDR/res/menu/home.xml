@@ -28,17 +28,17 @@
         android:icon="@android:drawable/ic_btn_speak_now" />"
     
     <item android:id="@+id/menu_map"
-          android:icon="@android:drawable/ic_menu_mapmode"
+          android:icon="@drawable/map"
           android:title="@string/menu_map"
           android:showAsAction="always" />
     
     <item android:id="@+id/menu_tasks"
-          android:icon="@drawable/ic_menu_clear_playlist"
+          android:icon="@drawable/tasks"
           android:title="@string/menu_tasks"
           android:showAsAction="always" />
     
     <item android:id="@+id/menu_community"
-          android:icon="@drawable/ic_menu_allfriends"
+          android:icon="@drawable/community"
           android:title="@string/menu_community"
           android:showAsAction="always" />
     

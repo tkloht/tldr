@@ -23,7 +23,7 @@ public class HomeActivity extends FragmentActivity implements
 	private final static int SPEECH_REQUEST_CODE = 123;
 	private int currentMenu=R.id.menu_map;
 	private FragmentCommunicator currentFragment;
-	
+	Menu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +45,14 @@ public class HomeActivity extends FragmentActivity implements
 		transaction.replace(R.id.homeActivity, fragment);
 		transaction.commit();
 		
-		
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.home, menu);
+		this.menu = menu;
+		menu.findItem(R.id.menu_map).setIcon(R.drawable.map_pressed);
 		return true;
 	}
 
@@ -64,6 +65,9 @@ public class HomeActivity extends FragmentActivity implements
 		Log.e("com.tldr.homeActivity", "menuitem selected: " + item.toString());
 		switch (item.getItemId()) {
 		case R.id.menu_map:
+			item.setIcon(R.drawable.map_pressed);
+			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
+			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 			fragment = new MapFragment();
 			fragment.setArguments(new Bundle());
 			currentFragment=(FragmentCommunicator) fragment;
@@ -73,6 +77,9 @@ public class HomeActivity extends FragmentActivity implements
 			currentMenu=item.getItemId();
 			break;
 		case R.id.menu_tasks:
+			item.setIcon(R.drawable.tasks_pressed);
+			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
+			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new TasksFragment();
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
@@ -81,6 +88,9 @@ public class HomeActivity extends FragmentActivity implements
 			currentMenu=item.getItemId();
 			break;
 		case R.id.menu_community:
+			item.setIcon(R.drawable.community_pressed);
+			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
+			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new CommunityFragment();
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
