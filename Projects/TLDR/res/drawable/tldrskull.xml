@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tldranimationskull" >
+
+    <item
+        android:drawable="@drawable/tldrani4"
+        android:duration="30"/>
+    <item
+        android:drawable="@drawable/tldrani5"
+        android:duration="30"/>
+    <item
+        android:drawable="@drawable/tldrani6"
+        android:duration="30"/>
+    <item
+        android:drawable="@drawable/tldrani7"
+        android:duration="30"/>
+    <item
+        android:drawable="@drawable/tldrani8"
+        android:duration="30"/>
+     <item
+        android:drawable="@drawable/tldrani9"
+        android:duration="30"/>
+     <item
+        android:drawable="@drawable/tldrani10"
+        android:duration="30"/>
+     <item
+        android:drawable="@drawable/tldrani11"
+        android:duration="30"/>
+     <item
+        android:drawable="@drawable/tldrani12"
+        android:duration="30"/>
+</animation-list>

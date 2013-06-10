@@ -6,6 +6,7 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
@@ -42,6 +44,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	private AccountHelper accountHelper;
 	private UserInfoDatastore userInfoDatastore;
 	private TaskDatastore taskDatastore;
+	private AnimationDrawable anim;
 
 	static final int VIEW_MODE_LOGIN_PROGRESS = 0;
 	static final int VIEW_MODE_ERROR = 1;
@@ -53,6 +56,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		animationSkull();
 
 		mUsernameText = (EditText) findViewById(R.id.reg_username);
 		mTryAgainButton = (Button) findViewById(R.id.login_retry_button);
@@ -118,6 +122,19 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			afterAccountSelection();
 		}
 	}
+	
+	private void animationSkull() {
+        ImageView img = (ImageView)findViewById(R.id.tldr_skull_anim);
+        anim = (AnimationDrawable)img.getDrawable();
+        img.post(run);
+    }
+
+    Runnable run = new Runnable() {
+        @Override
+        public void run() {
+            anim.start();
+        }
+    };
 
 	private void showProgress(final int mode) {
 		currentMode = mode;
@@ -172,6 +189,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			}
 			showProgress(VIEW_MODE_REGISTER);
 		} else {
+			anim.stop();
 			Intent intent = new Intent(this, HomeActivity.class);
 			startActivity(intent);
 			finish();

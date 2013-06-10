@@ -1,139 +1,170 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity" >
-	<LinearLayout
-	    android:id="@+id/login_status"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:gravity="center_horizontal"
-	    android:orientation="vertical">
-		        <ProgressBar
-		            style="?android:attr/progressBarStyleLarge"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_marginBottom="8dp" />
-		
-		        <TextView
-		            android:id="@+id/login_status_message"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_marginBottom="16dp"
-		            android:fontFamily="sans-serif-light"
-		            android:text="@string/login_progress_signing_in"
-		            android:textAppearance="?android:attr/textAppearanceMedium" />
-	
-	</LinearLayout>
-  	<!--  Progress Bar -->
-	<LinearLayout 
-	    android:id="@+id/register_status"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:gravity="center_horizontal"
-	    android:orientation="vertical"
-	    android:visibility="gone">
-		  <ProgressBar
-		      style="?android:attr/progressBarStyleLarge"
-		      android:layout_width="wrap_content"
-		      android:layout_height="wrap_content"
-		      android:layout_marginBottom="8dp" />
-	
-		  <TextView
-		      android:id="@+id/register_status_message"
-		      android:layout_width="wrap_content"
-		      android:layout_height="wrap_content"
-		      android:layout_marginBottom="16dp"
-		      android:fontFamily="sans-serif-light"
-		      android:text="@string/register_progress_signing_in"
-		      android:textAppearance="?android:attr/textAppearanceMedium" />
-	</LinearLayout>
-  <!--  Prograss Bar End --> 
-	<LinearLayout
-	    android:id="@+id/login_error"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:gravity="center_horizontal"
-	    android:orientation="vertical"
-	    android:visibility="gone">
-		        <TextView 
-		            android:id="@+id/login_error_message"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="@string/login_error_signing_in"
-		            android:fontFamily="sans-serif-light"
-		            android:textAppearance="?android:attr/textAppearanceMedium"/>
-		        <Button 
-		            android:id="@+id/login_retry_button"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_marginBottom="16dp"
-		            android:text="@string/button_login_retry"/>
-	</LinearLayout>
-<ScrollView
-  android:id="@+id/login_form"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:fillViewport="true"
-  android:visibility="gone">
-  <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" android:background="#fff">
 
-	    <!--  Header Starts -->
-		<LinearLayout android:id="@+id/header"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:paddingTop="5dip"
-		    android:paddingBottom="5dip">
-		    <ImageView android:src="@drawable/logo"
-		        android:contentDescription="@string/description_logo"
-	            android:layout_width="wrap_content"
-	            android:layout_height="50dp"
-	            android:layout_marginLeft="10dip"
-	            android:scaleType="fitStart"/>
-		</LinearLayout>
-	    <!--  Header Ends -->
-        <!-- Footer Start -->
-        <LinearLayout android:id="@+id/footer"
+    <LinearLayout
+        android:id="@+id/login_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <!-- <ProgressBar -->
+        <!-- style="?android:attr/progressBarStyleLarge" -->
+        <!-- android:layout_width="wrap_content" -->
+        <!-- android:layout_height="wrap_content" -->
+        <!-- android:layout_marginBottom="8dp" /> -->
+
+        <ImageView
+            android:id="@+id/tldr_skull_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:src="@drawable/tldrskull" />
+
+        <TextView
+            android:id="@+id/login_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/login_progress_signing_in"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+    <!-- Progress Bar -->
+
+    <LinearLayout
+        android:id="@+id/register_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/register_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/register_progress_signing_in"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+    <!-- Prograss Bar End -->
+
+    <LinearLayout
+        android:id="@+id/login_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/login_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/login_error_signing_in"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/login_retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/button_login_retry" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        android:visibility="gone" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff" >
+
+            <!-- Header Starts -->
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dip"
+                    android:contentDescription="@string/description_logo"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/logo" />
+            </LinearLayout>
+            <!-- Header Ends -->
+            <!-- Footer Start -->
+
+            <LinearLayout
+                android:id="@+id/footer"
                 android:layout_width="fill_parent"
                 android:layout_height="90dip"
-                android:background="#ffffcc"
                 android:layout_alignParentBottom="true"
-                android:orientation="horizontal">
-        </LinearLayout>
-        <!-- Footer Ends -->
- 
-        <!-- Registration Form -->
-        <LinearLayout
-          android:orientation="vertical"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:padding="10dip"
-          android:layout_below="@id/header">
-          <!-- Full Name Label -->
-          <TextView android:layout_width="fill_parent"
+                android:background="#ffffcc"
+                android:orientation="horizontal" >
+            </LinearLayout>
+            <!-- Footer Ends -->
+
+
+            <!-- Registration Form -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#372c24"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="This is the first time you logged into TLDR! Please choose your Username which will be used in the Game!"/>
-          <EditText android:id="@+id/reg_username"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
-                android:singleLine="true"
-                android:layout_marginBottom="20dip"
-                android:hint="Username"/>
-          <!-- Register Button -->
-          <Button android:id="@+id/btnRegister"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
-                android:text="Register New Account"/>
- 
-        </LinearLayout>
-        <!-- Registration Form Ends -->
-  </RelativeLayout>
-</ScrollView>
+                android:layout_below="@id/header"
+                android:orientation="vertical"
+                android:padding="10dip" >
+
+                <!-- Full Name Label -->
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="This is the first time you logged into TLDR! Please choose your Username which will be used in the Game!"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#372c24" />
+
+                <EditText
+                    android:id="@+id/reg_username"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dip"
+                    android:layout_marginTop="5dip"
+                    android:hint="Username"
+                    android:singleLine="true" />
+                <!-- Register Button -->
+
+                <Button
+                    android:id="@+id/btnRegister"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:text="Register New Account" />
+            </LinearLayout>
+            <!-- Registration Form Ends -->
+        </RelativeLayout>
+    </ScrollView>
+
 </merge>

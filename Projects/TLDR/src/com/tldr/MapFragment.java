@@ -125,13 +125,13 @@ public class MapFragment extends Fragment implements LocationListener,
 	private void acceptAllNearbyTasks() {
 		for (Marker m : markers) {
 			m.setIcon(BitmapDescriptorFactory
-					.fromResource(R.drawable.target_marked));
+					.fromResource(R.drawable.tldr_target_sm));
 		}
 	}
 
 	private void rejectAllNearbyTasks() {
 		for (Marker m : markers) {
-			m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.target));
+			m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.tldr_task_sm));
 		}
 	}
 
@@ -257,7 +257,7 @@ public class MapFragment extends Fragment implements LocationListener,
 				.title(t.getTitle())
 				.snippet((t.getDescription().length()<30?t.getDescription():t.getDescription().substring(0, 29)+".."))
 				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.target)));
+						.fromResource(R.drawable.tldr_task_sm)));
 		this.markers.add(newMarker);			}
 		}
 	}
