@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.location.Location;
@@ -86,9 +87,15 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 	public void handleRequestResult(int requestId, Object result) {
 		// TODO Auto-generated method stub
 		if(requestId==BaseDatastore.REQUEST_TASK_FETCHNEARBY){
-			LocationManager locationManager = (LocationManager) getActivity().getSystemService(
-					Context.LOCATION_SERVICE);
-			Location current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			Location current = GlobalData.getLastknownPosition();
+			Activity activity = getActivity();
+			if(activity !=null){ //TODO warum wird activity null? beim rotieren.
+				LocationManager locationManager = (LocationManager) activity.getSystemService(
+						Context.LOCATION_SERVICE);
+				if(locationManager!= null){
+					current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				}
+			}
 			List<Task> tasks=(List<Task>) result;
 			List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 			for(Task t:tasks)
@@ -103,13 +110,14 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 				newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+(dist/1000)+"km"));
 				list.add(newMap);
 			}
-			
-	        ListAdapter adapter = new SimpleAdapter(
-	                getActivity(), list,
-	                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE },
-	                new int[] { R.id.title, R.id.description, R.id.distance});
-	        // updating listview
-	        nearbyListView.setAdapter(adapter);
+			if(activity !=null){
+		        ListAdapter adapter = new SimpleAdapter(
+		        		activity, list,
+		                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE },
+		                new int[] { R.id.title, R.id.description, R.id.distance});
+		        // updating listview
+		        nearbyListView.setAdapter(adapter);
+			}
 		}
 	}
 	

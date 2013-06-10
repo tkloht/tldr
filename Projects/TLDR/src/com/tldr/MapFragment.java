@@ -1,7 +1,6 @@
 package com.tldr;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -15,8 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
-import android.widget.SimpleAdapter;
 
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
@@ -43,7 +40,7 @@ public class MapFragment extends Fragment implements LocationListener,
 	private Bundle mBundle;
 	private OnLocationChangedListener mListener;
 	private LocationManager locationManager;
-	private Location lastknown = null;
+
 	private TaskDatastore taskDatastore;
 
 	private List<Marker> markers;
@@ -79,13 +76,13 @@ public class MapFragment extends Fragment implements LocationListener,
 			if (gpsIsEnabled) {
 				locationManager.requestLocationUpdates(
 						LocationManager.GPS_PROVIDER, 5000L, 10F, this);
-				lastknown = locationManager
-						.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				GlobalData.setLastknownPosition(locationManager
+						.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 			} else if (networkIsEnabled) {
 				locationManager.requestLocationUpdates(
 						LocationManager.NETWORK_PROVIDER, 5000L, 10F, this);
-				lastknown = locationManager
-						.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+				GlobalData.setLastknownPosition( locationManager
+						.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
 			} else {
 				// Show an error dialog that GPS is disabled...
 			}
@@ -163,9 +160,9 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	private void setUpMap() {
 		mMap.setMyLocationEnabled(true);
-		if (lastknown != null) {
+		if (GlobalData.getLastknownPosition() != null) {
 //			generateMarkers(lastknown);
-			flyTo(lastknown);
+			flyTo(GlobalData.getLastknownPosition());
 		}
 		markers = new ArrayList<Marker>();
 		taskDatastore.getNearbyTasks();
@@ -200,7 +197,8 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	@Override
 	public void onLocationChanged(Location location) {
-		flyTo(location);
+		//flyTo(location);
+		GlobalData.setLastknownPosition(location);
 	}
 
 	@Override
