@@ -19,6 +19,7 @@ import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
 import com.datastore.DatastoreResultHandler;
 import com.datastore.TaskDatastore;
+import com.datastore.UserInfoDatastore;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
 
@@ -42,8 +44,11 @@ public class MapFragment extends Fragment implements LocationListener,
 	private LocationManager locationManager;
 
 	private TaskDatastore taskDatastore;
+	private UserInfoDatastore userDatastore;
+	private AccountHelper auth;
 
-	private List<Marker> markers;
+	private List<Marker> taskMarkers;
+	private List<Marker> userMarkers;
 	private final static int NUM_MARKERS = 10;
 
 	public void initialize() {
@@ -53,8 +58,9 @@ public class MapFragment extends Fragment implements LocationListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		AccountHelper auth = new AccountHelper(getActivity());
+		auth = new AccountHelper(getActivity());
 		taskDatastore = new TaskDatastore(this, auth.getCredential());
+		userDatastore = new UserInfoDatastore(this, auth.getCredential());
 		View v = new View(getActivity());
 		v = inflater.inflate(R.layout.map_layout, container, false);
 
@@ -81,8 +87,9 @@ public class MapFragment extends Fragment implements LocationListener,
 			} else if (networkIsEnabled) {
 				locationManager.requestLocationUpdates(
 						LocationManager.NETWORK_PROVIDER, 5000L, 10F, this);
-				GlobalData.setLastknownPosition( locationManager
-						.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
+				GlobalData
+						.setLastknownPosition(locationManager
+								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
 			} else {
 				// Show an error dialog that GPS is disabled...
 			}
@@ -94,7 +101,15 @@ public class MapFragment extends Fragment implements LocationListener,
 		mMapView = (MapView) v.findViewById(R.id.map);
 		mMapView.onCreate(mBundle);
 		setUpMapIfNeeded(v);
-
+		Location lastKnown = GlobalData.getLastknownPosition();
+		if (lastKnown != null) {
+			UserInfo current = GlobalData.getCurrentUser();
+			if (current != null) {
+				userDatastore.updateUser(current.setGeoLat(
+						lastKnown.getLatitude()).setGeoLon(
+						lastKnown.getLongitude()));
+			}
+		}
 		return v;
 	}
 
@@ -116,27 +131,28 @@ public class MapFragment extends Fragment implements LocationListener,
 						.snippet("Quest " + i + " ist super")
 						.icon(BitmapDescriptorFactory
 								.fromResource(R.drawable.target)));
-				this.markers.add(newMarker);
+				this.taskMarkers.add(newMarker);
 			}
 		}
 
 	}
 
 	private void acceptAllNearbyTasks() {
-		for (Marker m : markers) {
+		for (Marker m : taskMarkers) {
 			m.setIcon(BitmapDescriptorFactory
 					.fromResource(R.drawable.tldr_target_sm));
 		}
 	}
 
 	private void rejectAllNearbyTasks() {
-		for (Marker m : markers) {
-			m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.tldr_task_sm));
+		for (Marker m : taskMarkers) {
+			m.setIcon(BitmapDescriptorFactory
+					.fromResource(R.drawable.tldr_task_sm));
 		}
 	}
 
 	private void deleteAllTasks() {
-		for (Marker m : markers) {
+		for (Marker m : taskMarkers) {
 			m.remove();
 		}
 	}
@@ -161,11 +177,13 @@ public class MapFragment extends Fragment implements LocationListener,
 	private void setUpMap() {
 		mMap.setMyLocationEnabled(true);
 		if (GlobalData.getLastknownPosition() != null) {
-//			generateMarkers(lastknown);
+			// generateMarkers(lastknown);
 			flyTo(GlobalData.getLastknownPosition());
 		}
-		markers = new ArrayList<Marker>();
+		taskMarkers = new ArrayList<Marker>();
+		userMarkers = new ArrayList<Marker>();
 		taskDatastore.getNearbyTasks();
+		userDatastore.getNearbyUsers();
 
 	}
 
@@ -197,8 +215,14 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	@Override
 	public void onLocationChanged(Location location) {
-		//flyTo(location);
+		// flyTo(location);
 		GlobalData.setLastknownPosition(location);
+		if (GlobalData.getCurrentUser() != null) {
+			userDatastore.updateUser(GlobalData.getCurrentUser()
+					.setGeoLon(location.getLongitude())
+					.setGeoLat(location.getLatitude()));
+		}
+
 	}
 
 	@Override
@@ -227,9 +251,12 @@ public class MapFragment extends Fragment implements LocationListener,
 			Log.d("TLDR", "Speech Input: " + message);
 			message = message.toLowerCase();
 			if (message.contains("all")
-					&& (message.contains("tasks") || message.contains("task") ||message.contains("alle") || message
-							.contains("missions"))) {
-				if ((message.contains("accept") ||message.contains("akzeptieren") || message.contains("except"))) {
+					&& (message.contains("tasks") || message.contains("task")
+							|| message.contains("alle") || message
+								.contains("missions"))) {
+				if ((message.contains("accept")
+						|| message.contains("akzeptieren") || message
+							.contains("except"))) {
 					acceptAllNearbyTasks();
 				} else if (message.contains("reject")
 						|| message.contains("decline")) {
@@ -248,17 +275,44 @@ public class MapFragment extends Fragment implements LocationListener,
 	@Override
 	public void handleRequestResult(int requestId, Object result) {
 		// TODO Auto-generated method stub
-		if(requestId==BaseDatastore.REQUEST_TASK_FETCHNEARBY){
-			List<Task> tasks= (List<Task>) result;
-			for(Task t:tasks)
-			{
-				Marker newMarker = mMap.addMarker(new MarkerOptions()
-				.position(new LatLng(t.getGeoLat(), t.getGeoLon()))
-				.title(t.getTitle())
-				.snippet((t.getDescription().length()<30?t.getDescription():t.getDescription().substring(0, 29)+".."))
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.tldr_task_sm)));
-		this.markers.add(newMarker);			}
+		if (requestId == BaseDatastore.REQUEST_TASK_FETCHNEARBY) {
+			List<Task> tasks = (List<Task>) result;
+			if (tasks != null) {
+				for (Task t : tasks) {
+					Marker newMarker = mMap.addMarker(new MarkerOptions()
+							.position(new LatLng(t.getGeoLat(), t.getGeoLon()))
+							.title(t.getTitle())
+							.snippet(
+									(t.getDescription().length() < 30 ? t
+											.getDescription() : t
+											.getDescription().substring(0, 29)
+											+ ".."))
+							.icon(BitmapDescriptorFactory
+									.fromResource(R.drawable.tldr_task_sm)));
+					taskMarkers.add(newMarker);
+				}
+			}
+		}
+		if (requestId == BaseDatastore.REQUEST_USERINFO_UPDATEUSER) {
+			UserInfo userResult = (UserInfo) result;
+			if (userResult != null) {
+				GlobalData.setCurrentUser(userResult);
+			}
+		}
+		if(requestId==BaseDatastore.REQUEST_USERINFO_NEARBYUSERS) {
+			List<UserInfo> users = (List<UserInfo>) result;
+			if(users!=null){
+				for(UserInfo u: users){
+					if(u.getId()!=GlobalData.getCurrentUser().getId()&&u.getGeoLat()!=0.0 && u.getGeoLon() !=0.0){
+						Marker newMarker = mMap.addMarker(new MarkerOptions()
+						.position(new LatLng(u.getGeoLat(), u.getGeoLon()))
+						.title(u.getUsername())
+						.icon(BitmapDescriptorFactory
+								.fromResource(R.drawable.agent)));
+						userMarkers.add(newMarker);
+					}
+				}
+			}
 		}
 	}
 }

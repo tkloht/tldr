@@ -174,7 +174,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 
 	private void afterAccountSelection() {
 		userInfoDatastore = new UserInfoDatastore(
-				accountHelper.getCredential(), this);
+				this, accountHelper.getCredential());
 		taskDatastore = new TaskDatastore(this, accountHelper.getCredential());
 		userInfoDatastore.registerUser(new UserInfo().setEmail(accountHelper
 				.getCredential().getSelectedAccountName()));
@@ -262,9 +262,8 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			UserInfo registeredUser = (UserInfo) result;
 			if (registeredUser != null) {
 				user = registeredUser;
-				Log.d("TLDR",
-						"User Sign In Successfull.. testing nearbyUserDatastore Method...");
-				userInfoDatastore.getNearbyUsers();
+				GlobalData.setCurrentUser(user);
+				showLoginAlert();
 			} else {
 				Log.w("TLDR", "No User was registered due to an Error!");
 				showProgress(VIEW_MODE_ERROR);
@@ -275,7 +274,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			for (UserInfo ui : nearbyUsers) {
 				Log.d("TLDR", ui.getEmail() + " " + ui.getUsername());
 			}
-			showLoginAlert();
+			
 			break;
 		}
 

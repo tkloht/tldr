@@ -35,7 +35,7 @@ public class UserInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "user_info_seq_gen")
 	@SequenceGenerator(name = "user_info_seq_gen", sequenceName = "USER_INFO_SEQ")
-	private Long user_id;
+	private Long id;
 
 	@Persistent
 	private String username;
@@ -74,7 +74,7 @@ public class UserInfo {
 	}
 
 	public Long getId() {
-		return user_id;
+		return id;
 	}
 
 	public void setEmail(String email) {

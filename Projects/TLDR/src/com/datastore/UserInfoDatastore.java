@@ -18,7 +18,7 @@ public class UserInfoDatastore extends BaseDatastore{
 	private Userinfoendpoint service;
 
 	
-	public UserInfoDatastore(GoogleAccountCredential credential, DatastoreResultHandler context) {
+	public UserInfoDatastore(DatastoreResultHandler context, GoogleAccountCredential credential) {
 		super(context);
 		Userinfoendpoint.Builder builder = new Userinfoendpoint.Builder(
 				AndroidHttp.newCompatibleTransport(), new GsonFactory(),
@@ -34,7 +34,32 @@ public class UserInfoDatastore extends BaseDatastore{
 		new GetNearbyUsersTask().execute();
 	}
 	
+	public void updateUser(UserInfo user) {
+		new UpdateUserInfoTask().execute(user);
+	}
 	
+	private class UpdateUserInfoTask extends
+	AsyncTask<UserInfo, UserInfo, UserInfo> {
+	@Override
+	protected UserInfo doInBackground(UserInfo... userinfo) {
+		UserInfo registeredUser = null;
+		try {
+			registeredUser = service.updateUserInfo((userinfo[0]))
+					.execute();
+			return registeredUser;
+		} catch (IOException e) {
+			Log.d("TLDR", e.getMessage(), e);
+		}
+		return registeredUser;
+	}
+	
+	@Override
+	protected void onPostExecute(UserInfo registeredUser) {
+	
+			context.handleRequestResult(REQUEST_USERINFO_UPDATEUSER, registeredUser);
+	
+	}
+}	
 	
 	private class RegisterUserInfoTask extends
 	AsyncTask<UserInfo, UserInfo, UserInfo> {

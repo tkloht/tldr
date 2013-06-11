@@ -161,7 +161,8 @@ public class UserInfoEndpoint {
 	 * @return The updated entity.
 	 */
 	@ApiMethod(name = "updateUserInfo")
-	public UserInfo updateUserInfo(UserInfo userinfo) {
+	public UserInfo updateUserInfo(UserInfo userinfo, User user) throws OAuthRequestException{
+		if(user!=null){
 		EntityManager mgr = getEntityManager();
 		try {
 			if (!containsUserInfo(userinfo)) {
@@ -172,6 +173,9 @@ public class UserInfoEndpoint {
 			mgr.close();
 		}
 		return userinfo;
+		}
+		else
+			throw new OAuthRequestException("Not authorized!");
 	}
 
 	/**
@@ -220,6 +224,7 @@ public class UserInfoEndpoint {
 
 		return !contains;		
 	}
+	
 	private boolean containsUserInfo(UserInfo userinfo) {
 		EntityManager mgr = getEntityManager();
 		boolean contains = false;
