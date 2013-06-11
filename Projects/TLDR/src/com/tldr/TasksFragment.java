@@ -4,6 +4,7 @@ package com.tldr;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -30,6 +31,8 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 	
 	private TabHost mTabHost;
 	private ListView nearbyListView;
+	private ListView acceptedListView;
+	private ListView completedListView;
 	private int currentView;
 	private final static String TAG_TITLE="title";
 	private final static String TAG_DESCRIPTION="desc";
@@ -72,12 +75,48 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 		super.onViewCreated(view, savedInstanceState);
 		
 		nearbyListView=(ListView) view.findViewById(R.id.list_nearby_tasks);
+		completedListView=(ListView) view.findViewById(R.id.list_completed_tasks);
+		acceptedListView=(ListView) view.findViewById(R.id.list_accepted_tasks);
 		currentView=R.id.list_nearby_tasks;
+		
+		
+		// FAKE completed data
+		Random rand = new Random();
+		String[] titles = {"Waffenschmuggeln", "Speisung der Defiance"};
+		String[] descriptions = {"Hole eine Lieferung von der Post ab und bringe sie dem Agenten!", "Finde heraus welches Restaurant die besten Preise bietet!"};
+		List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+		for (int i = 0; i < titles.length; i++){
+			HashMap<String, String> newMap= new HashMap<String, String>();
+			newMap.put(TAG_TITLE, titles[i]);
+			newMap.put(TAG_DESCRIPTION, descriptions[i]);
+			newMap.put(TAG_DISTANCE, "~"+(rand.nextInt(400)+50)+"km");
+			list.add(newMap);
+		}
+		ListAdapter adapter = new SimpleAdapter(getActivity(), list,
+                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE }, 
+                new int[] { R.id.title, R.id.description, R.id.distance});
+		completedListView.setAdapter(adapter);
+
+		
+		// FAKE accepted data
+		String[] titles2 = {"Wirtschaftsspionage", "Verfolgungsjagt"};
+		String[] descriptions2 = {"Finde heraus welche Benzinpreise der Feind verlangt!", "Verfolge die Route eines feindlichen Busses!"};
+		List<HashMap<String, String>> list2 = new ArrayList<HashMap<String, String>>();
+		for (int i = 0; i < titles.length; i++){
+			HashMap<String, String> newMap= new HashMap<String, String>();
+			newMap.put(TAG_TITLE, titles2[i]);
+			newMap.put(TAG_DESCRIPTION, descriptions2[i]);
+			newMap.put(TAG_DISTANCE, "~"+(rand.nextInt(400)+50)+"km");
+			list2.add(newMap);
+		}
+		adapter = new SimpleAdapter(getActivity(), list2,
+				R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE }, 
+				new int[] { R.id.title, R.id.description, R.id.distance});
+		acceptedListView.setAdapter(adapter);
+		
+		
         // Create a progress bar to display while the list loads
 		taskDatastore.getNearbyTasks();
-
-
-
         
 	}
 

@@ -3,6 +3,7 @@ package com.tldr;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import com.auth.AccountHelper;
 import com.datastore.TaskDatastore;
@@ -25,15 +26,19 @@ import android.widget.TabHost;
 import com.datastore.BaseDatastore;
 import com.datastore.DatastoreResultHandler;
 import com.datastore.UserInfoDatastore;
+import com.google.android.gms.maps.model.LatLng;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 
 public class CommunityFragment extends Fragment implements DatastoreResultHandler{
 	
 	private TabHost mTabHost;	
 	private ListView nearbyFriendsView;
+	private ListView friendsView;
+	private ListView highscoreView;
 	private int currentView;
 	private final static String TAG_NAME="name";
 	private final static String TAG_DISTANCE="distance";
+	private final static String TAG_RANK="rank";
 	private UserInfoDatastore userInfoDatastore;
 	
 	public void initialize(){
@@ -74,7 +79,42 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 		super.onViewCreated(view, savedInstanceState);
 		
 		nearbyFriendsView=(ListView) view.findViewById(R.id.list_nearby_people);
+		highscoreView=(ListView) view.findViewById(R.id.list_highscore);
+		friendsView=(ListView) view.findViewById(R.id.list_friends);
 		currentView=R.id.list_nearby_people;
+		
+		// FAKE Highscore data
+		Random rand = new Random();
+		String[] namen = {"Oscar", "Jim", "Michael", "Ryan", "Stanley"};
+		List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+		for (int i = 0; i < namen.length; i++){
+			HashMap<String, String> newMap= new HashMap<String, String>();
+			newMap.put(TAG_RANK, (i+1)+".");
+			newMap.put(TAG_NAME, namen[i]);
+			newMap.put(TAG_DISTANCE, "~"+(rand.nextInt(400)+50)+"km");
+			list.add(newMap);
+		}
+		ListAdapter adapter = new SimpleAdapter(getActivity(), list,
+                R.layout.layout_highscore_listitem, new String[] { TAG_RANK, TAG_NAME, TAG_DISTANCE }, 
+                new int[] { R.id.rank, R.id.name, R.id.distance});
+		highscoreView.setAdapter(adapter);
+
+		
+		// FAKE Friends data
+		String[] namen2 = {"Pam", "Toby", "Kelly", "Meridith", "Dwight"};
+		List<HashMap<String, String>> list2 = new ArrayList<HashMap<String, String>>();
+		for (int i = 0; i < namen2.length; i++){
+			HashMap<String, String> newMap= new HashMap<String, String>();
+			newMap.put(TAG_NAME, namen2[i]);
+			newMap.put(TAG_DISTANCE, "~"+(rand.nextInt(400)+50)+"km");
+			list2.add(newMap);
+		}
+		adapter = new SimpleAdapter(getActivity(), list2,
+				R.layout.layout_nearby_people_listitem, new String[] { TAG_NAME, TAG_DISTANCE }, 
+				new int[] { R.id.name, R.id.distance});
+		friendsView.setAdapter(adapter);
+
+		
         // Create a progress bar to display while the list loads
 		userInfoDatastore.getNearbyUsers();
 	}
@@ -116,7 +156,7 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 		        ListAdapter adapter = new SimpleAdapter(
 		        		activity, list,
 		                R.layout.layout_nearby_people_listitem, new String[] { TAG_NAME, TAG_DISTANCE },
-		                new int[] { R.id.title, R.id.distance});
+		                new int[] { R.id.name, R.id.distance});
 		        // updating listview
 		        nearbyFriendsView.setAdapter(adapter);
 			}

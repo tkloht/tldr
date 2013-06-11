@@ -3,21 +3,40 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
- 
-    <!-- Title Label -->
+ <LinearLayout 
+     android:orientation="horizontal"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content">
+     
+    <!-- rank -->
     <TextView
-        android:id="@+id/name"
-        android:layout_width="fill_parent"
+        android:id="@+id/rank"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dip"
         android:paddingLeft="8dip"
         android:paddingBottom="4dip"
         android:fontFamily="sans-serif-light"
-        android:text="@string/login_progress_signing_in"
+        android:text="rank"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:textStyle="bold"
          />
-
+     
+    <!-- name -->
+    <TextView android:id="@+id/name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingLeft="8dip"
+        android:text="name"
+        android:paddingBottom="6dip"
+        android:paddingRight="50dip"
+        android:fontFamily="sans-serif-light"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" 
+        android:textColor="?android:textColorSecondary"
+        />
+ </LinearLayout>
+    
+    <!-- distance -->
     <TextView android:id="@+id/distance"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -27,6 +46,7 @@
         android:textAppearance="?android:attr/textAppearanceListItemSmall" 
         android:layout_alignParentRight="true"
         android:textColor="?android:textColorSecondary"
+        android:text="distance"
         />
   
 </RelativeLayout>
