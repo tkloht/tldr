@@ -94,6 +94,9 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 						Context.LOCATION_SERVICE);
 				if(locationManager!= null){
 					current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+					if(current == null){
+						current = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+					}
 				}
 			}
 			List<Task> tasks=(List<Task>) result;
@@ -105,7 +108,9 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 				newMap.put(TAG_DESCRIPTION, (t.getDescription().length()<500?t.getDescription():t.getDescription().substring(0, 49)+".."));
 				float[] distance = new float[]{0.0f};
 				Log.d("TLDR", "Task Position: "+t.getGeoLat()+" "+t.getGeoLon());
-				Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
+				if(current!=null){
+					Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
+				}
 				int dist = Math.round(distance[0]);
 				newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+(dist/1000)+"km"));
 				list.add(newMap);
