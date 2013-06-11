@@ -204,6 +204,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			}
 			showProgress(VIEW_MODE_REGISTER);
 		} else {
+			registerGCM();
 			anim.stop();
 			Intent intent = new Intent(this, HomeActivity.class);
 			startActivity(intent);
@@ -244,7 +245,6 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 						AccountManager.KEY_ACCOUNT_NAME);
 				if (accountName != null) {
 					accountHelper.setAccountName(accountName);
-					registerGCM();
 					// User is authorized.
 					afterAccountSelection();
 
