@@ -227,9 +227,9 @@ public class MapFragment extends Fragment implements LocationListener,
 			Log.d("TLDR", "Speech Input: " + message);
 			message = message.toLowerCase();
 			if (message.contains("all")
-					&& (message.contains("tasks") || message.contains("task") || message
+					&& (message.contains("tasks") || message.contains("task") ||message.contains("alle") || message
 							.contains("missions"))) {
-				if ((message.contains("accept") || message.contains("except"))) {
+				if ((message.contains("accept") ||message.contains("akzeptieren") || message.contains("except"))) {
 					acceptAllNearbyTasks();
 				} else if (message.contains("reject")
 						|| message.contains("decline")) {

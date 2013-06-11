@@ -53,7 +53,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.tldr.tools.GCMIntentService" />
+        <service android:name=".GCMIntentService" android:enabled="true"/>
 
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
@@ -81,7 +81,8 @@
         </activity>
         <activity
             android:name="com.tldr.HomeActivity"
-            android:label="@string/title_activity_home" >
+            android:label="@string/title_activity_home"
+            android:launchMode="singleTop" >
         </activity>
         
 <!--         MAP API KEY -->

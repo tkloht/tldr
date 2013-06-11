@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -15,8 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 
-import com.auth.AccountHelper;
-import com.datastore.TaskDatastore;
+import com.tldr.tools.ToolBox;
 
 public class HomeActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
@@ -165,6 +165,16 @@ public class HomeActivity extends FragmentActivity implements
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say your request!");
 		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
 		startActivityForResult(intent, SPEECH_REQUEST_CODE);
+	}
+	
+	protected void onNewIntent(Intent intent) {
+	    super.onNewIntent(intent);
+		ToolBox.showAlert(this, "GCM",
+				intent.getStringExtra("message"), "Dismiss",
+		new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});		
 	}
 
 	@Override

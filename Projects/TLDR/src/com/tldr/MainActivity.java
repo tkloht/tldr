@@ -21,7 +21,13 @@ import com.datastore.BaseDatastore;
 import com.datastore.DatastoreResultHandler;
 import com.datastore.TaskDatastore;
 import com.datastore.UserInfoDatastore;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.json.jackson.JacksonFactory;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
+import com.tldr.messageEndpoint.MessageEndpoint;
+import com.tldr.tools.CloudEndpointUtils;
 import com.tldr.tools.ToolBox;
 
 /**
@@ -34,6 +40,11 @@ import com.tldr.tools.ToolBox;
  * Check out RegisterActivity.java for more details.
  */
 public class MainActivity extends Activity implements DatastoreResultHandler {
+
+	enum State {
+		REGISTERED, REGISTERING, UNREGISTERED, UNREGISTERING
+	}
+
 	private UserInfo user;
 	private View mLoginStatusView;
 	private View mLoginFormView;
@@ -45,6 +56,9 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	private UserInfoDatastore userInfoDatastore;
 	private TaskDatastore taskDatastore;
 	private AnimationDrawable anim;
+	private State curState = State.UNREGISTERED;
+	private OnTouchListener registerListener = null;
+	private OnTouchListener unregisterListener = null;
 
 	static final int VIEW_MODE_LOGIN_PROGRESS = 0;
 	static final int VIEW_MODE_ERROR = 1;
@@ -122,19 +136,19 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			afterAccountSelection();
 		}
 	}
-	
-	private void animationSkull() {
-        ImageView img = (ImageView)findViewById(R.id.tldr_skull_anim);
-        anim = (AnimationDrawable)img.getDrawable();
-        img.post(run);
-    }
 
-    Runnable run = new Runnable() {
-        @Override
-        public void run() {
-            anim.start();
-        }
-    };
+	private void animationSkull() {
+		ImageView img = (ImageView) findViewById(R.id.tldr_skull_anim);
+		anim = (AnimationDrawable) img.getDrawable();
+		img.post(run);
+	}
+
+	Runnable run = new Runnable() {
+		@Override
+		public void run() {
+			anim.start();
+		}
+	};
 
 	private void showProgress(final int mode) {
 		currentMode = mode;
@@ -162,7 +176,8 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 		userInfoDatastore = new UserInfoDatastore(
 				accountHelper.getCredential(), this);
 		taskDatastore = new TaskDatastore(this, accountHelper.getCredential());
-		userInfoDatastore.registerUser(new UserInfo().setEmail(accountHelper.getCredential().getSelectedAccountName()));
+		userInfoDatastore.registerUser(new UserInfo().setEmail(accountHelper
+				.getCredential().getSelectedAccountName()));
 	}
 
 	private void showLoginAlert() {
@@ -196,6 +211,29 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 		}
 	}
 
+	private void registerGCM() {
+		try {
+			GCMIntentService.register(getApplicationContext());
+		} catch (Exception e) {
+			Log.w("TLDR", "GCM Fail");
+			Log.e(MainActivity.class.getName(),
+					"Exception received when attempting to register for Google Cloud "
+							+ "Messaging. Perhaps you need to set your virtual device's "
+							+ " target to Google APIs? "
+							+ "See https://developers.google.com/eclipse/docs/cloud_endpoints_android"
+							+ " for more information.", e);
+		}
+		MessageEndpoint.Builder endpointBuilder = new MessageEndpoint.Builder(
+				AndroidHttp.newCompatibleTransport(), new JacksonFactory(),
+				new HttpRequestInitializer() {
+					public void initialize(HttpRequest httpRequest) {
+					}
+				});
+
+		GlobalData.setMessageEndpoint(CloudEndpointUtils.updateBuilder(
+				endpointBuilder).build());
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -206,6 +244,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 						AccountManager.KEY_ACCOUNT_NAME);
 				if (accountName != null) {
 					accountHelper.setAccountName(accountName);
+					registerGCM();
 					// User is authorized.
 					afterAccountSelection();
 
@@ -218,12 +257,13 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	@Override
 	public void handleRequestResult(int requestId, Object result) {
 		// TODO Auto-generated method stub
-		switch(requestId) {
+		switch (requestId) {
 		case BaseDatastore.REQUEST_USERINFO_REGISTER:
 			UserInfo registeredUser = (UserInfo) result;
 			if (registeredUser != null) {
 				user = registeredUser;
-				Log.d("TLDR", "User Sign In Successfull.. testing nearbyUserDatastore Method...");
+				Log.d("TLDR",
+						"User Sign In Successfull.. testing nearbyUserDatastore Method...");
 				userInfoDatastore.getNearbyUsers();
 			} else {
 				Log.w("TLDR", "No User was registered due to an Error!");
@@ -231,13 +271,13 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			}
 			break;
 		case BaseDatastore.REQUEST_USERINFO_NEARBYUSERS:
-			List<UserInfo> nearbyUsers = (List<UserInfo>)result;
-			for(UserInfo ui:nearbyUsers){
-				Log.d("TLDR", ui.getEmail()+" "+ui.getUsername());
+			List<UserInfo> nearbyUsers = (List<UserInfo>) result;
+			for (UserInfo ui : nearbyUsers) {
+				Log.d("TLDR", ui.getEmail() + " " + ui.getUsername());
 			}
 			showLoginAlert();
 			break;
 		}
-		
+
 	}
 }
