@@ -303,7 +303,7 @@ public class MapFragment extends Fragment implements LocationListener,
 			List<UserInfo> users = (List<UserInfo>) result;
 			if(users!=null){
 				for(UserInfo u: users){
-					if(u.getId()!=GlobalData.getCurrentUser().getId()&&u.getGeoLat()!=0.0 && u.getGeoLon() !=0.0){
+					if(!u.getId().equals(GlobalData.getCurrentUser().getId())&&u.getGeoLat()!=0.0 && u.getGeoLon() !=0.0){
 						Marker newMarker = mMap.addMarker(new MarkerOptions()
 						.position(new LatLng(u.getGeoLat(), u.getGeoLon()))
 						.title(u.getUsername())
