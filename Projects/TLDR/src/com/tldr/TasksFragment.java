@@ -26,6 +26,7 @@ import com.datastore.BaseDatastore;
 import com.datastore.DatastoreResultHandler;
 import com.datastore.TaskDatastore;
 import com.tldr.taskendpoint.model.Task;
+import com.tldr.tools.ToolBox;
 
 public class TasksFragment extends Fragment implements DatastoreResultHandler{
 	
@@ -89,8 +90,10 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 			HashMap<String, String> newMap= new HashMap<String, String>();
 			newMap.put(TAG_TITLE, titles[i]);
 			newMap.put(TAG_DESCRIPTION, descriptions[i]);
-			newMap.put(TAG_DISTANCE, "~"+(rand.nextInt(400)+50)+"km");
-			list.add(newMap);
+			int rndValue=rand.nextInt(400)+50;
+			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
+			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+			ToolBox.addInRealDistanceOrder(list, newMap);
 		}
 		ListAdapter adapter = new SimpleAdapter(getActivity(), list,
                 R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE }, 
@@ -106,8 +109,10 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 			HashMap<String, String> newMap= new HashMap<String, String>();
 			newMap.put(TAG_TITLE, titles2[i]);
 			newMap.put(TAG_DESCRIPTION, descriptions2[i]);
-			newMap.put(TAG_DISTANCE, "~"+(rand.nextInt(400)+50)+"km");
-			list2.add(newMap);
+			int rndValue=rand.nextInt(400)+50;
+			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
+			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+			ToolBox.addInRealDistanceOrder(list2, newMap);
 		}
 		adapter = new SimpleAdapter(getActivity(), list2,
 				R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE }, 
@@ -152,7 +157,8 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 				}
 				int dist = Math.round(distance[0]);
 				newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+(dist/1000)+"km"));
-				list.add(newMap);
+				newMap.put(ToolBox.TAG_REAL_DISTANCE, dist+"");
+				ToolBox.addInRealDistanceOrder(list, newMap);
 			}
 			if(activity !=null){
 		        ListAdapter adapter = new SimpleAdapter(
@@ -164,10 +170,6 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 			}
 		}
 	}
-	
-	
-	
-	
 	
 
 }

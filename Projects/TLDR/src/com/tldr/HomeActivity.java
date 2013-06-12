@@ -2,6 +2,8 @@ package com.tldr;
 
 import java.util.ArrayList;
 
+import org.apache.http.util.LangUtils;
+
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -162,6 +164,7 @@ public class HomeActivity extends FragmentActivity implements
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say your request!");
 		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
 		startActivityForResult(intent, SPEECH_REQUEST_CODE);

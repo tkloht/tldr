@@ -28,6 +28,7 @@ import com.datastore.DatastoreResultHandler;
 import com.datastore.UserInfoDatastore;
 import com.google.android.gms.maps.model.LatLng;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
+import com.tldr.tools.ToolBox;
 
 public class CommunityFragment extends Fragment implements DatastoreResultHandler{
 	
@@ -91,8 +92,11 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 			HashMap<String, String> newMap= new HashMap<String, String>();
 			newMap.put(TAG_RANK, (i+1)+".");
 			newMap.put(TAG_NAME, namen[i]);
-			newMap.put(TAG_DISTANCE, "~"+(rand.nextInt(400)+50)+"km");
-			list.add(newMap);
+			int rndValue=rand.nextInt(400)+50;
+			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
+			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+			ToolBox.addInRealDistanceOrder(list, newMap);
+
 		}
 		ListAdapter adapter = new SimpleAdapter(getActivity(), list,
                 R.layout.layout_highscore_listitem, new String[] { TAG_RANK, TAG_NAME, TAG_DISTANCE }, 
@@ -106,8 +110,11 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 		for (int i = 0; i < namen2.length; i++){
 			HashMap<String, String> newMap= new HashMap<String, String>();
 			newMap.put(TAG_NAME, namen2[i]);
-			newMap.put(TAG_DISTANCE, "~"+(rand.nextInt(400)+50)+"km");
-			list2.add(newMap);
+			int rndValue=rand.nextInt(400)+50;
+			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
+			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+			ToolBox.addInRealDistanceOrder(list2, newMap);
+
 		}
 		adapter = new SimpleAdapter(getActivity(), list2,
 				R.layout.layout_nearby_people_listitem, new String[] { TAG_NAME, TAG_DISTANCE }, 
@@ -149,7 +156,8 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 					}
 					int dist = Math.round(distance[0]);
 					newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+(dist/1000)+"km"));
-					list.add(newMap);
+					newMap.put(ToolBox.TAG_REAL_DISTANCE, dist+"");
+					ToolBox.addInRealDistanceOrder(list, newMap);
 				}
 			}
 			if(activity !=null){
