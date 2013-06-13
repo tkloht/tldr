@@ -84,18 +84,17 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 		friendsView=(ListView) view.findViewById(R.id.list_friends);
 		currentView=R.id.list_nearby_people;
 		
-		// FAKE Highscore data
+		// FAKE Highscore data mit fake Experience Points
 		Random rand = new Random();
 		String[] namen = {"Oscar", "Jim", "Michael", "Ryan", "Stanley"};
+		int[] experience = {12125, 12009, 11987, 11983, 11954};
 		List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 		for (int i = 0; i < namen.length; i++){
 			HashMap<String, String> newMap= new HashMap<String, String>();
 			newMap.put(TAG_RANK, (i+1)+".");
 			newMap.put(TAG_NAME, namen[i]);
-			int rndValue=rand.nextInt(400)+50;
-			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
-			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
-			ToolBox.addInRealDistanceOrder(list, newMap);
+			newMap.put(TAG_DISTANCE, experience[i]+" exp.");
+			list.add(newMap);
 
 		}
 		ListAdapter adapter = new SimpleAdapter(getActivity(), list,
