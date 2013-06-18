@@ -1,6 +1,7 @@
 package com.tldr;
 
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,7 +157,8 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 					Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
 				}
 				int dist = Math.round(distance[0]);
-				newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+(dist/1000)+"km"));
+				DecimalFormat df = new DecimalFormat("#.#");
+				newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+df.format((dist/1000))+"km"));
 				newMap.put(ToolBox.TAG_REAL_DISTANCE, dist+"");
 				ToolBox.addInRealDistanceOrder(list, newMap);
 			}

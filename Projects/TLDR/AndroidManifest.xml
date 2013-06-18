@@ -71,15 +71,6 @@
         </receiver>
 
         <activity
-            android:name="com.tldr.RegisterActivity"
-            android:launchMode="singleTop" />
-        <activity
-            android:name="com.tldr.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:theme="@style/android:style/Theme.Light.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-        </activity>
-        <activity
             android:name="com.tldr.HomeActivity"
             android:label="@string/title_activity_home"
             android:launchMode="singleTop" >

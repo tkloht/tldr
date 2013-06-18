@@ -1,5 +1,6 @@
 package com.tldr;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,9 +12,18 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
@@ -23,6 +33,7 @@ import com.datastore.UserInfoDatastore;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -38,6 +49,7 @@ public class MapFragment extends Fragment implements LocationListener,
 		FragmentCommunicator, DatastoreResultHandler {
 
 	private MapView mMapView;
+	private View mWindow;
 	private GoogleMap mMap;
 	private Bundle mBundle;
 	private OnLocationChangedListener mListener;
@@ -51,6 +63,9 @@ public class MapFragment extends Fragment implements LocationListener,
 	private List<Marker> userMarkers;
 	private final static int NUM_MARKERS = 10;
 
+	
+	//UI Stuff
+	private AutoCompleteTextView searchField;
 	public void initialize() {
 		Bundle args = getArguments();
 	}
@@ -112,6 +127,62 @@ public class MapFragment extends Fragment implements LocationListener,
 		}
 		return v;
 	}
+
+	
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewCreated(view, savedInstanceState);
+		mWindow = view;
+		searchField=(AutoCompleteTextView) view.findViewById(R.id.mapSearchEditText);
+		searchField.clearFocus();
+		searchField.setOnEditorActionListener(new OnEditorActionListener() {        
+		    @Override
+		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		        if(actionId==EditorInfo.IME_ACTION_SEARCH){
+		            //Clear focus here from edittext
+		            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+		            imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
+		             searchField.clearFocus();
+		             mMapView.requestFocus();
+		        }
+		    return false;
+		    }
+		});
+		searchField.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+	            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+	            imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
+	             searchField.clearFocus();
+	             mMapView.requestFocus();
+	             Marker m =((AutoCompletionMarker)arg0.getItemAtPosition(arg2)).getMarker();
+	             flyTo(m.getPosition());
+	             m.showInfoWindow();
+	             searchField.setText("");
+	             
+			}
+		});
+		mMap.setOnMapClickListener(new OnMapClickListener() {
+			
+			@Override
+			public void onMapClick(LatLng arg0) {
+				// TODO Auto-generated method stub
+	            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+	            imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
+	             searchField.clearFocus();
+	             mMapView.requestFocus();
+			}
+		});
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        mMapView.requestFocus();
+        
+	}
+	
 
 	// DemoCode
 	private void generateMarkers(Location location) {
@@ -189,9 +260,13 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	private void flyTo(Location location) {
 		if (location != null) {
+			flyTo(new LatLng(location.getLatitude(), location.getLongitude()));
+		}
+	}
+	private void flyTo(LatLng location) {
+		if (location != null) {
 			mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
-			mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(
-					location.getLatitude(), location.getLongitude())));
+			mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
 		}
 	}
 
@@ -276,9 +351,17 @@ public class MapFragment extends Fragment implements LocationListener,
 	public void handleRequestResult(int requestId, Object result) {
 		// TODO Auto-generated method stub
 		if (requestId == BaseDatastore.REQUEST_TASK_FETCHNEARBY) {
+
 			List<Task> tasks = (List<Task>) result;
 			if (tasks != null) {
+				List<AutoCompletionMarker> autoCompletionObjects= new ArrayList<MapFragment.AutoCompletionMarker>();
+				int i=0;
+				Location current = GlobalData.getLastknownPosition();
 				for (Task t : tasks) {
+					float[] distance = new float[]{0.0f};
+					if(current!=null){
+						Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
+					}
 					Marker newMarker = mMap.addMarker(new MarkerOptions()
 							.position(new LatLng(t.getGeoLat(), t.getGeoLon()))
 							.title(t.getTitle())
@@ -290,7 +373,11 @@ public class MapFragment extends Fragment implements LocationListener,
 							.icon(BitmapDescriptorFactory
 									.fromResource(R.drawable.tldr_task_sm)));
 					taskMarkers.add(newMarker);
+					Log.d("TLDR", newMarker.toString());
+					ToolBox.addInRealDistanceOrder(autoCompletionObjects, new AutoCompletionMarker(newMarker, distance[0]));
 				}
+				searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(this.getActivity(),
+		                 android.R.layout.simple_dropdown_item_1line, autoCompletionObjects));
 			}
 		}
 		if (requestId == BaseDatastore.REQUEST_USERINFO_UPDATEUSER) {
@@ -315,4 +402,33 @@ public class MapFragment extends Fragment implements LocationListener,
 			}
 		}
 	}
+	
+	
+	public class AutoCompletionMarker {
+		private Marker marker;
+		private String title;
+		private float distance;
+		private AutoCompletionMarker(Marker m, float distance){
+			marker=m;
+			title=m.getTitle();
+			this.distance = distance;
+		}
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			DecimalFormat df = new DecimalFormat("#.#");
+			return title+" ("+(distance<1000? (int)distance+"m" : "~"+df.format((distance/1000))+"km")+")";
+		}
+		
+		private Marker getMarker(){
+			return marker;
+		}
+		
+		public float getDistance() {
+			return distance;
+		}
+		
+		
+	}
+	
 }

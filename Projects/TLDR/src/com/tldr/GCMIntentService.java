@@ -136,7 +136,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 				alreadyRegisteredWithEndpointServer = true;
 			}
 		} catch (IOException e) {
-			// Ignore
+			Log.e("TLDR", e.getStackTrace().toString());
 		}
 
 		try {
@@ -218,5 +218,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 //		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //		startActivity(notificationIntent);
 	}
+	
 
 }

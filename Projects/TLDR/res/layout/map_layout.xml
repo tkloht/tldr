@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <com.google.android.gms.maps.MapView
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+        <com.google.android.gms.maps.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="fill_parent"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clickable="true"
+         />
+    <AutoCompleteTextView
+        android:ems="20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:id="@+id/mapSearchEditText"
+        android:inputType="textAutoComplete"
+        android:hint="@string/map_view_edit_text_hint"
+        android:imeOptions="actionSearch"
+        android:background="@drawable/edit_text_rounded_corner_bg"
+        android:layout_marginTop="15dip"
+        android:layout_marginLeft="10dip"
+        android:paddingLeft="15dp"
+        />
 
-</RelativeLayout>
+
+</FrameLayout>

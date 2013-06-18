@@ -5,12 +5,13 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Color;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
+
+import com.tldr.MapFragment.AutoCompletionMarker;
 
 public final class ToolBox {
 	public final static String TAG_REAL_DISTANCE="real_distance";
@@ -47,5 +48,18 @@ public final class ToolBox {
 		}
 		if(!added)
 			list.add(element);
+	}
+	public static void addInRealDistanceOrder(List<AutoCompletionMarker> list, AutoCompletionMarker acm){
+		float new_distance=acm.getDistance();
+		boolean added=false;
+		for(int i=0; i<list.size(); i++){
+			float d1=list.get(i).getDistance();
+			if(!added&&new_distance<d1){
+				list.add(i, acm);
+				added=true;
+			}
+		}
+		if(!added)
+			list.add(acm);
 	}
 }
