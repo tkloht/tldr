@@ -16,14 +16,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
+import android.widget.ImageView;
 
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
@@ -33,7 +26,7 @@ import com.datastore.UserInfoDatastore;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -46,7 +39,7 @@ import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
 
 public class MapFragment extends Fragment implements LocationListener,
-		FragmentCommunicator, DatastoreResultHandler {
+		FragmentCommunicator, DatastoreResultHandler,OnMarkerClickListener {
 
 	private MapView mMapView;
 	private View mWindow;
@@ -247,6 +240,7 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	private void setUpMap() {
 		mMap.setMyLocationEnabled(true);
+		mMap.setOnMarkerClickListener(this);
 		if (GlobalData.getLastknownPosition() != null) {
 			// generateMarkers(lastknown);
 			flyTo(GlobalData.getLastknownPosition());
@@ -396,39 +390,19 @@ public class MapFragment extends Fragment implements LocationListener,
 						.title(u.getUsername())
 						.icon(BitmapDescriptorFactory
 								.fromResource(R.drawable.agent)));
+						
 						userMarkers.add(newMarker);
 					}
 				}
 			}
 		}
 	}
-	
-	
-	public class AutoCompletionMarker {
-		private Marker marker;
-		private String title;
-		private float distance;
-		private AutoCompletionMarker(Marker m, float distance){
-			marker=m;
-			title=m.getTitle();
-			this.distance = distance;
-		}
-		@Override
-		public String toString() {
-			// TODO Auto-generated method stub
-			DecimalFormat df = new DecimalFormat("#.#");
-			return title+" ("+(distance<1000? (int)distance+"m" : "~"+df.format((distance/1000))+"km")+")";
-		}
-		
-		private Marker getMarker(){
-			return marker;
-		}
-		
-		public float getDistance() {
-			return distance;
-		}
-		
-		
+
+	@Override
+	public boolean onMarkerClick(Marker arg0) {
+		// TODO Auto-generated method stub
+		//ImageView iv = (ImageView) getActivity().findViewById(R.id.overlaytest);
+		//iv.setVisibility(iv.getVisibility()==View.VISIBLE?View.GONE:View.VISIBLE);
+		return false;
 	}
-	
 }

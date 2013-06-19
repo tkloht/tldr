@@ -25,7 +25,7 @@
         android:orderInCategory="90" 
         android:showAsAction="always"
         android:title="@string/menu_stt"
-        android:icon="@android:drawable/ic_btn_speak_now" />"
+        android:icon="@android:drawable/ic_btn_speak_now" />
     
     <item android:id="@+id/menu_map"
           android:icon="@drawable/map"
