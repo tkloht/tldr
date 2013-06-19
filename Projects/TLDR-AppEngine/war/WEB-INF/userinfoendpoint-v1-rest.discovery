@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"381e4s_8vUCNPclzPT4yxtto0eA/ou4fAqsaAI0oaSKqgQvlCKPM-VI\"",
+ "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/AqBIJ89DZkqRJ_H_mA2XP6t8djA\"",
  "discoveryVersion": "v1",
  "id": "userinfoendpoint:v1",
  "name": "userinfoendpoint",
@@ -93,6 +93,10 @@
     },
     "email": {
      "type": "string"
+    },
+    "faction": {
+     "type": "integer",
+     "format": "int32"
     },
     "finishedGoals": {
      "type": "array",

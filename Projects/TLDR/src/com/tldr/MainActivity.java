@@ -15,6 +15,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
@@ -26,6 +27,7 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
+import com.tldr.gamelogic.Factions;
 import com.tldr.messageEndpoint.MessageEndpoint;
 import com.tldr.tools.CloudEndpointUtils;
 import com.tldr.tools.ToolBox;
@@ -46,6 +48,8 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	}
 
 	private UserInfo user;
+	private int faction;
+	private boolean fraction_checked;
 	private View mLoginStatusView;
 	private View mLoginFormView;
 	private View mLoginErrorView;
@@ -102,11 +106,19 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 						success = false;
 						showProgress(VIEW_MODE_REGISTER);
 					} else {
-						if (user != null) {
-							user.setUsername(username);
-							userInfoDatastore.registerUser(user);
-						} else
+						if (!fraction_checked) {
+							ToolBox.showErrorMessage(mUsernameText,
+									"Your have to choose a faction!");
 							success = false;
+							showProgress(VIEW_MODE_REGISTER);
+						} else {
+							if (user != null) {
+								user.setUsername(username);
+								user.setFaction(faction);
+								userInfoDatastore.registerUser(user);
+							} else
+								success = false;
+						}
 					}
 					return success;
 				} else
@@ -119,6 +131,20 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 		// Init AccountHelper
 		accountHelper = new AccountHelper(this);
 
+	}
+
+	public void onRadioButtonClicked(View view) {
+		fraction_checked = ((RadioButton) view).isChecked();
+		switch (view.getId()) {
+		case R.id.radio_fraction_def:
+			if (fraction_checked)
+				faction = Factions.FRACTION_DEFIANCE;
+				break;
+		case R.id.radio_fraction_mof:
+			if (fraction_checked)
+				faction = Factions.FRACTION_MINISTRY_OF_FREEDOM;
+				break;
+		}
 	}
 
 	@Override
@@ -173,8 +199,8 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	}
 
 	private void afterAccountSelection() {
-		userInfoDatastore = new UserInfoDatastore(
-				this, accountHelper.getCredential());
+		userInfoDatastore = new UserInfoDatastore(this,
+				accountHelper.getCredential());
 		taskDatastore = new TaskDatastore(this, accountHelper.getCredential());
 		userInfoDatastore.registerUser(new UserInfo().setEmail(accountHelper
 				.getCredential().getSelectedAccountName()));
@@ -274,7 +300,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			for (UserInfo ui : nearbyUsers) {
 				Log.d("TLDR", ui.getEmail() + " " + ui.getUsername());
 			}
-			
+
 			break;
 		}
 

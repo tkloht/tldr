@@ -16,5 +16,7 @@
     <string name="menu_tasks">Tasks</string>
     <string name="menu_stt">Speech To Text</string>
     <string name="map_view_edit_text_hint">Search..</string>
+    <string name="pick_defiance">Defiance</string>
+    <string name="pick_mof">Ministry of Freedom</string>
 
 </resources>

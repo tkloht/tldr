@@ -65,13 +65,13 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "deviceinfoendpoint.getDeviceInfo" : {
+    "deviceinfoendpoint.removeDeviceInfo" : {
       "path" : "deviceinfo/{id}",
-      "httpMethod" : "GET",
+      "httpMethod" : "DELETE",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.tldr.DeviceInfoEndpoint.getDeviceInfo",
+      "rosyMethod" : "com.tldr.DeviceInfoEndpoint.removeDeviceInfo",
       "request" : {
         "parameters" : {
           "id" : {
@@ -85,13 +85,13 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "deviceinfoendpoint.removeDeviceInfo" : {
+    "deviceinfoendpoint.getDeviceInfo" : {
       "path" : "deviceinfo/{id}",
-      "httpMethod" : "DELETE",
+      "httpMethod" : "GET",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.tldr.DeviceInfoEndpoint.removeDeviceInfo",
+      "rosyMethod" : "com.tldr.DeviceInfoEndpoint.getDeviceInfo",
       "request" : {
         "parameters" : {
           "id" : {
@@ -169,12 +169,12 @@
           "$ref" : "DeviceInfo"
         }
       },
-      "com.tldr.DeviceInfoEndpoint.getDeviceInfo" : {
+      "com.tldr.DeviceInfoEndpoint.removeDeviceInfo" : {
         "response" : {
           "$ref" : "DeviceInfo"
         }
       },
-      "com.tldr.DeviceInfoEndpoint.removeDeviceInfo" : {
+      "com.tldr.DeviceInfoEndpoint.getDeviceInfo" : {
         "response" : {
           "$ref" : "DeviceInfo"
         }

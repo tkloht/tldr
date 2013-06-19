@@ -42,6 +42,8 @@ public class UserInfo {
 	@Persistent
 	private String email;
 	@Persistent
+	private int faction;
+	@Persistent
 	private double geoLat;
 	@Persistent
 	private double geoLon;
@@ -103,6 +105,14 @@ public class UserInfo {
 
 	public void setFinishedGoals(List<Long> finishedGoals) {
 		this.finishedGoals = finishedGoals;
+	}
+
+	public int getFaction() {
+		return faction;
+	}
+
+	public void setFaction(int faction) {
+		this.faction = faction;
 	}
 	
 	

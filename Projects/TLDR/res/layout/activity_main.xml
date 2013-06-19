@@ -154,6 +154,27 @@
                     android:layout_marginTop="5dip"
                     android:hint="Username"
                     android:singleLine="true" />
+
+                <RadioGroup
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <RadioButton
+                        android:id="@+id/radio_fraction_def"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onRadioButtonClicked"
+                        android:text="@string/pick_defiance" />
+
+                    <RadioButton
+                        android:id="@+id/radio_fraction_mof"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onRadioButtonClicked"
+                        android:text="@string/pick_mof" />
+                </RadioGroup>
+
                 <!-- Register Button -->
 
                 <Button
