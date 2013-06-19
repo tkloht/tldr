@@ -15,8 +15,19 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
@@ -26,6 +37,7 @@ import com.datastore.UserInfoDatastore;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 import com.google.android.gms.maps.MapView;
@@ -39,12 +51,15 @@ import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
 
 public class MapFragment extends Fragment implements LocationListener,
-		FragmentCommunicator, DatastoreResultHandler,OnMarkerClickListener {
+		FragmentCommunicator, DatastoreResultHandler, OnMarkerClickListener {
 
 	private MapView mMapView;
 	private View mWindow;
 	private GoogleMap mMap;
 	private Bundle mBundle;
+	private RelativeLayout buttonOverlay;
+	private ImageView playerButton;
+	private ImageView fractionbuton;
 	private OnLocationChangedListener mListener;
 	private LocationManager locationManager;
 
@@ -54,11 +69,12 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	private List<Marker> taskMarkers;
 	private List<Marker> userMarkers;
-	private final static int NUM_MARKERS = 10;
+	private Marker selfMarker;
+	private boolean menueActive = false;
 
-	
-	//UI Stuff
+	// UI Stuff
 	private AutoCompleteTextView searchField;
+
 	public void initialize() {
 		Bundle args = getArguments();
 	}
@@ -121,83 +137,66 @@ public class MapFragment extends Fragment implements LocationListener,
 		return v;
 	}
 
-	
-	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
 		mWindow = view;
-		searchField=(AutoCompleteTextView) view.findViewById(R.id.mapSearchEditText);
+		searchField = (AutoCompleteTextView) view
+				.findViewById(R.id.mapSearchEditText);
 		searchField.clearFocus();
-		searchField.setOnEditorActionListener(new OnEditorActionListener() {        
-		    @Override
-		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		        if(actionId==EditorInfo.IME_ACTION_SEARCH){
-		            //Clear focus here from edittext
-		            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-		            imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
-		             searchField.clearFocus();
-		             mMapView.requestFocus();
-		        }
-		    return false;
-		    }
+		searchField.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+					// Clear focus here from edittext
+					InputMethodManager imm = (InputMethodManager) getActivity()
+							.getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
+					searchField.clearFocus();
+					mMapView.requestFocus();
+				}
+				return false;
+			}
 		});
 		searchField.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-	            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-	            imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
-	             searchField.clearFocus();
-	             mMapView.requestFocus();
-	             Marker m =((AutoCompletionMarker)arg0.getItemAtPosition(arg2)).getMarker();
-	             flyTo(m.getPosition());
-	             m.showInfoWindow();
-	             searchField.setText("");
-	             
+				InputMethodManager imm = (InputMethodManager) getActivity()
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
+				searchField.clearFocus();
+				mMapView.requestFocus();
+				Marker m = ((AutoCompletionMarker) arg0.getItemAtPosition(arg2))
+						.getMarker();
+				flyTo(m.getPosition());
+				m.showInfoWindow();
+				searchField.setText("");
+
 			}
 		});
 		mMap.setOnMapClickListener(new OnMapClickListener() {
-			
+
 			@Override
 			public void onMapClick(LatLng arg0) {
 				// TODO Auto-generated method stub
-	            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-	            imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
-	             searchField.clearFocus();
-	             mMapView.requestFocus();
+				InputMethodManager imm = (InputMethodManager) getActivity()
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mWindow.getWindowToken(), 0);
+				searchField.clearFocus();
+				mMapView.requestFocus();
+				if (menueActive) {
+					switchMenue();
+				}
 			}
 		});
-        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        mMapView.requestFocus();
-        
-	}
-	
-
-	// DemoCode
-	private void generateMarkers(Location location) {
-		if (location != null) {
-			LatLng newPos;
-			Random rand = new Random();
-			for (int i = 0; i <= NUM_MARKERS; i++) {
-				newPos = new LatLng(location.getLatitude()
-						+ (rand.nextBoolean() ? -1 : 1) * rand.nextDouble()
-						/ 100, location.getLongitude()
-						+ (rand.nextBoolean() ? -1 : 1) * rand.nextDouble()
-						/ 100);
-
-				Marker newMarker = mMap.addMarker(new MarkerOptions()
-						.position(newPos)
-						.title("Quest" + i)
-						.snippet("Quest " + i + " ist super")
-						.icon(BitmapDescriptorFactory
-								.fromResource(R.drawable.target)));
-				this.taskMarkers.add(newMarker);
-			}
-		}
+		InputMethodManager imm = (InputMethodManager) view.getContext()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		mMapView.requestFocus();
 
 	}
 
@@ -210,8 +209,7 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	private void rejectAllNearbyTasks() {
 		for (Marker m : taskMarkers) {
-			m.setIcon(BitmapDescriptorFactory
-					.fromResource(R.drawable.tldr_task_sm));
+			m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.target));
 		}
 	}
 
@@ -235,7 +233,6 @@ public class MapFragment extends Fragment implements LocationListener,
 				setUpMap();
 			}
 		}
-		// mMap.setLocationSource(null);
 	}
 
 	private void setUpMap() {
@@ -244,6 +241,11 @@ public class MapFragment extends Fragment implements LocationListener,
 		if (GlobalData.getLastknownPosition() != null) {
 			// generateMarkers(lastknown);
 			flyTo(GlobalData.getLastknownPosition());
+			this.selfMarker = mMap.addMarker(new MarkerOptions().position(
+					new LatLng(GlobalData.getLastknownPosition().getLatitude(),
+							GlobalData.getLastknownPosition().getLongitude()))
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.tldr_button_car)));
 		}
 		taskMarkers = new ArrayList<Marker>();
 		userMarkers = new ArrayList<Marker>();
@@ -257,6 +259,7 @@ public class MapFragment extends Fragment implements LocationListener,
 			flyTo(new LatLng(location.getLatitude(), location.getLongitude()));
 		}
 	}
+
 	private void flyTo(LatLng location) {
 		if (location != null) {
 			mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
@@ -287,6 +290,13 @@ public class MapFragment extends Fragment implements LocationListener,
 		// flyTo(location);
 		GlobalData.setLastknownPosition(location);
 		if (GlobalData.getCurrentUser() != null) {
+			try {
+				this.selfMarker.setPosition(new LatLng(mMap.getMyLocation()
+						.getLatitude(), mMap.getMyLocation().getLongitude()));
+			} catch (Exception e) {
+				this.selfMarker.setPosition(new LatLng(location.getLatitude(),
+						location.getLongitude()));
+			}
 			userDatastore.updateUser(GlobalData.getCurrentUser()
 					.setGeoLon(location.getLongitude())
 					.setGeoLat(location.getLatitude()));
@@ -348,13 +358,15 @@ public class MapFragment extends Fragment implements LocationListener,
 
 			List<Task> tasks = (List<Task>) result;
 			if (tasks != null) {
-				List<AutoCompletionMarker> autoCompletionObjects= new ArrayList<MapFragment.AutoCompletionMarker>();
-				int i=0;
+				List<AutoCompletionMarker> autoCompletionObjects = new ArrayList<MapFragment.AutoCompletionMarker>();
+				int i = 0;
 				Location current = GlobalData.getLastknownPosition();
 				for (Task t : tasks) {
-					float[] distance = new float[]{0.0f};
-					if(current!=null){
-						Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
+					float[] distance = new float[] { 0.0f };
+					if (current != null) {
+						Location.distanceBetween(current.getLatitude(),
+								current.getLongitude(), t.getGeoLat(),
+								t.getGeoLon(), distance);
 					}
 					Marker newMarker = mMap.addMarker(new MarkerOptions()
 							.position(new LatLng(t.getGeoLat(), t.getGeoLon()))
@@ -365,13 +377,16 @@ public class MapFragment extends Fragment implements LocationListener,
 											.getDescription().substring(0, 29)
 											+ ".."))
 							.icon(BitmapDescriptorFactory
-									.fromResource(R.drawable.tldr_task_sm)));
+									.fromResource(R.drawable.target)));
 					taskMarkers.add(newMarker);
 					Log.d("TLDR", newMarker.toString());
-					ToolBox.addInRealDistanceOrder(autoCompletionObjects, new AutoCompletionMarker(newMarker, distance[0]));
+					ToolBox.addInRealDistanceOrder(autoCompletionObjects,
+							new AutoCompletionMarker(newMarker, distance[0]));
 				}
-				searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(this.getActivity(),
-		                 android.R.layout.simple_dropdown_item_1line, autoCompletionObjects));
+				searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(
+						this.getActivity(),
+						android.R.layout.simple_dropdown_item_1line,
+						autoCompletionObjects));
 			}
 		}
 		if (requestId == BaseDatastore.REQUEST_USERINFO_UPDATEUSER) {
@@ -380,17 +395,21 @@ public class MapFragment extends Fragment implements LocationListener,
 				GlobalData.setCurrentUser(userResult);
 			}
 		}
-		if(requestId==BaseDatastore.REQUEST_USERINFO_NEARBYUSERS) {
+		if (requestId == BaseDatastore.REQUEST_USERINFO_NEARBYUSERS) {
 			List<UserInfo> users = (List<UserInfo>) result;
-			if(users!=null){
-				for(UserInfo u: users){
-					if(!u.getId().equals(GlobalData.getCurrentUser().getId())&&u.getGeoLat()!=0.0 && u.getGeoLon() !=0.0){
-						Marker newMarker = mMap.addMarker(new MarkerOptions()
-						.position(new LatLng(u.getGeoLat(), u.getGeoLon()))
-						.title(u.getUsername())
-						.icon(BitmapDescriptorFactory
-								.fromResource(R.drawable.agent)));
-						
+			if (users != null) {
+				for (UserInfo u : users) {
+					if (!u.getId().equals(GlobalData.getCurrentUser().getId())
+							&& u.getGeoLat() != 0.0 && u.getGeoLon() != 0.0) {
+						Marker newMarker = mMap
+								.addMarker(new MarkerOptions()
+										.position(
+												new LatLng(u.getGeoLat(), u
+														.getGeoLon()))
+										.title(u.getUsername())
+										.icon(BitmapDescriptorFactory
+												.fromResource(R.drawable.agent)));
+
 						userMarkers.add(newMarker);
 					}
 				}
@@ -398,11 +417,82 @@ public class MapFragment extends Fragment implements LocationListener,
 		}
 	}
 
+	public class AutoCompletionMarker {
+		private Marker marker;
+		private String title;
+		private float distance;
+
+		private AutoCompletionMarker(Marker m, float distance) {
+			marker = m;
+			title = m.getTitle();
+			this.distance = distance;
+		}
+
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			DecimalFormat df = new DecimalFormat("#.#");
+			return title
+					+ " ("
+					+ (distance < 1000 ? (int) distance + "m" : "~"
+							+ df.format((distance / 1000)) + "km") + ")";
+		}
+
+		private Marker getMarker() {
+			return marker;
+		}
+
+		public float getDistance() {
+			return distance;
+		}
+
+	}
+
 	@Override
-	public boolean onMarkerClick(Marker arg0) {
-		// TODO Auto-generated method stub
-		//ImageView iv = (ImageView) getActivity().findViewById(R.id.overlaytest);
-		//iv.setVisibility(iv.getVisibility()==View.VISIBLE?View.GONE:View.VISIBLE);
+	public boolean onMarkerClick(Marker marker) {
+		if (marker.equals(selfMarker)) {
+			switchMenue();
+		}
 		return false;
 	}
+
+	private void switchMenue() {
+		if (buttonOverlay == null) {
+			buttonOverlay = (RelativeLayout) getActivity().findViewById(
+					R.id.overlaytest);
+			fractionbuton = (ImageView) getActivity().findViewById(
+					R.id.overlayFractionButton);
+			fractionbuton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					onFactionButtonClick();
+				}
+			});
+			playerButton = (ImageView) getActivity().findViewById(
+					R.id.overlayPlayerButton);
+			playerButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					onPlayerButtonClick();
+				}
+			});
+		}
+//		boolean state = buttonOverlay.getVisibility() == View.VISIBLE;
+		selfMarker.setVisible(menueActive);
+		buttonOverlay.setVisibility(menueActive ? View.GONE : View.VISIBLE);
+		mMap.getUiSettings().setAllGesturesEnabled(menueActive);
+		menueActive = !menueActive;
+
+	}
+
+	private void onPlayerButtonClick() {
+		Toast.makeText(getActivity(), "Player", Toast.LENGTH_SHORT).show();
+	}
+
+	private void onFactionButtonClick() {
+		Toast.makeText(getActivity(), "Fraction", Toast.LENGTH_SHORT).show();
+	}
+
 }
