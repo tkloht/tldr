@@ -40,6 +40,7 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 	private final static String TAG_NAME="name";
 	private final static String TAG_DISTANCE="distance";
 	private final static String TAG_RANK="rank";
+	private final int TAG_PROFILE = 0;  
 	private UserInfoDatastore userInfoDatastore;
 	
 	public void initialize(){
@@ -101,6 +102,8 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
                 R.layout.layout_highscore_listitem, new String[] { TAG_RANK, TAG_NAME, TAG_DISTANCE }, 
                 new int[] { R.id.rank, R.id.name, R.id.distance});
 		highscoreView.setAdapter(adapter);
+        MyOnClickListener highscoreOCL = new MyOnClickListener(TAG_PROFILE, list, null, null, this);
+        highscoreView.setOnItemClickListener(highscoreOCL);
 
 		
 		// FAKE Friends data
@@ -119,6 +122,8 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 				R.layout.layout_nearby_people_listitem, new String[] { TAG_NAME, TAG_DISTANCE }, 
 				new int[] { R.id.name, R.id.distance});
 		friendsView.setAdapter(adapter);
+		MyOnClickListener friendsOCL = new MyOnClickListener(TAG_PROFILE, list, null, null, this);
+		friendsView.setOnItemClickListener(friendsOCL);
 
 		
         // Create a progress bar to display while the list loads
@@ -166,6 +171,8 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 		                new int[] { R.id.name, R.id.distance});
 		        // updating listview
 		        nearbyFriendsView.setAdapter(adapter);
+		        MyOnClickListener nearbyFriendsOCL = new MyOnClickListener(TAG_PROFILE, list, null, null, this);
+		        nearbyFriendsView.setOnItemClickListener(nearbyFriendsOCL);
 			}
 		}
 	}

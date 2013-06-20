@@ -9,6 +9,8 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
@@ -17,6 +19,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -39,6 +43,7 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 	private final static String TAG_TITLE="title";
 	private final static String TAG_DESCRIPTION="desc";
 	private final static String TAG_DISTANCE="distance";
+	private final int TAG_TASK = 1;
 	private TaskDatastore taskDatastore;
 	
 	@Override
@@ -101,6 +106,9 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
                 new int[] { R.id.title, R.id.description, R.id.distance});
 		completedListView.setAdapter(adapter);
 
+		MyOnClickListener completedOCL = new MyOnClickListener(TAG_TASK, list, null, null, this);
+		completedListView.setOnItemClickListener(completedOCL);
+
 		
 		// FAKE accepted data
 		String[] titles2 = {"Wirtschaftsspionage", "Verfolgungsjagt"};
@@ -120,10 +128,12 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 				new int[] { R.id.title, R.id.description, R.id.distance});
 		acceptedListView.setAdapter(adapter);
 		
+		MyOnClickListener acceptedOCL = new MyOnClickListener(TAG_TASK, list2, null, null, this);
+		acceptedListView.setOnItemClickListener(acceptedOCL);
 		
         // Create a progress bar to display while the list loads
 		taskDatastore.getNearbyTasks();
-        
+		
 	}
 
 
@@ -169,6 +179,9 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 		                new int[] { R.id.title, R.id.description, R.id.distance});
 		        // updating listview
 		        nearbyListView.setAdapter(adapter);
+		        
+		        MyOnClickListener nearbyOCL = new MyOnClickListener(TAG_TASK, list, tasks, null, this);
+		        nearbyListView.setOnItemClickListener(nearbyOCL);
 			}
 		}
 	}
