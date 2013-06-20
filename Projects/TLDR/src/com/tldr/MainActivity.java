@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -16,6 +17,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
+import android.widget.ViewSwitcher.ViewFactory;
 
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
@@ -41,7 +45,7 @@ import com.tldr.tools.ToolBox;
  * 
  * Check out RegisterActivity.java for more details.
  */
-public class MainActivity extends Activity implements DatastoreResultHandler {
+public class MainActivity extends Activity implements DatastoreResultHandler, ViewFactory {
 
 	enum State {
 		REGISTERED, REGISTERING, UNREGISTERED, UNREGISTERING
@@ -54,6 +58,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	private View mLoginFormView;
 	private View mLoginErrorView;
 	private View mRegisterStatusView;
+	private TextSwitcher mSwitcher;
 	private Button mTryAgainButton;
 	private EditText mUsernameText;
 	private AccountHelper accountHelper;
@@ -74,8 +79,10 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+        mSwitcher = (TextSwitcher) findViewById(R.id.login_status_message);
+        mSwitcher.setFactory(this);
 		animationSkull();
-
+		
 		mUsernameText = (EditText) findViewById(R.id.reg_username);
 		mTryAgainButton = (Button) findViewById(R.id.login_retry_button);
 		mTryAgainButton.setOnTouchListener(new OnTouchListener() {
@@ -195,6 +202,9 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 		mRegisterStatusView
 				.setVisibility(mode == VIEW_MODE_REGISTER_PROGRESS ? View.VISIBLE
 						: View.GONE);
+		
+		if(mode==VIEW_MODE_LOGIN_PROGRESS)
+			ToolBox.animateTextSwitcher(mSwitcher, "Logging in....", this);
 
 	}
 
@@ -304,5 +314,14 @@ public class MainActivity extends Activity implements DatastoreResultHandler {
 			break;
 		}
 
+	}
+
+	
+	@Override
+	public View makeView() {
+		// TODO Auto-generated method stub
+        TextView t = new TextView(this);
+        t.setTextAppearance(getApplicationContext(), android.R.attr.textAppearanceMedium);
+        return t;
 	}
 }

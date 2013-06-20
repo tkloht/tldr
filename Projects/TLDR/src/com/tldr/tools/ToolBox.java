@@ -10,7 +10,9 @@ import android.graphics.Color;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
+import android.widget.TextSwitcher;
 
+import com.tldr.MainActivity;
 import com.tldr.MapFragment.AutoCompletionMarker;
 
 public final class ToolBox {
@@ -23,6 +25,10 @@ public final class ToolBox {
 		ssbuilder = new SpannableStringBuilder(message);
 		ssbuilder.setSpan(fgcspan, 0, message.length(), 0);
 		view.setError(ssbuilder);
+	}
+	
+	public static void animateTextSwitcher(TextSwitcher txtSwitch, String txt, Activity context) {
+		new TextSwitchAnimator(txtSwitch, txt, context).start();
 	}
 
 	
