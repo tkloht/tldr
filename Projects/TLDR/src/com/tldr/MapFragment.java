@@ -3,15 +3,16 @@ package com.tldr;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,9 +72,12 @@ public class MapFragment extends Fragment implements LocationListener,
 	private List<Marker> userMarkers;
 	private Marker selfMarker;
 	private boolean menueActive = false;
+	private int standardEMSForSearchField=33;
 
 	// UI Stuff
 	private AutoCompleteTextView searchField;
+	
+	public final static int ORIGINAL_SCREEN_WIDTH=1200;
 
 	public void initialize() {
 		Bundle args = getArguments();
@@ -134,6 +138,16 @@ public class MapFragment extends Fragment implements LocationListener,
 						lastKnown.getLongitude()));
 			}
 		}
+		
+		//Layout Searchfield by Dimensions
+		Display d = getActivity().getWindowManager().getDefaultDisplay();
+		Point p = new Point();
+		d.getSize(p);
+		double factor = (((double)p.x/(double)ORIGINAL_SCREEN_WIDTH));
+		int ems = (int)(((double)standardEMSForSearchField)*factor);
+		searchField=(AutoCompleteTextView) v.findViewById(R.id.mapSearchEditText);
+		searchField.setEms(ems);
+		Log.d("TLDR", p.x+"x"+p.y);
 		return v;
 	}
 
@@ -142,8 +156,6 @@ public class MapFragment extends Fragment implements LocationListener,
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
 		mWindow = view;
-		searchField = (AutoCompleteTextView) view
-				.findViewById(R.id.mapSearchEditText);
 		searchField.clearFocus();
 		searchField.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
