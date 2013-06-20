@@ -26,38 +26,47 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </FrameLayout>
 
-
     <TextView
         android:id="@+id/task_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Task Description" />
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/details_map"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:layout_height="match_parent" >
 
-<!--     <LinearLayout -->
-<!--         android:layout_width="match_parent" -->
-<!--         android:layout_height="wrap_content" -->
-<!--         android:orientation="horizontal" > -->
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/details_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/linL"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
 
-<!--         <Button -->
-<!--             android:id="@+id/accept_button" -->
-<!--             android:layout_width="match_parent" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_weight="1" -->
-<!--             android:text="accept" /> -->
+        <LinearLayout
+            android:id="@+id/linL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
+            android:layout_alignParentBottom="true">
 
-<!--         <Button -->
-<!--             android:id="@+id/hide_button" -->
-<!--             android:layout_width="match_parent" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_weight="1" -->
-<!--             android:text="hide" /> -->
-<!--     </LinearLayout> -->
+            <Button
+                android:id="@+id/accept_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/details_map"
+                android:layout_weight="1"
+                android:text="accept" />
+
+            <Button
+                android:id="@+id/hide_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="hide" />
+        </LinearLayout>
+    </RelativeLayout>
+
 </LinearLayout>
