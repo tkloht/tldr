@@ -216,18 +216,6 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 				.getCredential().getSelectedAccountName()));
 	}
 
-	private void showLoginAlert() {
-		ToolBox.showAlert(this, "Success",
-				"You just logged in with email Adress: " + user.getEmail()
-						+ ", username: " + user.getUsername() + " and id: "
-						+ user.getId(), "Dismiss",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						// here you can add functions
-						afterAuthorization();
-					}
-				});
-	}
 
 	private void afterAuthorization() {
 		// Start up RegisterActivity right away
@@ -299,7 +287,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 			if (registeredUser != null) {
 				user = registeredUser;
 				GlobalData.setCurrentUser(user);
-				showLoginAlert();
+				afterAuthorization();
 			} else {
 				Log.w("TLDR", "No User was registered due to an Error!");
 				showProgress(VIEW_MODE_ERROR);
