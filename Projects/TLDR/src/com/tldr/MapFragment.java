@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
@@ -507,6 +508,14 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	private void onFactionButtonClick() {
 		Toast.makeText(getActivity(), "Fraction", Toast.LENGTH_SHORT).show();
+		Bundle bundle = new Bundle();
+		Fragment fractionDetails = new FactionDetailsFragment();
+		fractionDetails.setArguments(bundle);
+		FragmentTransaction ft = this.getFragmentManager().beginTransaction();
+		ft.replace(this.getId(), fractionDetails);
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+		ft.addToBackStack(null);
+		ft.commit();
 	}
 
 }
