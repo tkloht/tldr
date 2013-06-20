@@ -48,6 +48,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
+import com.tldr.gamelogic.Factions;
 import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
 
@@ -474,6 +475,7 @@ public class MapFragment extends Fragment implements LocationListener,
 					R.id.overlaytest);
 			fractionbuton = (ImageView) getActivity().findViewById(
 					R.id.overlayFractionButton);
+			Factions.setMenueButton(fractionbuton);
 			fractionbuton.setOnClickListener(new OnClickListener() {
 
 				@Override
