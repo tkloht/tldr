@@ -1,5 +1,6 @@
 package com.tldr;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
@@ -17,7 +18,9 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Toast;
 
+import com.tldr.exlap.ConnectionHelper;
 import com.tldr.tools.ToolBox;
 
 public class HomeActivity extends FragmentActivity implements
@@ -25,6 +28,8 @@ public class HomeActivity extends FragmentActivity implements
 	private final static int SPEECH_REQUEST_CODE = 123;
 	private int currentMenu=R.id.menu_map;
 	private FragmentCommunicator currentFragment;
+	private ConnectionHelper connectionHelper;
+
 	Menu menu;
 
 	@Override
@@ -46,6 +51,8 @@ public class HomeActivity extends FragmentActivity implements
 		transaction = fm.beginTransaction();
 		transaction.replace(R.id.homeActivity, fragment);
 		transaction.commit();
+		
+		
 		
 	}
 
@@ -110,6 +117,28 @@ public class HomeActivity extends FragmentActivity implements
 			break;
 		case R.id.action_speech_to_text:
 			sendRecognizeIntent();
+			break;
+		case R.id.menuConnectExlap:
+			if (connectionHelper != null){
+				try {
+					connectionHelper.performDiscovery();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        }else{
+	        	connectionHelper = new ConnectionHelper();
+	            try {
+	                connectionHelper.performDiscovery();
+	                Log.e("tldr-exlap", "after discover");
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	        }
+			break;
+		case R.id.menuSubscribeAll:			
+	        connectionHelper.subscribe("CurrentGear");
+	        Log.e("tldr-exlap", "after subscribe");
+	        Toast.makeText(this, "after subscribe", Toast.LENGTH_SHORT).show();
 			break;
 
 		default:

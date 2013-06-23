@@ -1,5 +1,6 @@
 package com.tldr;
 
+import java.io.IOException;
 import java.util.List;
 
 import android.accounts.AccountManager;
@@ -21,6 +22,7 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher.ViewFactory;
 
+
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
 import com.datastore.DatastoreResultHandler;
@@ -35,6 +37,7 @@ import com.tldr.gamelogic.Factions;
 import com.tldr.messageEndpoint.MessageEndpoint;
 import com.tldr.tools.CloudEndpointUtils;
 import com.tldr.tools.ToolBox;
+
 
 /**
  * The Main Activity.
@@ -160,6 +163,14 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 		super.onResume();
 		selectAccount();
 
+	}
+	
+
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
 	}
 
 	private void selectAccount() {

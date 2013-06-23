@@ -17,6 +17,12 @@
 	        <item
 	            android:id="@+id/menuShowCompass"
 	            android:title="show compass" />
+	        <item	
+	          	android:id="@+id/menuConnectExlap"
+	          	android:title="Connect to Exlap" />
+	        <item
+	            android:id="@+id/menuSubscribeAll"
+	            android:title="Subscribe All" />"
 	        </group>
     	</menu>
     </item>
