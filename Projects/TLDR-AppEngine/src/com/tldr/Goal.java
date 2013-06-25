@@ -10,31 +10,49 @@ import javax.persistence.SequenceGenerator;
 @Entity
 public class Goal {
 
-	  @Id
-	  @GeneratedValue(strategy=GenerationType.AUTO, generator="goal_seq_gen")
-	  @SequenceGenerator(name="goal_seq_gen", sequenceName="GOAL_SEQ")
-	  private Long id;
-	  
-	  @Persistent
-	  private String json_string;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "goal_seq_gen")
+	@SequenceGenerator(name = "goal_seq_gen", sequenceName = "GOAL_SEQ")
+	private Long id;
 
-	  
-	  
-	public Long getId() {
+	@Persistent
+	private String InterfaceUrl;
+
+	@Persistent
+	private String json_string;
+
+	@Persistent
+	private String targetValue;
+
+	@Persistent
+	private String comparator;
+
+	public String getTargetValue() {
+		return targetValue;
+	}
+
+	public void setTargetValue(String targetValue) {
+		this.targetValue = targetValue;
+	}
+
+	public String getComparator() {
+		return comparator;
+	}
+
+	public void setComparator(String comparator) {
+		this.comparator = comparator;
+	}
+
+	public String getInterface() {
+		return InterfaceUrl;
+	}
+
+	public void setInterface(String InterfaceUrl) {
+		this.InterfaceUrl = InterfaceUrl;
+	}
+	
+	public Long getId(){
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getJson_string() {
-		return json_string;
-	}
-
-	public void setJson_string(String json_string) {
-		this.json_string = json_string;
-	}
-	  
-	  
 }

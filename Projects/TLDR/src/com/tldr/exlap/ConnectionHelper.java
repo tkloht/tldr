@@ -1,6 +1,7 @@
 package com.tldr.exlap;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Map;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -21,7 +22,15 @@ import de.exlap.discovery.DiscoveryManager;
 import de.exlap.discovery.ServiceDescription;
 
 public class ConnectionHelper implements DataListener, DiscoveryListener {
-
+	
+	public final static String CURRENT_GEAR = "CurrentGear";
+	public final static String ENGINE_SPEED = "EngineSpeed";
+	public final static String KICKDOWN = "Kickdown";
+	public final static String LOCAL_TIME = "LocalTime";
+	public final static String PEDAL_FORCE = "PedalForce";
+	public final static String TANK_LEVEL = "TankLevel";
+	
+	
     private ExlapClient ec;
     private DataListener dataListener = this;
 
@@ -85,7 +94,7 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
     
     public void subscribe(String... subscriptionInterface){
     	new SubscribeInterface().execute(subscriptionInterface);
-    }
+    } 
     
     private class SubscribeInterface extends AsyncTask<String, Integer,  Boolean> {
     	@Override
@@ -93,16 +102,18 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
     		try {
                 System.out.println("subscribing");
                 UrlList urlList = ec.getDir("*");
-                @SuppressWarnings("unchecked")
-                Url url = urlList.getElement(params[0]);
-                if (url.getType() == Url.TYPE_OBJECT) {
-                    String urlName = url.getName();
-                    System.out.print("Interface on \"" + urlName + "\"...");
-                    System.out.println(" DONE. Interface=" + ec.getInterface(urlName).toString());
-                    System.out.print("Subscribe to: \"" + urlName + "\"...");
-                    ec.subscribeObject(urlName, 100);
-                    System.out.println(" DONE.");                       
-                }
+                
+                for (String param:params){
+                	 Url url = urlList.getElement(param);
+                     if (url.getType() == Url.TYPE_OBJECT) {
+                         String urlName = url.getName();
+                         System.out.print("Interface on \"" + urlName + "\"...");
+                         System.out.println(" DONE. Interface=" + ec.getInterface(urlName).toString());
+                         System.out.print("Subscribe to: \"" + urlName + "\"...");
+                         ec.subscribeObject(urlName, 100);
+                         System.out.println(" DONE.");                       
+                     }
+                }             
                 return true;
             } catch (Exception e) {
             	Log.e("tldr-exlap", e.getLocalizedMessage());

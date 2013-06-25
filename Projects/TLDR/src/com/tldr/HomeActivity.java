@@ -137,9 +137,7 @@ public class HomeActivity extends FragmentActivity implements
 	        }
 			break;
 		case R.id.menuSubscribeAll:			
-	        connectionHelper.subscribe("CurrentGear");
-	        Log.e("tldr-exlap", "after subscribe");
-	        Toast.makeText(this, "after subscribe", Toast.LENGTH_SHORT).show();
+	        connectionHelper.subscribe(connectionHelper.CURRENT_GEAR);
 			break;
 
 		default:
