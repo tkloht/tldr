@@ -2,12 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/login_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:gravity="center_horizontal"
         android:orientation="vertical" >
 
         <!-- <ProgressBar -->
@@ -18,22 +17,38 @@
 
         <ImageView
             android:id="@+id/tldr_skull_anim"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="fitXY"
             android:src="@drawable/tldrskull" />
 
-        <TextSwitcher
-            android:id="@+id/login_status_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:inAnimation="@android:anim/fade_in"
-            android:outAnimation="@android:anim/fade_out"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/login_progress_signing_in"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="140dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
+            android:layout_gravity="center" 
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/tldr_autonomy_logo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:src="@drawable/tldr_anotonomy_logo" />
+
+            <TextSwitcher
+                android:id="@+id/login_status_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:inAnimation="@android:anim/fade_in"
+                android:outAnimation="@android:anim/fade_out"
+                android:text="@string/login_progress_signing_in"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+    </RelativeLayout>
     <!-- Progress Bar -->
 
     <LinearLayout
@@ -114,7 +129,7 @@
                     android:layout_marginLeft="10dip"
                     android:contentDescription="@string/description_logo"
                     android:scaleType="fitStart"
-                    android:src="@drawable/logo" />
+                    android:src="@drawable/tldr_anotonomy_logo" />
             </LinearLayout>
             <!-- Header Ends -->
             <!-- Footer Start -->
@@ -124,7 +139,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="90dip"
                 android:layout_alignParentBottom="true"
-                android:background="#ffffcc"
+                android:background="@drawable/tldr_autonomybg"
                 android:orientation="horizontal" >
             </LinearLayout>
             <!-- Footer Ends -->
@@ -144,7 +159,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="This is the first time you logged into TLDR! Please choose your Username which will be used in the Game!"
+                    android:text="This is the first time you logged into Autonomy! Please choose your Username and Faction which will be used in the Game!"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="#372c24" />
 

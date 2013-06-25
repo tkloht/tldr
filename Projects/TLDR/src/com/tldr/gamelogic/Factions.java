@@ -27,4 +27,24 @@ public class Factions {
 
 	}
 
+	public static void setDetailLogo(ImageView factionbanner,
+			ImageView factionlogo) {
+		if (GlobalData.getCurrentUser() != null) {
+			switch (GlobalData.getCurrentUser().getFaction()) {
+			case FRACTION_DEFIANCE:
+				factionbanner.setImageResource(R.drawable.tldr_banner_def);
+				factionlogo.setImageResource(R.drawable.tldr_def_mini);
+				break;
+			case FRACTION_MINISTRY_OF_FREEDOM:
+				factionbanner.setImageResource(R.drawable.tldr_banner_mof);
+				factionlogo.setImageResource(R.drawable.tldr_mof_mini);
+				break;
+
+			default:
+				break;
+			}
+		}
+
+	}
+
 }

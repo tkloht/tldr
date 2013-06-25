@@ -5,10 +5,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/overlayFractionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/tldr_button_def" />
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#dddddd"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/fractionDetailBanner"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/tldr_banner_mof" />
+
+        <ImageView
+            android:id="@+id/fractionDetailLogo"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_margin="5dp"
+            android:src="@drawable/tldr_def_mini" />
+    </FrameLayout>
 
 </LinearLayout>

@@ -512,9 +512,9 @@ public class MapFragment extends Fragment implements LocationListener,
 		Fragment fractionDetails = new FactionDetailsFragment();
 		fractionDetails.setArguments(bundle);
 		FragmentTransaction ft = this.getFragmentManager().beginTransaction();
-		ft.replace(this.getId(), fractionDetails);
-		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+		ft.replace(R.id.homeActivity, fractionDetails);
 		ft.addToBackStack(null);
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 		ft.commit();
 	}
 

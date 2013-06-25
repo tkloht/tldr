@@ -1,32 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tldranimationskull" >
-
     <item
-        android:drawable="@drawable/tldrani4"
-        android:duration="30"/>
-    <item
-        android:drawable="@drawable/tldrani5"
-        android:duration="30"/>
-    <item
-        android:drawable="@drawable/tldrani6"
-        android:duration="30"/>
-    <item
-        android:drawable="@drawable/tldrani7"
-        android:duration="30"/>
-    <item
-        android:drawable="@drawable/tldrani8"
+        android:drawable="@drawable/tldr_autonomybg"
         android:duration="30"/>
      <item
-        android:drawable="@drawable/tldrani9"
+        android:drawable="@drawable/tldr_autonomybg1"
         android:duration="30"/>
-     <item
-        android:drawable="@drawable/tldrani10"
+      <item
+        android:drawable="@drawable/tldr_autonomybg2"
         android:duration="30"/>
-     <item
-        android:drawable="@drawable/tldrani11"
+       <item
+        android:drawable="@drawable/tldr_autonomybg3"
         android:duration="30"/>
-     <item
-        android:drawable="@drawable/tldrani12"
+        <item
+        android:drawable="@drawable/tldr_autonomybg4"
         android:duration="30"/>
 </animation-list>
