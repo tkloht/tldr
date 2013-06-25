@@ -39,6 +39,7 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 	private int currentView;
 	private final static String TAG_NAME="name";
 	private final static String TAG_DISTANCE="distance";
+	private final static String TAG_EXPERIENCE="experience";
 	private final static String TAG_RANK="rank";
 	private final int TAG_PROFILE = 0;  
 	private UserInfoDatastore userInfoDatastore;
@@ -94,12 +95,14 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 			HashMap<String, String> newMap= new HashMap<String, String>();
 			newMap.put(TAG_RANK, (i+1)+".");
 			newMap.put(TAG_NAME, namen[i]);
-			newMap.put(TAG_DISTANCE, experience[i]+" exp.");
+			int rndValue=rand.nextInt(400)+50;
+			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
+			newMap.put(TAG_EXPERIENCE, experience[i]+" exp.");
 			list.add(newMap);
 
 		}
 		ListAdapter adapter = new SimpleAdapter(getActivity(), list,
-                R.layout.layout_highscore_listitem, new String[] { TAG_RANK, TAG_NAME, TAG_DISTANCE }, 
+                R.layout.layout_highscore_listitem, new String[] { TAG_RANK, TAG_NAME, TAG_EXPERIENCE }, 
                 new int[] { R.id.rank, R.id.name, R.id.distance});
 		highscoreView.setAdapter(adapter);
         MyOnClickListener highscoreOCL = new MyOnClickListener(TAG_PROFILE, list, null, null, this);
@@ -122,7 +125,7 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 				R.layout.layout_nearby_people_listitem, new String[] { TAG_NAME, TAG_DISTANCE }, 
 				new int[] { R.id.name, R.id.distance});
 		friendsView.setAdapter(adapter);
-		MyOnClickListener friendsOCL = new MyOnClickListener(TAG_PROFILE, list, null, null, this);
+		MyOnClickListener friendsOCL = new MyOnClickListener(TAG_PROFILE, list2, null, null, this);
 		friendsView.setOnItemClickListener(friendsOCL);
 
 		
@@ -177,6 +180,6 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 		}
 	}
 	
-	
+
 
 }

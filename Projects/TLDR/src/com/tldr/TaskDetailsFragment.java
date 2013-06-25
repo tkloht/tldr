@@ -82,7 +82,6 @@ public class TaskDetailsFragment extends Fragment{
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
         TextView task_title = (TextView) getView().findViewById(R.id.task_title);
         TextView task_distance = (TextView) getView().findViewById(R.id.task_distance);

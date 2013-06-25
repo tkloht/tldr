@@ -39,23 +39,39 @@ public class MyOnClickListener implements OnItemClickListener{
 			Bundle bundle = new Bundle();
 			if (tag == TAG_PROFILE){
 				f1 = new ProfileDetailsFragment();
-				String text = "zeige Detailansicht zum Profil von " + list.get(arg2).get(TAG_NAME);
-				System.out.println(text);
-				
+				bundle.putSerializable("HashMap", list.get(arg2));
+				if (users != null){
+					UserInfo myUserInfo = null;
+					for (UserInfo u: users){
+						if (u.getUsername().equals(list.get(arg2).get(TAG_NAME))){
+							myUserInfo = u;
+						}
+					}
+					bundle.putDouble("geo_lat", myUserInfo.getGeoLat());
+					bundle.putDouble("geo_lon", myUserInfo.getGeoLon());
+				}
+				else {
+					bundle.putDouble("geo_lat", 11.59);
+					bundle.putDouble("geo_lon", 52.12);
+				}
 			}
 			else if (tag == TAG_TASK){
 				f1 = new TaskDetailsFragment();
-				String text = "zeige Detailansicht zum Task namens " + list.get(arg2).get(TAG_TITLE);
-				System.out.println(text);
 				bundle.putSerializable("HashMap", list.get(arg2));
-				Task ourTask = null;
-				for (Task t: tasks){
-					if (t.getTitle().equals(list.get(arg2).get(TAG_TITLE))){
-						ourTask = t;
+				if (tasks != null){
+					Task myTask = null;
+					for (Task t: tasks){
+						if (t.getTitle().equals(list.get(arg2).get(TAG_TITLE))){
+							myTask = t;
+						}
 					}
+					bundle.putDouble("geo_lat", myTask.getGeoLat());
+					bundle.putDouble("geo_lon", myTask.getGeoLon());
 				}
-				bundle.putDouble("geo_lat", ourTask.getGeoLat());
-				bundle.putDouble("geo_lon", ourTask.getGeoLon());
+				else {
+					bundle.putDouble("geo_lat", 52.12);
+					bundle.putDouble("geo_lon", 11.59);
+				}
 			}
 			f1.setArguments(bundle);
 			FragmentTransaction ft = fragment.getFragmentManager().beginTransaction();

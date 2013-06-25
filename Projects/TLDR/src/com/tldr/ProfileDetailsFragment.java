@@ -2,6 +2,8 @@ package com.tldr;
 
 
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -27,7 +29,9 @@ import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
 
 public class ProfileDetailsFragment extends Fragment{
-	String text;
+	private double geo_lat;
+	private double geo_lon;
+	HashMap<String, String> hashMap;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -35,7 +39,9 @@ public class ProfileDetailsFragment extends Fragment{
 		v = inflater.inflate(R.layout.profile_details_layout, container, false);
 
 		Bundle bundle = this.getArguments();
-		this.text = bundle.getString("text");
+		this.hashMap = (HashMap<String, String>) bundle.getSerializable("HashMap");
+		this.geo_lat = bundle.getDouble("geo_lat");
+		this.geo_lon = bundle.getDouble("geo_lon");
 		
 		return v;
 	}
@@ -44,10 +50,11 @@ public class ProfileDetailsFragment extends Fragment{
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
-        TextView tv = (TextView) getView().findViewById(R.id.task_title);
-        tv.setText(text);
+        TextView user_name = (TextView) getView().findViewById(R.id.user_name);
+        TextView user_distance = (TextView) getView().findViewById(R.id.user_distance);
+        user_name.setText(hashMap.get("name"));
+        user_distance.setText(hashMap.get("distance"));
 	}
 
 }
