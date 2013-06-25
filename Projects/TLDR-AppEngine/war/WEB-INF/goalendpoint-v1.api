@@ -70,13 +70,13 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "goalendpoint.insertGoal" : {
+    "goalendpoint.updateGoal" : {
       "path" : "goal",
-      "httpMethod" : "POST",
+      "httpMethod" : "PUT",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.tldr.GoalEndpoint.insertGoal",
+      "rosyMethod" : "com.tldr.GoalEndpoint.updateGoal",
       "request" : {
         "body" : "autoTemplate(backendRequest)",
         "bodyName" : "resource"
@@ -85,13 +85,13 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "goalendpoint.updateGoal" : {
+    "goalendpoint.insertGoal" : {
       "path" : "goal",
-      "httpMethod" : "PUT",
+      "httpMethod" : "POST",
       "scopes" : [ ],
       "audiences" : [ ],
       "clientIds" : [ ],
-      "rosyMethod" : "com.tldr.GoalEndpoint.updateGoal",
+      "rosyMethod" : "com.tldr.GoalEndpoint.insertGoal",
       "request" : {
         "body" : "autoTemplate(backendRequest)",
         "bodyName" : "resource"
@@ -163,7 +163,7 @@
           "$ref" : "Goal"
         }
       },
-      "com.tldr.GoalEndpoint.insertGoal" : {
+      "com.tldr.GoalEndpoint.updateGoal" : {
         "request" : {
           "$ref" : "Goal"
         },
@@ -171,7 +171,7 @@
           "$ref" : "Goal"
         }
       },
-      "com.tldr.GoalEndpoint.updateGoal" : {
+      "com.tldr.GoalEndpoint.insertGoal" : {
         "request" : {
           "$ref" : "Goal"
         },

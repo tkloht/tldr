@@ -48,9 +48,8 @@ public class Task {
 	  @Persistent
 	  private double geo_lon;
 	  
-//	  @OneToMany
-//	  @JoinColumn(name="task_id", referencedColumnName="id")
-//	  private List<Goal> goals;
+	  @Persistent
+	  private List<Long> goals;
 
 	public String getTitle() {
 		return title;
@@ -68,13 +67,13 @@ public class Task {
 		this.description = description;
 	}
 
-//	public List<Goal> getGoals() {
-//		return goals;
-//	}
-//
-//	public void setGoals(List<Goal> goals) {
-//		this.goals = goals;
-//	}
+	public List<Long> getGoals() {
+		return goals;
+	}
+
+	public void setGoals(List<Long> goals) {
+		this.goals = goals;
+	}
 
 	public Long getId() {
 		return id;

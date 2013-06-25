@@ -1,16 +1,16 @@
 package com.datastore;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.nfc.FormatException;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
-import com.tldr.com.tldr.userinfoendpoint.model.CollectionResponseUserInfo;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.goalendpoint.Goalendpoint;
 import com.tldr.goalendpoint.model.Goal;
@@ -25,6 +25,7 @@ import com.tldr.tools.JsonParser;
  *	This Datastore handles access to Tasks and Goals!
  */
 public class TaskDatastore extends BaseDatastore {
+	
 
 	Taskendpoint service;
 	Goalendpoint goal_service;
@@ -57,20 +58,48 @@ public class TaskDatastore extends BaseDatastore {
 	protected Void doInBackground(Void... v) {
 
 		try {
-//			service.insertTask(new Task().setTitle("TestTask")).execute();
-			GoalStructure gs = new GoalStructure();
-			gs.addBaseData("This is a test goal. Drive 50km/h", "null").addCondition("Speed", "eq", "100").addReward("xp", "2000");
+			GoalStructure gs_t1 = new GoalStructure();
+			GoalStructure gs_t2= new GoalStructure();
+			GoalStructure gs_t3= new GoalStructure();
+			gs_t1.addBaseData("Fahre langsamer als 50km/h", "null").addCondition("Speed", "leq", "50").addReward("xp", "2000");
+			gs_t2.addBaseData("Radiofrequenz an Ampel wechseln", "traffic_lights_entry").addCondition("Speed", "leq", "10").addCondition("radio_freq", "change", "null").addReward("xp", "4000");
+			gs_t3.addBaseData("Schalte Warnblinklicht an Baustelle ein", "null").addCondition("hazards_light", "eq", "on").addReward("xp", "3000");
+
 			try {
-				String goal= JsonParser.writeNewJsonGoalString(gs.getJsonParse());
-//				goal_service.insertGoal(new Goal().setJsonString(goal)).execute();
-				gs =JsonParser.parseJsonGoalString(goal);
-				System.out.println(gs);
+				String goal_t1= JsonParser.writeNewJsonGoalString(gs_t1.getJsonParse());
+				String goal_t2= JsonParser.writeNewJsonGoalString(gs_t2.getJsonParse());
+				String goal_t3= JsonParser.writeNewJsonGoalString(gs_t3.getJsonParse());
+				Goal g_t1=goal_service.insertGoal(new Goal().setJsonString(goal_t1)).execute();
+				Goal g_t2=goal_service.insertGoal(new Goal().setJsonString(goal_t2)).execute();
+				Goal g_t3=goal_service.insertGoal(new Goal().setJsonString(goal_t3)).execute();
+				
+				List<Long> goals_t1= new ArrayList<Long>();
+				List<Long> goals_t2= new ArrayList<Long>();
+				List<Long> goals_t3= new ArrayList<Long>();
+				goals_t1.add(g_t1.getId());
+				goals_t2.add(g_t2.getId());
+				goals_t3.add(g_t3.getId());
+
+			
+			
+			service.insertTask(new Task().setTitle("Observiere den Monbijoupark")
+					.setDescription("Es wird von Autonomy Komplikationen am Monbijou Park berichtet."+
+							"Umrunden Sie den Monbijou Park und melden Sie Unregelmäßigkeiten. "+
+							"Fahren sie nicht schneller als 50km/h um unentdeckt zu bleiben!")
+							.setGeoLat(52.523702).setGeoLon(13.397588).setGoals(goals_t1)).execute();
+			service.insertTask(new Task().setTitle("Sabotage")
+					.setDescription("Versuche die Ampeln der Lindauer Allee unter unsere Kontrolle zu bringen."+
+							"Fahren Sie dazu über die Lindauer Allee und wechseln sie die Radiofrequenz, wenn Sie an einer Ampel stehen.")
+							.setGeoLat(52.574211).setGeoLon(13.349095 ).setGoals(goals_t2)).execute();
+			service.insertTask(new Task().setTitle("Untersuchung am Salzufer")
+					.setDescription("Ein Informant hat uns mitgeteilt, dass eine oder mehrere Baustellen am Salzufer von der gegnerischen Fraktion sabotiert wurde."+
+							"Fahren das Salzufer entlang und markieren Sie Baustellen durch kurzes Betätigen vom Warnblinker")
+							.setGeoLat(52.518493).setGeoLon(13.321928).setGoals(goals_t3)).execute();
+			
 			} catch (FormatException e) {
 				// TODO Auto-generated catch block
 				Log.e("TLDR", e.getMessage());
 			}
-			
-			
 			
 
 		} catch (Exception e) {

@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/qMV5qWhDILzcOKnPWj0D2Ikfnok\"",
+ "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/QHvhChlkR6fG1lOOUk-fW7nwYdA\"",
  "discoveryVersion": "v1",
  "id": "taskendpoint:v1",
  "name": "taskendpoint",
@@ -91,6 +91,13 @@
     "geo_lon": {
      "type": "number",
      "format": "double"
+    },
+    "goals": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "format": "int64"
+     }
     },
     "id": {
      "type": "string",
