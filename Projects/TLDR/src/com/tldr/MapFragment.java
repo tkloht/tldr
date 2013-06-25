@@ -263,6 +263,7 @@ public class MapFragment extends Fragment implements LocationListener,
 		}
 		taskMarkers = new ArrayList<Marker>();
 		userMarkers = new ArrayList<Marker>();
+		taskDatastore.createFakeTasks();
 		taskDatastore.getNearbyTasks();
 		userDatastore.getNearbyUsers();
 
