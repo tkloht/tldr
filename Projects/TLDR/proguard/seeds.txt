@@ -29,9 +29,6 @@ android.support.v4.view.PagerTitleStrip: void setNonPrimaryAlpha(float)
 android.support.v4.view.PagerTitleStrip: void setTextColor(int)
 android.support.v4.view.PagerTitleStrip: void setGravity(int)
 android.support.v4.view.PagerTitleStrip: int getMinHeight()
-android.support.v4.view.ViewPager
-android.support.v4.view.ViewPager: ViewPager(android.content.Context)
-android.support.v4.view.ViewPager: ViewPager(android.content.Context,android.util.AttributeSet)
 android.support.v4.view.ViewPager: void setScrollState(int)
 android.support.v4.view.ViewPager: void setAdapter(android.support.v4.view.PagerAdapter)
 android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()
@@ -225,6 +222,11 @@ com.google.android.gms.location.ActivityRecognitionResult
 com.google.android.gms.location.DetectedActivity
 com.google.android.gms.location.LocationRequest
 com.google.android.gms.maps.GoogleMapOptions
+com.google.android.gms.maps.MapView
+com.google.android.gms.maps.MapView: MapView(android.content.Context)
+com.google.android.gms.maps.MapView: MapView(android.content.Context,android.util.AttributeSet)
+com.google.android.gms.maps.MapView: MapView(android.content.Context,android.util.AttributeSet,int)
+com.google.android.gms.maps.MapView: MapView(android.content.Context,com.google.android.gms.maps.GoogleMapOptions)
 com.google.android.gms.maps.MapView: com.google.android.gms.maps.GoogleMap getMap()
 com.google.android.gms.maps.model.CameraPosition
 com.google.android.gms.maps.model.CircleOptions
@@ -397,6 +399,9 @@ com.tldr.HomeActivity
 com.tldr.HomeActivity: HomeActivity()
 com.tldr.MainActivity
 com.tldr.MainActivity: MainActivity()
+com.tldr.MainActivity: void onRadioButtonClicked(android.view.View)
+com.tldr.MainActivity$State: com.tldr.MainActivity$State[] values()
+com.tldr.MainActivity$State: com.tldr.MainActivity$State valueOf(java.lang.String)
 com.tldr.R$attr: int cameraBearing
 com.tldr.R$attr: int cameraTargetLat
 com.tldr.R$attr: int cameraTargetLng
@@ -425,6 +430,7 @@ com.tldr.R$color: int common_signin_btn_text_dark
 com.tldr.R$color: int common_signin_btn_text_light
 com.tldr.R$dimen: int activity_horizontal_margin
 com.tldr.R$dimen: int activity_vertical_margin
+com.tldr.R$drawable: int agent
 com.tldr.R$drawable: int common_signin_btn_icon_dark
 com.tldr.R$drawable: int common_signin_btn_icon_disabled_dark
 com.tldr.R$drawable: int common_signin_btn_icon_disabled_focus_dark
@@ -449,32 +455,109 @@ com.tldr.R$drawable: int common_signin_btn_text_normal_dark
 com.tldr.R$drawable: int common_signin_btn_text_normal_light
 com.tldr.R$drawable: int common_signin_btn_text_pressed_dark
 com.tldr.R$drawable: int common_signin_btn_text_pressed_light
+com.tldr.R$drawable: int community
+com.tldr.R$drawable: int community_pressed
+com.tldr.R$drawable: int edit_text_rounded_corner_bg
 com.tldr.R$drawable: int ic_launcher
-com.tldr.R$drawable: int logo_tldr
+com.tldr.R$drawable: int ic_menu_allfriends
+com.tldr.R$drawable: int ic_menu_clear_playlist
+com.tldr.R$drawable: int ic_menu_mapmode
+com.tldr.R$drawable: int logo
+com.tldr.R$drawable: int map
+com.tldr.R$drawable: int map_pressed
+com.tldr.R$drawable: int target
+com.tldr.R$drawable: int target_marked
+com.tldr.R$drawable: int tasks
+com.tldr.R$drawable: int tasks_pressed
+com.tldr.R$drawable: int tldr_button_car
+com.tldr.R$drawable: int tldr_button_def
+com.tldr.R$drawable: int tldr_button_face
+com.tldr.R$drawable: int tldr_button_mof
+com.tldr.R$drawable: int tldr_def
+com.tldr.R$drawable: int tldr_mask
+com.tldr.R$drawable: int tldr_mop
+com.tldr.R$drawable: int tldr_self
+com.tldr.R$drawable: int tldr_target
+com.tldr.R$drawable: int tldr_target_sm
+com.tldr.R$drawable: int tldr_task
+com.tldr.R$drawable: int tldr_task_sm
+com.tldr.R$drawable: int tldrani10
+com.tldr.R$drawable: int tldrani11
+com.tldr.R$drawable: int tldrani12
+com.tldr.R$drawable: int tldrani4
+com.tldr.R$drawable: int tldrani5
+com.tldr.R$drawable: int tldrani6
+com.tldr.R$drawable: int tldrani7
+com.tldr.R$drawable: int tldrani8
+com.tldr.R$drawable: int tldrani9
+com.tldr.R$drawable: int tldrskull
+com.tldr.R$id: int accepted_tasks_layout
 com.tldr.R$id: int action_forgot_password
 com.tldr.R$id: int action_settings
+com.tldr.R$id: int action_speech_to_text
 com.tldr.R$id: int btnRegister
+com.tldr.R$id: int completed_tasks_layout
+com.tldr.R$id: int description
+com.tldr.R$id: int distance
 com.tldr.R$id: int footer
+com.tldr.R$id: int friends_layout
 com.tldr.R$id: int header
+com.tldr.R$id: int highscore_layout
+com.tldr.R$id: int homeActivity
 com.tldr.R$id: int hybrid
+com.tldr.R$id: int list_accepted_tasks
+com.tldr.R$id: int list_completed_tasks
+com.tldr.R$id: int list_friends
+com.tldr.R$id: int list_highscore
+com.tldr.R$id: int list_nearby_people
+com.tldr.R$id: int list_nearby_tasks
 com.tldr.R$id: int login_error
 com.tldr.R$id: int login_error_message
 com.tldr.R$id: int login_form
 com.tldr.R$id: int login_retry_button
 com.tldr.R$id: int login_status
 com.tldr.R$id: int login_status_message
+com.tldr.R$id: int map
+com.tldr.R$id: int mapSearchEditText
+com.tldr.R$id: int menuOnlyShowAcceptedTasks
+com.tldr.R$id: int menuShowCompass
+com.tldr.R$id: int menuShowPlayer
+com.tldr.R$id: int menu_community
+com.tldr.R$id: int menu_map
+com.tldr.R$id: int menu_tasks
+com.tldr.R$id: int name
+com.tldr.R$id: int nearby_people_layout
+com.tldr.R$id: int nearby_tasks_layout
 com.tldr.R$id: int none
 com.tldr.R$id: int normal
-com.tldr.R$id: int pager
+com.tldr.R$id: int overlayFractionButton
+com.tldr.R$id: int overlayPlayerButton
+com.tldr.R$id: int overlaytest
+com.tldr.R$id: int radio_fraction_def
+com.tldr.R$id: int radio_fraction_mof
+com.tldr.R$id: int rank
 com.tldr.R$id: int reg_username
 com.tldr.R$id: int register_status
 com.tldr.R$id: int register_status_message
 com.tldr.R$id: int satellite
-com.tldr.R$id: int section_label
 com.tldr.R$id: int terrain
+com.tldr.R$id: int title
+com.tldr.R$id: int tldr_skull_anim
+com.tldr.R$id: int tldranimationskull
 com.tldr.R$layout: int activity_home
 com.tldr.R$layout: int activity_main
-com.tldr.R$layout: int fragment_home_dummy
+com.tldr.R$layout: int community_friends_layout
+com.tldr.R$layout: int community_highscore_layout
+com.tldr.R$layout: int community_layout
+com.tldr.R$layout: int community_nearby_layout
+com.tldr.R$layout: int layout_highscore_listitem
+com.tldr.R$layout: int layout_nearby_listitem
+com.tldr.R$layout: int layout_nearby_people_listitem
+com.tldr.R$layout: int map_layout
+com.tldr.R$layout: int tasks_accepted_layout
+com.tldr.R$layout: int tasks_completed_layout
+com.tldr.R$layout: int tasks_layout
+com.tldr.R$layout: int tasks_nearby_layout
 com.tldr.R$menu: int home
 com.tldr.R$menu: int login
 com.tldr.R$string: int action_forgot_password
@@ -512,15 +595,25 @@ com.tldr.R$string: int location_client_ulr_inactive_age_unknown
 com.tldr.R$string: int location_client_ulr_inactive_unknown_restriction
 com.tldr.R$string: int login_error_signing_in
 com.tldr.R$string: int login_progress_signing_in
+com.tldr.R$string: int map_view_edit_text_hint
+com.tldr.R$string: int menu_community
+com.tldr.R$string: int menu_map
 com.tldr.R$string: int menu_settings
+com.tldr.R$string: int menu_stt
+com.tldr.R$string: int menu_tasks
+com.tldr.R$string: int pick_defiance
+com.tldr.R$string: int pick_mof
 com.tldr.R$string: int prompt_email
 com.tldr.R$string: int prompt_password
 com.tldr.R$string: int register_progress_signing_in
 com.tldr.R$string: int title_activity_home
 com.tldr.R$string: int title_activity_login
 com.tldr.R$string: int title_section1
+com.tldr.R$string: int title_section1_
 com.tldr.R$string: int title_section2
+com.tldr.R$string: int title_section2_
 com.tldr.R$string: int title_section3
+com.tldr.R$string: int title_section3_
 com.tldr.R$style: int AppBaseTheme
 com.tldr.R$style: int AppTheme
 com.tldr.R$style: int LoginFormContainer
@@ -553,7 +646,12 @@ com.tldr.com.tldr.userinfoendpoint.UserinfoendpointRequest: java.lang.String quo
 com.tldr.com.tldr.userinfoendpoint.UserinfoendpointRequest: java.lang.String userIp
 com.tldr.com.tldr.userinfoendpoint.model.CollectionResponseUserInfo: java.util.List items
 com.tldr.com.tldr.userinfoendpoint.model.CollectionResponseUserInfo: java.lang.String nextPageToken
+com.tldr.com.tldr.userinfoendpoint.model.UserInfo: java.util.List acceptedTasks
 com.tldr.com.tldr.userinfoendpoint.model.UserInfo: java.lang.String email
+com.tldr.com.tldr.userinfoendpoint.model.UserInfo: java.lang.Integer faction
+com.tldr.com.tldr.userinfoendpoint.model.UserInfo: java.util.List finishedGoals
+com.tldr.com.tldr.userinfoendpoint.model.UserInfo: java.lang.Double geoLat
+com.tldr.com.tldr.userinfoendpoint.model.UserInfo: java.lang.Double geoLon
 com.tldr.com.tldr.userinfoendpoint.model.UserInfo: java.lang.Long id
 com.tldr.com.tldr.userinfoendpoint.model.UserInfo: java.lang.String username
 com.tldr.deviceinfoendpoint.Deviceinfoendpoint$GetDeviceInfo: java.lang.String id
@@ -594,6 +692,25 @@ com.tldr.messageEndpoint.model.Key: com.tldr.messageEndpoint.model.Key parent
 com.tldr.messageEndpoint.model.MessageData: com.tldr.messageEndpoint.model.Key key
 com.tldr.messageEndpoint.model.MessageData: java.lang.String message
 com.tldr.messageEndpoint.model.MessageData: java.lang.Long timestamp
+com.tldr.taskendpoint.Taskendpoint$GetTask: java.lang.Long id
+com.tldr.taskendpoint.Taskendpoint$ListTask: java.lang.String cursor
+com.tldr.taskendpoint.Taskendpoint$ListTask: java.lang.Integer limit
+com.tldr.taskendpoint.Taskendpoint$RemoveTask: java.lang.Long id
+com.tldr.taskendpoint.TaskendpointRequest: java.lang.String alt
+com.tldr.taskendpoint.TaskendpointRequest: java.lang.String fields
+com.tldr.taskendpoint.TaskendpointRequest: java.lang.String key
+com.tldr.taskendpoint.TaskendpointRequest: java.lang.String oauthToken
+com.tldr.taskendpoint.TaskendpointRequest: java.lang.Boolean prettyPrint
+com.tldr.taskendpoint.TaskendpointRequest: java.lang.String quotaUser
+com.tldr.taskendpoint.TaskendpointRequest: java.lang.String userIp
+com.tldr.taskendpoint.model.CollectionResponseTask: java.util.List items
+com.tldr.taskendpoint.model.CollectionResponseTask: java.lang.String nextPageToken
+com.tldr.taskendpoint.model.Task: java.lang.String description
+com.tldr.taskendpoint.model.Task: java.lang.Double geoLat
+com.tldr.taskendpoint.model.Task: java.lang.Double geoLon
+com.tldr.taskendpoint.model.Task: java.lang.Long id
+com.tldr.taskendpoint.model.Task: java.lang.String title
+com.tldr.tools.UnswipeableViewPager: void setPagingEnabled(boolean)
 javax.annotation.meta.When: javax.annotation.meta.When[] values()
 javax.annotation.meta.When: javax.annotation.meta.When valueOf(java.lang.String)
 org.codehaus.jackson.JsonEncoding: org.codehaus.jackson.JsonEncoding[] values()

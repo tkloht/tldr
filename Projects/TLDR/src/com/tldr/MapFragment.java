@@ -141,15 +141,15 @@ public class MapFragment extends Fragment implements LocationListener,
 			}
 		}
 		
-		//Layout Searchfield by Dimensions
-		Display d = getActivity().getWindowManager().getDefaultDisplay();
-		Point p = new Point();
-		d.getSize(p);
-		double factor = (((double)p.x/(double)ORIGINAL_SCREEN_WIDTH));
-		int ems = (int)(((double)standardEMSForSearchField)*factor);
+//		//Layout Searchfield by Dimensions
+//		Display d = getActivity().getWindowManager().getDefaultDisplay();
+//		Point p = new Point();
+//		d.getSize(p);
+//		double factor = (((double)p.x/(double)ORIGINAL_SCREEN_WIDTH));
+//		int ems = (int)(((double)standardEMSForSearchField)*factor);
 		searchField=(AutoCompleteTextView) v.findViewById(R.id.mapSearchEditText);
-		searchField.setEms(ems);
-		Log.d("TLDR", p.x+"x"+p.y);
+//		searchField.setEms(ems);
+//		Log.d("TLDR", p.x+"x"+p.y);
 		return v;
 	}
 

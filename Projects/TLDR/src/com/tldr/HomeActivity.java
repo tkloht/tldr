@@ -41,9 +41,10 @@ public class HomeActivity extends FragmentActivity implements
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		actionBar.setIcon(R.drawable.logo);
-		actionBar.setTitle("TL;DR");
-
+		actionBar.setIcon(R.drawable.tldr_anotonomy_logo);
+		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.tldr_autonomybg));
+		actionBar.setTitle("");
+		
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction transaction;
 		Fragment fragment = new MapFragment();
