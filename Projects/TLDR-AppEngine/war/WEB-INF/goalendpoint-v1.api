@@ -1,0 +1,189 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://swp-tldr.appspot.com/_ah/api",
+  "name" : "goalendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://swp-tldr.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "tldr.com",
+  "ownerName" : "tldr.com",
+  "methods" : {
+    "goalendpoint.listGoal" : {
+      "path" : "goal",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.GoalEndpoint.listGoal",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "goalendpoint.removeGoal" : {
+      "path" : "goal/{id}",
+      "httpMethod" : "DELETE",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.GoalEndpoint.removeGoal",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "goalendpoint.insertGoal" : {
+      "path" : "goal",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.GoalEndpoint.insertGoal",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "goalendpoint.updateGoal" : {
+      "path" : "goal",
+      "httpMethod" : "PUT",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.GoalEndpoint.updateGoal",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "goalendpoint.getGoal" : {
+      "path" : "goal/{id}",
+      "httpMethod" : "GET",
+      "scopes" : [ ],
+      "audiences" : [ ],
+      "clientIds" : [ ],
+      "rosyMethod" : "com.tldr.GoalEndpoint.getGoal",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "CollectionResponse_Goal" : {
+        "id" : "CollectionResponse_Goal",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Goal"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Goal" : {
+        "id" : "Goal",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "json_string" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.tldr.GoalEndpoint.listGoal" : {
+        "response" : {
+          "$ref" : "CollectionResponse_Goal"
+        }
+      },
+      "com.tldr.GoalEndpoint.removeGoal" : {
+        "response" : {
+          "$ref" : "Goal"
+        }
+      },
+      "com.tldr.GoalEndpoint.insertGoal" : {
+        "request" : {
+          "$ref" : "Goal"
+        },
+        "response" : {
+          "$ref" : "Goal"
+        }
+      },
+      "com.tldr.GoalEndpoint.updateGoal" : {
+        "request" : {
+          "$ref" : "Goal"
+        },
+        "response" : {
+          "$ref" : "Goal"
+        }
+      },
+      "com.tldr.GoalEndpoint.getGoal" : {
+        "response" : {
+          "$ref" : "Goal"
+        }
+      }
+    }
+  }
+}

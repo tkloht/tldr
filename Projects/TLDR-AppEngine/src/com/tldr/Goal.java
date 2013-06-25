@@ -18,6 +18,16 @@ public class Goal {
 	  @Persistent
 	  private String json_string;
 
+	  
+	  
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getJson_string() {
 		return json_string;
 	}
