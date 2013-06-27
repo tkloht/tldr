@@ -2,6 +2,7 @@ package com.tldr;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Fragment;
@@ -75,7 +76,14 @@ public class MapFragment extends Fragment implements LocationListener,
 	private Marker selfMarker;
 	private boolean menueActive = false;
 	private int standardEMSForSearchField=33;
+	
+	private MyOnInfoWindowClickListener myOnInfoWindowClickListerer;
+	HashMap<Marker,Task> tasksHashMap;
+	List<HashMap<String,String>> tasksList;
+	HashMap<Marker,UserInfo> usersHashMap;
+	List<HashMap<String,String>> usersList;
 
+	
 	// UI Stuff
 	private AutoCompleteTextView searchField;
 	
@@ -207,6 +215,14 @@ public class MapFragment extends Fragment implements LocationListener,
 				}
 			}
 		});
+		
+		tasksHashMap = new HashMap<Marker,Task>();
+		tasksList = new ArrayList<HashMap<String,String>>();
+		usersHashMap = new HashMap<Marker,UserInfo>();
+		usersList = new ArrayList<HashMap<String,String>>();
+		myOnInfoWindowClickListerer = new MyOnInfoWindowClickListener(this, tasksHashMap, usersHashMap, tasksList, usersList);
+		mMap.setOnInfoWindowClickListener(myOnInfoWindowClickListerer);
+		
 		InputMethodManager imm = (InputMethodManager) view.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -397,7 +413,19 @@ public class MapFragment extends Fragment implements LocationListener,
 					Log.d("TLDR", newMarker.toString());
 					ToolBox.addInRealDistanceOrder(autoCompletionObjects,
 							new AutoCompletionMarker(newMarker, distance[0]));
+					
+					tasksHashMap.put(newMarker, t);
+					HashMap<String,String> newMap = new HashMap<String,String>();
+					newMap.put("title", t.getTitle());
+					newMap.put("desc", t.getDescription());
+					int dist = Math.round(distance[0]);
+					DecimalFormat df = new DecimalFormat("#.#");
+					newMap.put("distance", (dist<1000? dist+"m" : "~"+df.format(((dist)/1000))+"km"));
+					tasksList.add(newMap);
+
 				}
+				myOnInfoWindowClickListerer.setTasks(tasksHashMap, tasksList);
+				
 				searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(
 						this.getActivity(),
 						android.R.layout.simple_dropdown_item_1line,
@@ -412,6 +440,7 @@ public class MapFragment extends Fragment implements LocationListener,
 		}
 		if (requestId == BaseDatastore.REQUEST_USERINFO_NEARBYUSERS) {
 			List<UserInfo> users = (List<UserInfo>) result;
+			Location current = GlobalData.getLastknownPosition();
 			if (users != null) {
 				for (UserInfo u : users) {
 					if (!u.getId().equals(GlobalData.getCurrentUser().getId())
@@ -426,8 +455,23 @@ public class MapFragment extends Fragment implements LocationListener,
 												.fromResource(R.drawable.agent)));
 
 						userMarkers.add(newMarker);
+
+						
+						usersHashMap.put(newMarker, u);
+						HashMap<String,String> newMap = new HashMap<String,String>();
+						newMap.put("name", u.getUsername());
+						float[] distance = new float[] { 0.0f };
+						if(current!=null){
+							Location.distanceBetween(current.getLatitude(), current.getLongitude(), u.getGeoLat(), u.getGeoLon(), distance);
+						}
+						int dist = Math.round(distance[0]);
+						DecimalFormat df = new DecimalFormat("#.#");
+						newMap.put("distance", (dist<1000? dist+"m" : "~"+df.format(((dist)/1000))+"km"));
+						usersList.add(newMap);
 					}
+					
 				}
+				myOnInfoWindowClickListerer.setUsers(usersHashMap, usersList);
 			}
 		}
 	}
@@ -504,7 +548,26 @@ public class MapFragment extends Fragment implements LocationListener,
 	}
 
 	private void onPlayerButtonClick() {
-		Toast.makeText(getActivity(), "Player", Toast.LENGTH_SHORT).show();
+		Fragment f1 = new ProfileDetailsFragment();
+		Bundle bundle = new Bundle();
+
+		Location current = GlobalData.getLastknownPosition();
+		
+		HashMap<String,String> myUser = new HashMap<String,String>();
+		myUser.put("distance", "-");
+		myUser.put("name", GlobalData.getCurrentUser().getUsername());
+
+		bundle.putSerializable("HashMap", myUser);
+		bundle.putDouble("geo_lat", current.getLatitude());
+		bundle.putDouble("geo_lon", current.getLongitude());
+		
+		f1.setArguments(bundle);
+		FragmentTransaction ft = this.getFragmentManager()
+				.beginTransaction();
+		ft.replace(this.getId(), f1);
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+		ft.addToBackStack(null);
+		ft.commit();
 	}
 
 	private void onFactionButtonClick() {

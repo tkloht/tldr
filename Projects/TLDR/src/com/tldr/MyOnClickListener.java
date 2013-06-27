@@ -51,8 +51,8 @@ public class MyOnClickListener implements OnItemClickListener{
 					bundle.putDouble("geo_lon", myUserInfo.getGeoLon());
 				}
 				else {
-					bundle.putDouble("geo_lat", 11.59);
-					bundle.putDouble("geo_lon", 52.12);
+					bundle.putDouble("geo_lat", 52.12);
+					bundle.putDouble("geo_lon", 11.59);
 				}
 			}
 			else if (tag == TAG_TASK){
@@ -79,7 +79,7 @@ public class MyOnClickListener implements OnItemClickListener{
 			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 			ft.addToBackStack(null);
 			ft.commit();
-			
+
 		}
-		
+
 	}
