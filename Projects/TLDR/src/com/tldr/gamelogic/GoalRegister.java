@@ -18,6 +18,11 @@ public class GoalRegister {
 	public GoalRegister(){
 		this.registeredGoals = new ArrayList<GoalStructure>();
 		this.triggerRegister = GlobalData.getTriggerRegister();
+		if(!GlobalData.getAcceptedUnfinishedGoals().isEmpty()){
+			for(GoalStructure goalStructure:GlobalData.getAcceptedUnfinishedGoals()){
+				this.addGoal(goalStructure);
+			}
+		}
 	}
 	
 	/**
