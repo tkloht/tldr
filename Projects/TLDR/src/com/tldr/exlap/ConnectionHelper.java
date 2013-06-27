@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import com.tldr.GlobalData;
+import com.tldr.exlap.TriggerRegister.TriggerDomains;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 
 	private ExlapClient ec;
 	private DataListener dataListener = this;
+	
 
 	private Handler m_carInfoHandler = new Handler() {
 		@Override
@@ -45,8 +47,9 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 	};
 
 	public void onData(DataObject dataObject) {
-		System.out.println(">>> Got <Data/>: " + dataObject.toString());
+//		System.out.println(">>> Got <Data/>: " + dataObject.toString());
 		if (dataObject != null) {
+			GlobalData.getTriggerRegister().onNewData(TriggerDomains.EXLAP, dataObject);
 			m_carInfoHandler.sendMessage(m_carInfoHandler.obtainMessage(1,
 					dataObject));
 		}

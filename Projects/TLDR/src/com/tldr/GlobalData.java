@@ -10,6 +10,8 @@ import android.location.Location;
 
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.ConnectionHelper;
+import com.tldr.exlap.TriggerRegister;
+import com.tldr.gamelogic.GoalRegister;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.goalendpoint.model.Goal;
 import com.tldr.messageEndpoint.MessageEndpoint;
@@ -21,6 +23,8 @@ public class GlobalData {
 	private static MessageEndpoint messageEndpoint = null;
 	private static UserInfo currentUser = null;
 	private static ConnectionHelper connectionHelper;
+	private static TriggerRegister triggerRegister;
+	private static GoalRegister goalRegister;
 	
 	private static HashMap<Long, GoalStructure> allGoals;
 	
@@ -100,6 +104,24 @@ public class GlobalData {
 	}
 	public static void setConnectionHelper(ConnectionHelper connectionHelperr) {
 		connectionHelper = connectionHelperr;
+	}
+	public static TriggerRegister getTriggerRegister() {
+		if(triggerRegister==null){
+			setTriggerRegister(new TriggerRegister());
+		}
+		return triggerRegister;
+	}
+	public static void setTriggerRegister(TriggerRegister triggerRegister) {
+		GlobalData.triggerRegister = triggerRegister;
+	}
+	public static GoalRegister getGoalRegister() {
+		if(goalRegister==null){
+			setGoalRegister(new GoalRegister());
+		}
+		return goalRegister;
+	}
+	public static void setGoalRegister(GoalRegister goalRegister) {
+		GlobalData.goalRegister = goalRegister;
 	}
 
 	

@@ -10,6 +10,7 @@ import java.util.Map;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.api.client.util.ArrayValueMap;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.taskendpoint.model.Task;
@@ -145,6 +147,24 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 				for(Long gid:goalIds){
 					HashMap<String, String> singleListItem = new HashMap<String, String>();
 					singleListItem.put("description", goals.get(gid).getDescription());
+					Map<String, Object> goalParse = goals.get(gid).getJsonParse();
+					ArrayList<Map<String, String>> conditions= (ArrayList<Map<String, String>>) goalParse.get("conditions");
+					for(Map<String, String> condition:conditions){
+						if(condition.get("data").equals("drive_polyline")){
+							List<LatLng> points=new ArrayList<LatLng>();
+							String polyLineStr = condition.get("value");
+							String[] split = polyLineStr.split(";");
+							for(String latLon:split){
+								String[] coords = latLon.split(",");
+								points.add(new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1])));
+							}
+							points.add(points.get(0));
+							mMap.addPolyline(new PolylineOptions().add(points.toArray(new LatLng[]{})).color(Color.BLUE));
+						}
+					}
+					
+					
+					
 					listObjects.add(singleListItem);
 				}
 			}
@@ -175,7 +195,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 		mMap.getUiSettings().setAllGesturesEnabled(false);
 		mMap.getUiSettings().setCompassEnabled(false);
 		mMap.getUiSettings().setZoomControlsEnabled(false);
-		mMap.moveCamera(CameraUpdateFactory.zoomTo(16));
+		mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(geo_lat, geo_lon)));
 		this.taskMarker = mMap.addMarker(new MarkerOptions().position(
 					new LatLng(geo_lat, geo_lon))

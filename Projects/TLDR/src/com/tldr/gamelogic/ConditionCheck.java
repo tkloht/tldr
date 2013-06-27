@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.tldr.exlap.TriggerRegister;
 import com.tldr.exlap.TriggerRegister.TriggerDomains;
+import com.tldr.gamelogic.GoalRegister.OnTrue;
 
 public class ConditionCheck {
 
@@ -24,9 +25,11 @@ public class ConditionCheck {
 
 	private TriggerRegister.TriggerDomains domain;
 	private String identifier;
+	private OnTrue onTrue;
 
-	public ConditionCheck(Map<String, String> contidion) {
+	public ConditionCheck(Map<String, String> contidion, OnTrue onTrue) {
 		if (contidion.containsKey("data")) {
+			this.onTrue = onTrue;
 			setIdentifier(contidion.get("data"));
 			Data data = Data.valueOf(contidion.get("data").toUpperCase());
 			Operator operator = Operator.valueOf(contidion.get("operator")
@@ -45,7 +48,8 @@ public class ConditionCheck {
 				@Override
 				public Double parseData(Object object) {
 					String dString = (String) object;
-					return Double.parseDouble(dString);
+					double rtn =Double.parseDouble(dString);
+					return rtn;
 				}
 
 				@Override
@@ -94,8 +98,18 @@ public class ConditionCheck {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean updateData(Object data) {
-		return this.checker.checkData(parser.parseData(data));
+		boolean result = false;
+		try {
+			result = this.checker.checkData(parser.parseData(data));
+		} catch (Exception e) {
+//			e.printStackTrace();
+		}
+		if (result && this.onTrue != null) {
+			this.onTrue.onTrue();
+		}
+		return result;
 	}
 
 	public TriggerRegister.TriggerDomains getDomain() {
