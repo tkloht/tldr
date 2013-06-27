@@ -2,18 +2,22 @@ package com.tldr.gamelogic;
 
 import java.util.Map;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
 import com.tldr.exlap.TriggerRegister;
 import com.tldr.exlap.TriggerRegister.TriggerDomains;
 import com.tldr.gamelogic.GoalRegister.OnTrue;
 
+@SuppressLint("DefaultLocale")
 public class ConditionCheck {
 
 	public enum Data {
-		DISPLAYEDVEHICLESPEED, CURRENTGEAR
+		NONE, DISPLAYEDVEHICLESPEED, CURRENTGEAR
 	}
 
 	public enum Operator {
-		LE, EQ
+		NONE, LE, EQ
 	}
 
 	public enum CLAZZ {
@@ -31,9 +35,19 @@ public class ConditionCheck {
 		if (contidion.containsKey("data")) {
 			this.onTrue = onTrue;
 			setIdentifier(contidion.get("data"));
-			Data data = Data.valueOf(contidion.get("data").toUpperCase());
-			Operator operator = Operator.valueOf(contidion.get("operator")
-					.toUpperCase());
+			Data data = null;
+			if (containsData(contidion.get("data").toUpperCase())) {
+				data = Data.valueOf(contidion.get("data").toUpperCase());
+			}
+			Operator operator = null;
+			if (containsOperator(contidion.get("operator").toUpperCase())) {
+				operator = Operator.valueOf(contidion.get("operator")
+						.toUpperCase());
+			}
+			if (data != null && operator != null) {
+				Log.i("TLDR",
+						"Condition registation failed due to lag of coding!");
+			}
 			this.setParser(data);
 			if (this.parser != null) {
 				this.setChecker(this.parser.getDataClassName(), operator);
@@ -44,7 +58,8 @@ public class ConditionCheck {
 	}
 
 	private void setParser(Data data) {
-		if (data == Data.DISPLAYEDVEHICLESPEED || data == Data.CURRENTGEAR) {
+		if (data == Data.NONE || data == Data.DISPLAYEDVEHICLESPEED
+				|| data == Data.CURRENTGEAR) {
 			this.setDomain(TriggerDomains.EXLAP);
 			this.parser = new DataParser<Double>() {
 
@@ -101,6 +116,10 @@ public class ConditionCheck {
 
 	}
 
+	public boolean successfullyInitialized() {
+		return this.parser != null && this.checker != null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public boolean updateData(Object data) {
 		boolean result = false;
@@ -141,6 +160,27 @@ public class ConditionCheck {
 		public void setValue(T value);
 
 		public boolean checkData(T data);
+	}
+
+	public static boolean containsData(String test) {
+
+		for (Data c : Data.values()) {
+			if (c.name().equals(test)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static boolean containsOperator(String test) {
+
+		for (Operator c : Operator.values()) {
+			if (c.name().equals(test)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

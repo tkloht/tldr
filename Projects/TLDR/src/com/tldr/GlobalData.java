@@ -51,13 +51,15 @@ public class GlobalData {
 		for(Long id:acceptedGoals){
 			GoalStructure current = allGoals.get(id);
 			if(acceptedGoals.contains(id)){
+				if(currentUser.getFinishedGoals()==null){
+					currentUser.setFinishedGoals(new ArrayList<Long>());
+				}
 				if(!currentUser.getFinishedGoals().contains(id)){
 					lReturn.add(current);
 				}
 			}
 		}
-		return lReturn;
-		
+		return lReturn;		
 	}
 	
 	public static HashMap<Long, GoalStructure> getAllGoals() {
