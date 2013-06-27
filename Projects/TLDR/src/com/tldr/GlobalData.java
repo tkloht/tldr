@@ -41,6 +41,23 @@ public class GlobalData {
 		return lReturn;
 	}
 
+	public static List<Task> getCompletedTasks() {
+		  List<Task> lReturn = new ArrayList<Task>();
+		  for (Task t : allTasks) {
+		   if (currentUser.getAcceptedTasks() != null
+		     && currentUser.getAcceptedTasks().contains(t.getId())) {
+		    if (currentUser.getFinishedGoals() != null) {
+		     for (Long l : t.getGoals()) {
+		      if (currentUser.getFinishedGoals().contains(l)) {
+		       lReturn.add(t);
+		      }
+		     }
+		    }
+		   }
+		  }
+		  return lReturn;
+		 }
+	
 	public static List<GoalStructure> getAcceptedUnfinishedGoals() {
 		List<GoalStructure> lReturn = new ArrayList<GoalStructure>();
 		List<Task> acceptedTasks = getAcceptedTasks();
