@@ -8,10 +8,18 @@ import java.util.Map;
 public class GoalStructure {
 
 	private Map<String, Object> jsonParse;
-	
+	private Long id;
 	public GoalStructure(){
 		jsonParse=new HashMap<String, Object>();
 		
+	}
+	
+	public void setId(Long id){
+		this.id=id;
+	}
+	
+	public Long getId(){
+		return id;
 	}
 	
 	public GoalStructure addCondition(String data, String operator, String value){

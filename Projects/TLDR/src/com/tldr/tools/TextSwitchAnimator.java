@@ -6,16 +6,19 @@ import android.widget.TextSwitcher;
 
 
 public class TextSwitchAnimator extends Thread{
+	public static int valid_run=0;
 	Activity context;
 	TextSwitcher txtSwitch;
 	String text;
 	int current=0;
+	int run;
 	public TextSwitchAnimator(TextSwitcher txtSwitch, String text, Activity context) {
 		// TODO Auto-generated constructor stub
 		super();
 		this.txtSwitch=txtSwitch;
 		this.text=text;
 		this.context=context;
+		this.run=valid_run++;
 		
 	}
 	
@@ -39,47 +42,52 @@ public class TextSwitchAnimator extends Thread{
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
+						if(run==valid_run-1)
+							txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
 						
 					}
 				});
-				Thread.sleep(50);
+				Thread.sleep(15);
 				context.runOnUiThread(new Runnable() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
+						if(run==valid_run-1)
+							txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
 						
 					}
 				});
-				Thread.sleep(50);
+				Thread.sleep(15);
 				context.runOnUiThread(new Runnable() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
+						if(run==valid_run-1)
+							txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
 						
 					}
 				});
-				Thread.sleep(50);
+				Thread.sleep(15);
 				context.runOnUiThread(new Runnable() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
+						if(run==valid_run-1)
+							txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
 						
 					}
 				});
-				Thread.sleep(50);
+				Thread.sleep(15);
 				context.runOnUiThread(new Runnable() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
+						if(run==valid_run-1)
+							txtSwitch.setText(text.substring(0, current)+createRandomString(text.length()-current));
 						
 					}
 				});

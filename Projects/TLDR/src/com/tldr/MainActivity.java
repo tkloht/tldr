@@ -1,16 +1,16 @@
 package com.tldr;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
+import android.nfc.FormatException;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -21,7 +21,6 @@ import android.widget.RadioButton;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher.ViewFactory;
-
 
 import com.auth.AccountHelper;
 import com.datastore.BaseDatastore;
@@ -34,8 +33,12 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.gamelogic.Factions;
+import com.tldr.gamelogic.GoalStructure;
+import com.tldr.goalendpoint.model.Goal;
 import com.tldr.messageEndpoint.MessageEndpoint;
+import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.CloudEndpointUtils;
+import com.tldr.tools.JsonParser;
 import com.tldr.tools.ToolBox;
 
 
@@ -53,6 +56,10 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 	enum State {
 		REGISTERED, REGISTERING, UNREGISTERED, UNREGISTERING
 	}
+	
+	private final static String progress_login="Authenticating..";
+	private final static String progress_register="Registering..";
+	private final static String progress_data="Fetching Data..";
 
 	private UserInfo user;
 	private int faction;
@@ -61,7 +68,8 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 	private View mLoginFormView;
 	private View mLoginErrorView;
 	private View mRegisterStatusView;
-	private TextSwitcher mSwitcher;
+	private TextSwitcher mSwitcher_login;
+	private TextSwitcher mSwitcher_register;
 	private Button mTryAgainButton;
 	private EditText mUsernameText;
 	private AccountHelper accountHelper;
@@ -82,8 +90,11 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-        mSwitcher = (TextSwitcher) findViewById(R.id.login_status_message);
-        mSwitcher.setFactory(this);
+        mSwitcher_login = (TextSwitcher) findViewById(R.id.login_status_message);
+        mSwitcher_login.setFactory(this);
+        mSwitcher_register = (TextSwitcher) findViewById(R.id.register_status_message);
+        mSwitcher_register.setFactory(this);
+        
 		animationSkull();
 		
 		mUsernameText = (EditText) findViewById(R.id.reg_username);
@@ -93,7 +104,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
-				showProgress(VIEW_MODE_LOGIN_PROGRESS);
+				showProgress(VIEW_MODE_LOGIN_PROGRESS, progress_login);
 				selectAccount();
 				return false;
 			}
@@ -106,7 +117,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
 				if (event.getAction() == MotionEvent.ACTION_UP) {
-					showProgress(VIEW_MODE_REGISTER_PROGRESS);
+					showProgress(VIEW_MODE_REGISTER_PROGRESS, progress_register);
 					boolean success = true;
 					// Check Values for EditText
 					String username = mUsernameText.getText().toString();
@@ -114,13 +125,13 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 						ToolBox.showErrorMessage(mUsernameText,
 								"Your username should at least have 3 characters!");
 						success = false;
-						showProgress(VIEW_MODE_REGISTER);
+						showProgress(VIEW_MODE_REGISTER, "");
 					} else {
 						if (!fraction_checked) {
 							ToolBox.showErrorMessage(mUsernameText,
 									"Your have to choose a faction!");
 							success = false;
-							showProgress(VIEW_MODE_REGISTER);
+							showProgress(VIEW_MODE_REGISTER, "");
 						} else {
 							if (user != null) {
 								user.setUsername(username);
@@ -136,7 +147,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 			}
 		});
 
-		showProgress(VIEW_MODE_LOGIN_PROGRESS);
+		showProgress(VIEW_MODE_LOGIN_PROGRESS, progress_login);
 
 		// Init AccountHelper
 		accountHelper = new AccountHelper(this);
@@ -194,7 +205,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 		}
 	};
 
-	private void showProgress(final int mode) {
+	private void showProgress(final int mode, String progress_description) {
 		currentMode = mode;
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginErrorView = findViewById(R.id.login_error);
@@ -215,7 +226,9 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 						: View.GONE);
 		
 		if(mode==VIEW_MODE_LOGIN_PROGRESS)
-			ToolBox.animateTextSwitcher(mSwitcher, "Logging in....", this);
+			ToolBox.animateTextSwitcher(mSwitcher_login, progress_description, this);
+		if(mode==VIEW_MODE_REGISTER_PROGRESS)
+			ToolBox.animateTextSwitcher(mSwitcher_register, progress_description, this);	
 
 	}
 
@@ -237,14 +250,25 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 				ToolBox.showErrorMessage(mUsernameText,
 						"Your username is already taken!");
 			}
-			showProgress(VIEW_MODE_REGISTER);
+			showProgress(VIEW_MODE_REGISTER, "");
 		} else {
 			registerGCM();
-			anim.stop();
-			Intent intent = new Intent(this, HomeActivity.class);
-			startActivity(intent);
-			finish();
+			
+			fetchGameData();
+
 		}
+	}
+	
+	private void fetchGameData() {
+		showProgress(VIEW_MODE_LOGIN_PROGRESS, "Gathering intel..");
+		taskDatastore.getNearbyTasks();
+	}
+	
+	private void ready() {
+		anim.stop();
+		Intent intent = new Intent(this, HomeActivity.class);
+		startActivity(intent);
+		finish();
 	}
 
 	private void registerGCM() {
@@ -301,7 +325,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 				afterAuthorization();
 			} else {
 				Log.w("TLDR", "No User was registered due to an Error!");
-				showProgress(VIEW_MODE_ERROR);
+				showProgress(VIEW_MODE_ERROR, "");
 			}
 			break;
 		case BaseDatastore.REQUEST_USERINFO_NEARBYUSERS:
@@ -311,7 +335,29 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 			}
 
 			break;
+		case BaseDatastore.REQUEST_TASK_FETCHNEARBY:
+			List<Task> allTasks = (List<Task>) result;
+			GlobalData.setAllTasks(allTasks);
+			taskDatastore.getGoalsForTask(null);
+			break;
+		case BaseDatastore.REQUEST_TASK_FETCHGOALS:
+			List<Goal> allGoals=(List<Goal>) result;
+			HashMap<Long, GoalStructure> parsedGoals= new HashMap<Long, GoalStructure>();
+			for(Goal g:allGoals){
+				try {
+					GoalStructure newGS = JsonParser.parseJsonGoalString(g.getJsonString());
+					newGS.setId(g.getId());
+					parsedGoals.put(g.getId(), newGS);
+					
+				} catch (FormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			GlobalData.setCurrentAcceptedTasksGoals(parsedGoals);
+			ready();
 		}
+		
 
 	}
 
@@ -320,6 +366,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 	public View makeView() {
 		// TODO Auto-generated method stub
         TextView t = new TextView(this);
+        t.setTypeface(Typeface.SANS_SERIF);
         t.setTextAppearance(getApplicationContext(), android.R.attr.textAppearanceMedium);
         return t;
 	}
