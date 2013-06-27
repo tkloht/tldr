@@ -9,6 +9,7 @@ public abstract class BaseDatastore {
 	public final static int REQUEST_USERINFO_NEARBYUSERS = 1;
 	public final static int REQUEST_USERINFO_UPDATEUSER = 2;
 	public final static int REQUEST_TASK_FETCHNEARBY=3;
+	public final static int REQUEST_TASK_FETCHGOALS=4;
 	public final static int REQUEST_TASK_CREATEFAKETASKS = 999;
 	protected DatastoreResultHandler context;
 	

@@ -21,6 +21,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.tldr.exlap.ConnectionHelper;
+import com.tldr.gamelogic.ConditionCheckerTest;
 import com.tldr.tools.ToolBox;
 
 public class HomeActivity extends FragmentActivity implements
@@ -28,7 +29,6 @@ public class HomeActivity extends FragmentActivity implements
 	private final static int SPEECH_REQUEST_CODE = 123;
 	private int currentMenu=R.id.menu_map;
 	private FragmentCommunicator currentFragment;
-	private ConnectionHelper connectionHelper;
 
 	Menu menu;
 
@@ -120,16 +120,16 @@ public class HomeActivity extends FragmentActivity implements
 			sendRecognizeIntent();
 			break;
 		case R.id.menuConnectExlap:
-			if (connectionHelper != null){
+			if (GlobalData.getConnectionHelper() != null){
 				try {
-					connectionHelper.performDiscovery();
+					GlobalData.getConnectionHelper().performDiscovery();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 	        }else{
-	        	connectionHelper = new ConnectionHelper();
+	        	GlobalData.setConnectionHelper(new ConnectionHelper());
 	            try {
-	                connectionHelper.performDiscovery();
+	            	GlobalData.getConnectionHelper().performDiscovery();
 	                Log.e("tldr-exlap", "after discover");
 	            } catch (IOException e) {
 	                e.printStackTrace();
@@ -137,7 +137,8 @@ public class HomeActivity extends FragmentActivity implements
 	        }
 			break;
 		case R.id.menuSubscribeAll:			
-	        connectionHelper.subscribe(connectionHelper.CURRENT_GEAR);
+	        //connectionHelper.subscribe(connectionHelper.CURRENT_GEAR);
+
 			break;
 
 		default:

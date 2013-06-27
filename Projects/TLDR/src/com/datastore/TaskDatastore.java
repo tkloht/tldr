@@ -13,6 +13,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.json.gson.GsonFactory;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.goalendpoint.Goalendpoint;
+import com.tldr.goalendpoint.model.CollectionResponseGoal;
 import com.tldr.goalendpoint.model.Goal;
 import com.tldr.taskendpoint.Taskendpoint;
 import com.tldr.taskendpoint.model.CollectionResponseTask;
@@ -51,6 +52,13 @@ public class TaskDatastore extends BaseDatastore {
 	public void getNearbyTasks(){
 		new GetNearbyTasksTask().execute();
 	}
+	
+	
+	public void getGoalsForTask(Task t){
+		new GetGoalsTask().execute();
+	}
+	
+	
 	
 	private class CreateFakeTasksTask extends
 	AsyncTask<Void, Void, Void> {
@@ -136,6 +144,30 @@ public class TaskDatastore extends BaseDatastore {
 	
 	}
 }
+	
+	private class GetGoalsTask extends
+	AsyncTask<Void, Void, CollectionResponseGoal> {
+	@Override
+	protected CollectionResponseGoal doInBackground(Void... v) {
+		CollectionResponseGoal goals = null;
+		try {
+			goals = goal_service.listGoal()
+					.execute();
+			return goals;
+		} catch (IOException e) {
+			Log.d("TLDR", e.getMessage(), e);
+		}
+		return goals;
+	}
+	
+	@Override
+	protected void onPostExecute(CollectionResponseGoal goals) {
+	
+			context.handleRequestResult(REQUEST_TASK_FETCHGOALS, goals.getItems());
+	
+	}
+}	
+
 	
 
 }
