@@ -1,8 +1,15 @@
+<RelativeLayout
+android:id="@+id/RelativeLayout01" 
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+
+android:layout_width="fill_parent" 
+android:layout_height="fill_parent" 
+>
 <ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_above="@+id/accept_button"
     android:padding="5pt"
     >
 <LinearLayout 
@@ -81,17 +88,20 @@
 		   	    
 		</LinearLayout>
 
-        <Button
-            android:layout_marginTop="15pt"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/accept_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Annehmen"
-            style="?android:attr/buttonStyleInset"
-             />
+     
 
     </LinearLayout>
 
 </LinearLayout>
 </ScrollView>
+
+<Button
+    android:id="@+id/accept_button"
+    style="?android:attr/borderlessButtonStyle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:text="Annehmen" />
+
+</RelativeLayout>
