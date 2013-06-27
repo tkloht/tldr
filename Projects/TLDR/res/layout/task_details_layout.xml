@@ -1,10 +1,16 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/task_details"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:padding="5pt"
+    >
+<LinearLayout 
+    android:id="@+id/task_details"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:scrollbars="vertical" >
+     >
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -24,14 +30,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text="Task Distance"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:fontFamily="sans-serif-light"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+             />
     </FrameLayout>
 
     <TextView
         android:id="@+id/task_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Task Description" />
+        android:text="Task Description"
+        android:fontFamily="sans-serif-light"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
     <LinearLayout
@@ -84,3 +94,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</ScrollView>
