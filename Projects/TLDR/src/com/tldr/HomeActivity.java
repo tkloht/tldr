@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.auth.AccountHelper;
+import com.datastore.UserInfoDatastore;
 import com.tldr.exlap.ConnectionHelper;
 import com.tldr.gamelogic.ConditionCheckerTest;
 import com.tldr.gamelogic.GoalRegister;
@@ -143,8 +145,13 @@ public class HomeActivity extends FragmentActivity implements
 			break;
 		case R.id.menuSubscribeAll:
 			// GlobalData.getConnectionHelper().subscribe("CurrentGear");
-//			ConditionCheckerTest.test3();
-			GlobalData.getGoalRegister();
+			// ConditionCheckerTest.test3();
+			//TODO total gehacked muss man dringen verbessern
+			AccountHelper auth;
+			UserInfoDatastore datastore;
+			auth = new AccountHelper(this);
+			datastore = new UserInfoDatastore(null, auth.getCredential());
+			GlobalData.getGoalRegister().setDatastore(datastore);
 			Log.e("tldr-exlap", "after subscribe");
 			Toast.makeText(this, "after subscribe", Toast.LENGTH_SHORT).show();
 			break;
@@ -185,7 +192,8 @@ public class HomeActivity extends FragmentActivity implements
 			transaction.commit();
 			break;
 		case R.id.menu_community:
-			menu.findItem(R.id.menu_community).setIcon(R.drawable.community_pressed);
+			menu.findItem(R.id.menu_community).setIcon(
+					R.drawable.community_pressed);
 			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new CommunityFragment();
