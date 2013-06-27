@@ -87,28 +87,59 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 		currentView=R.id.list_nearby_tasks;
 		Location current = ToolBox.receiveCurrentLocation(getActivity());
 		
-		// FAKE completed data
-		Random rand = new Random();
-		String[] titles = {"Waffenschmuggeln", "Speisung der Defiance"};
-		String[] descriptions = {"Hole eine Lieferung von der Post ab und bringe sie dem Agenten!", "Finde heraus welches Restaurant die besten Preise bietet!"};
+//		// FAKE completed data
+//		Random rand = new Random();
+//		String[] titles = {"Waffenschmuggeln", "Speisung der Defiance"};
+//		String[] descriptions = {"Hole eine Lieferung von der Post ab und bringe sie dem Agenten!", "Finde heraus welches Restaurant die besten Preise bietet!"};
+//		List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+//		for (int i = 0; i < titles.length; i++){
+//			HashMap<String, String> newMap= new HashMap<String, String>();
+//			newMap.put(TAG_TITLE, titles[i]);
+//			newMap.put(TAG_DESCRIPTION, descriptions[i]);
+//			int rndValue=rand.nextInt(400)+50;
+//			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
+//			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+//			
+//			ToolBox.addInRealDistanceOrder(list, newMap);
+//		}
+//		ListAdapter adapter = new SimpleAdapter(getActivity(), list,
+//                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE }, 
+//                new int[] { R.id.title, R.id.description, R.id.distance});
+//		completedListView.setAdapter(adapter);
+//
+//		MyOnClickListener completedOCL = new MyOnClickListener(TAG_TASK, list, null, null, this);
+//		completedListView.setOnItemClickListener(completedOCL);
+		
 		List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-		for (int i = 0; i < titles.length; i++){
-			HashMap<String, String> newMap= new HashMap<String, String>();
-			newMap.put(TAG_TITLE, titles[i]);
-			newMap.put(TAG_DESCRIPTION, descriptions[i]);
-			int rndValue=rand.nextInt(400)+50;
-			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
-			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+		List<Task> tasks= GlobalData.getAllTasks();
+		List<Task> completedTasks=GlobalData.getCompletedTasks();
+		for(Task t:completedTasks)
+		{
 			
+			HashMap<String, String> newMap= new HashMap<String, String>();
+			newMap.put(TAG_TITLE, t.getTitle());
+			newMap.put(TAG_DESCRIPTION, (t.getDescription().length()<500?t.getDescription():t.getDescription().substring(0, 49)+".."));
+			float[] distance = new float[]{0.0f};
+			Log.d("TLDR", "Task Position: "+t.getGeoLat()+" "+t.getGeoLon());
+			if(current!=null){
+				Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
+			}
+			int dist = Math.round(distance[0]);
+			DecimalFormat df = new DecimalFormat("#.#");
+			newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+df.format((dist/1000))+"km"));
+			newMap.put(ToolBox.TAG_REAL_DISTANCE, dist+"");
 			ToolBox.addInRealDistanceOrder(list, newMap);
 		}
-		ListAdapter adapter = new SimpleAdapter(getActivity(), list,
-                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE }, 
+		
+        ListAdapter adapter = new SimpleAdapter(
+        		getActivity(), list,
+                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE },
                 new int[] { R.id.title, R.id.description, R.id.distance});
-		completedListView.setAdapter(adapter);
-
-		MyOnClickListener completedOCL = new MyOnClickListener(TAG_TASK, list, null, null, this);
-		completedListView.setOnItemClickListener(completedOCL);
+        // updating listview
+        acceptedListView.setAdapter(adapter);
+        
+        MyOnClickListener completedOCL = new MyOnClickListener(TAG_TASK, list, completedTasks, null, this);
+        acceptedListView.setOnItemClickListener(completedOCL);
 
 		
 		// FAKE accepted data
@@ -133,7 +164,6 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 //		acceptedListView.setOnItemClickListener(acceptedOCL);
 		
 		List<HashMap<String, String>> list2 = new ArrayList<HashMap<String, String>>();
-		List<Task> tasks= GlobalData.getAllTasks();
 		List<Task> acceptedTasks=GlobalData.getAcceptedTasks();
 		for(Task t:acceptedTasks)
 		{
