@@ -227,7 +227,8 @@ public class MapFragment extends Fragment implements LocationListener,
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 		mMapView.requestFocus();
-
+		userDatastore.getNearbyUsers();
+		handleRequestResult(BaseDatastore.REQUEST_TASK_FETCHNEARBY, GlobalData.getAllTasks());
 	}
 
 	private void acceptAllNearbyTasks() {
@@ -280,8 +281,7 @@ public class MapFragment extends Fragment implements LocationListener,
 		taskMarkers = new ArrayList<Marker>();
 		userMarkers = new ArrayList<Marker>();
 //		taskDatastore.createFakeTasks();
-		taskDatastore.getNearbyTasks();
-		userDatastore.getNearbyUsers();
+//		taskDatastore.getNearbyTasks();
 
 	}
 

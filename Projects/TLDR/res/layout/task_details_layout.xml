@@ -63,7 +63,7 @@
 			    >
 			
 		    	<ListView 
-		    	
+		    	android:paddingRight="10pt"
 		        android:id="@+id/goal_list"
 		        android:layout_weight="1"
 		        android:layout_width="fill_parent"

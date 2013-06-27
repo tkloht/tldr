@@ -253,7 +253,6 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 			showProgress(VIEW_MODE_REGISTER, "");
 		} else {
 			registerGCM();
-			
 			fetchGameData();
 
 		}
