@@ -9,7 +9,7 @@ import com.tldr.gamelogic.GoalRegister.OnTrue;
 public class ConditionCheck {
 
 	public enum Data {
-		SPEED, CURRENTGEAR
+		DISPLAYEDVEHICLESPEED, CURRENTGEAR
 	}
 
 	public enum Operator {
@@ -35,20 +35,23 @@ public class ConditionCheck {
 			Operator operator = Operator.valueOf(contidion.get("operator")
 					.toUpperCase());
 			this.setParser(data);
-			this.setChecker(this.parser.getDataClassName(), operator);
-			this.checker.setValue(parser.parseData(contidion.get("value")));
+			if (this.parser != null) {
+				this.setChecker(this.parser.getDataClassName(), operator);
+				this.checker.setValue(parser.parseData(contidion.get("value")));
+			}
+
 		}
 	}
 
 	private void setParser(Data data) {
-		if (data == Data.SPEED || data == Data.CURRENTGEAR) {
+		if (data == Data.DISPLAYEDVEHICLESPEED || data == Data.CURRENTGEAR) {
 			this.setDomain(TriggerDomains.EXLAP);
 			this.parser = new DataParser<Double>() {
 
 				@Override
 				public Double parseData(Object object) {
 					String dString = (String) object;
-					double rtn =Double.parseDouble(dString);
+					double rtn = Double.parseDouble(dString);
 					return rtn;
 				}
 
@@ -104,7 +107,7 @@ public class ConditionCheck {
 		try {
 			result = this.checker.checkData(parser.parseData(data));
 		} catch (Exception e) {
-//			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		if (result && this.onTrue != null) {
 			this.onTrue.onTrue();

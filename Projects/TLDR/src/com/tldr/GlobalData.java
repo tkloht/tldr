@@ -34,7 +34,8 @@ public class GlobalData {
 	public static List<Task> getAcceptedTasks(){
 		List<Task> lReturn = new ArrayList<Task>();
 		for(Task t:allTasks){
-			if(currentUser.getAcceptedTasks().contains(t.getId())){
+			if(currentUser.getAcceptedTasks() !=null 
+					&&currentUser.getAcceptedTasks().contains(t.getId())){
 				lReturn.add(t);
 			}
 		}
