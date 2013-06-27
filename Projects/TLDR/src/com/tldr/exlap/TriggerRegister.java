@@ -8,6 +8,8 @@ import java.util.Map;
 import com.tldr.GlobalData;
 import com.tldr.gamelogic.ConditionCheck;
 
+import de.exlap.DataObject;
+
 public class TriggerRegister {
 
 	public enum TriggerDomains {
@@ -42,5 +44,36 @@ public class TriggerRegister {
 		default:
 			break;
 		}
+	}
+
+	public void onNewData(TriggerDomains domain, Object data) {
+		switch (domain) {
+		case EXLAP:
+			DataObject dataObject = (DataObject) data;
+			if (dataObject.size() > 0) {
+				if (this.exlapCondition.containsKey(dataObject.getUrl())) {
+					List<ConditionCheck> cList = this.exlapCondition
+							.get(dataObject.getUrl());
+					List<ConditionCheck> done = new ArrayList<ConditionCheck>();
+					for (ConditionCheck cc : cList) {
+						Object value = dataObject.getElement(0).getValue();
+						if (value != null) {
+							if(cc.updateData(value)){
+								done.add(cc);
+							}
+							//TODO if ture  dann unsuscriben
+						}
+					}
+					for(ConditionCheck ccd: done){
+						cList.remove(ccd);
+					}
+				}
+			}
+			break;
+
+		default:
+			break;
+		}
+
 	}
 }
