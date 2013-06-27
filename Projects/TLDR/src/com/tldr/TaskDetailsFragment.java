@@ -8,13 +8,18 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Fragment;
+import android.app.Service;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -84,6 +89,12 @@ public class TaskDetailsFragment extends Fragment{
 		mMapView.requestFocus();
 		
 		goalList =(ListView) view.findViewById(R.id.goal_list);
+		int orientation=getResources().getConfiguration().orientation;
+		if(orientation==Configuration.ORIENTATION_PORTRAIT){
+			mMapView.setVisibility(View.GONE);
+		}
+		
+		
 		fillGoalList();
 		
 		
