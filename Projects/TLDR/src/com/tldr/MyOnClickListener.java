@@ -67,6 +67,7 @@ public class MyOnClickListener implements OnItemClickListener{
 					}
 					bundle.putDouble("geo_lat", myTask.getGeoLat());
 					bundle.putDouble("geo_lon", myTask.getGeoLon());
+					bundle.putLong("id", myTask.getId());
 				}
 				else {
 					bundle.putDouble("geo_lat", 52.12);

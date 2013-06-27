@@ -4,48 +4,33 @@ package com.tldr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebView.FindListener;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.TextView.OnEditorActionListener;
 
-import com.auth.AccountHelper;
-import com.datastore.BaseDatastore;
-import com.datastore.DatastoreResultHandler;
-import com.datastore.TaskDatastore;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.tldr.MapFragment.AutoCompletionMarker;
+import com.tldr.gamelogic.GoalStructure;
 import com.tldr.taskendpoint.model.Task;
-import com.tldr.tools.ToolBox;
 
 public class TaskDetailsFragment extends Fragment{
 	HashMap<String, String> hashMap;
@@ -55,6 +40,9 @@ public class TaskDetailsFragment extends Fragment{
 	private Marker taskMarker;
 	private double geo_lat;
 	private double geo_lon;
+	private Long id;
+	
+	private ListView goalList;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -65,7 +53,7 @@ public class TaskDetailsFragment extends Fragment{
 		this.hashMap = (HashMap<String, String>) bundle.getSerializable("HashMap");
 		this.geo_lat = bundle.getDouble("geo_lat");
 		this.geo_lon = bundle.getDouble("geo_lon");
-		
+		id=bundle.getLong("id");
 		try {
 			MapsInitializer.initialize(getActivity());
 		} catch (GooglePlayServicesNotAvailableException e) {
@@ -95,6 +83,40 @@ public class TaskDetailsFragment extends Fragment{
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 		mMapView.requestFocus();
 		
+		goalList =(ListView) view.findViewById(R.id.goal_list);
+		fillGoalList();
+		
+		
+		
+	}
+	
+	private void fillGoalList(){
+		List<Task> allTasks=GlobalData.getAllTasks();
+		Map<Long, GoalStructure> goals=GlobalData.getAllGoals();
+		Task selected=null;
+		List<Map<String, String>> listObjects = new ArrayList<Map<String,String>>();
+		if(id!=null){
+			for( Task t:allTasks){
+				if(id.equals(t.getId())){
+					selected = t;
+				}
+			}
+			if(selected!=null){
+				List<Long> goalIds = selected.getGoals();
+				for(Long gid:goalIds){
+					HashMap<String, String> singleListItem = new HashMap<String, String>();
+					singleListItem.put("description", goals.get(gid).getDescription());
+					listObjects.add(singleListItem);
+				}
+			}
+		}
+		
+        ListAdapter adapter = new SimpleAdapter(
+        		getActivity(),listObjects,
+                R.layout.goal_listitem, new String[] { "description" },
+                new int[] { R.id.goal_desc});
+        // updating listview
+        goalList.setAdapter(adapter);
 		
 	}
 	
@@ -109,7 +131,12 @@ public class TaskDetailsFragment extends Fragment{
 	
 	
 	private void setUpMap() {
-		mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
+		mMap.setIndoorEnabled(false);
+		mMap.setTrafficEnabled(false);
+		mMap.getUiSettings().setAllGesturesEnabled(false);
+		mMap.getUiSettings().setCompassEnabled(false);
+		mMap.getUiSettings().setZoomControlsEnabled(false);
+		mMap.moveCamera(CameraUpdateFactory.zoomTo(16));
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(geo_lat, geo_lon)));
 		this.taskMarker = mMap.addMarker(new MarkerOptions().position(
 					new LatLng(geo_lat, geo_lon))
