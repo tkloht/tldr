@@ -18,50 +18,63 @@ import com.tldr.messageEndpoint.MessageEndpoint;
 import com.tldr.taskendpoint.model.Task;
 
 public class GlobalData {
-	
+
 	private static Location lastknownPosition = null;
 	private static MessageEndpoint messageEndpoint = null;
 	private static UserInfo currentUser = null;
 	private static ConnectionHelper connectionHelper;
 	private static TriggerRegister triggerRegister;
 	private static GoalRegister goalRegister;
-	
+
 	private static HashMap<Long, GoalStructure> allGoals;
-	
+
 	private static List<Task> allTasks;
 
-	
-	public static List<Task> getAcceptedTasks(){
+	public static List<Task> getAcceptedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();
-		for(Task t:allTasks){
-			if(currentUser.getAcceptedTasks() !=null 
-					&&currentUser.getAcceptedTasks().contains(t.getId())){
+		for (Task t : allTasks) {
+			if (currentUser.getAcceptedTasks() != null
+					&& currentUser.getAcceptedTasks().contains(t.getId())) {
 				lReturn.add(t);
 			}
 		}
 		return lReturn;
 	}
-	public static List<GoalStructure> getAcceptedUnfinishedGoals(){
+
+	public static List<GoalStructure> getAcceptedUnfinishedGoals() {
 		List<GoalStructure> lReturn = new ArrayList<GoalStructure>();
-		List<Task> acceptedTasks=getAcceptedTasks();
+		List<Task> acceptedTasks = getAcceptedTasks();
 		List<Long> acceptedGoals = new ArrayList<Long>();
-		for(Task t: acceptedTasks){
+		for (Task t : acceptedTasks) {
 			acceptedGoals.addAll(t.getGoals());
 		}
-		for(Long id:acceptedGoals){
+		for (Long id : acceptedGoals) {
 			GoalStructure current = allGoals.get(id);
-			if(acceptedGoals.contains(id)){
-				if(currentUser.getFinishedGoals()==null){
+			if (acceptedGoals.contains(id)) {
+				if (currentUser.getFinishedGoals() == null) {
 					currentUser.setFinishedGoals(new ArrayList<Long>());
 				}
-				if(!currentUser.getFinishedGoals().contains(id)){
+				if (!currentUser.getFinishedGoals().contains(id)) {
 					lReturn.add(current);
 				}
 			}
 		}
-		return lReturn;		
+		return lReturn;
 	}
-	
+
+	public static Task getTastById(Long id) {
+		for (Task t : allTasks) {
+			if (t.getId() == id) {
+				return t;
+			}
+		}
+		return null;
+	}
+
+	public static GoalStructure getGoalsFromTask(Long taskId) {
+		return allGoals.get(getTastById(taskId).getGoals().get(0));
+	}
+
 	public static HashMap<Long, GoalStructure> getAllGoals() {
 		return allGoals;
 	}
@@ -102,32 +115,35 @@ public class GlobalData {
 	public static void setCurrentUser(UserInfo currentUser) {
 		GlobalData.currentUser = currentUser;
 	}
+
 	public static ConnectionHelper getConnectionHelper() {
 		return connectionHelper;
 	}
+
 	public static void setConnectionHelper(ConnectionHelper connectionHelperr) {
 		connectionHelper = connectionHelperr;
 	}
+
 	public static TriggerRegister getTriggerRegister() {
-		if(triggerRegister==null){
+		if (triggerRegister == null) {
 			setTriggerRegister(new TriggerRegister());
 		}
 		return triggerRegister;
 	}
+
 	public static void setTriggerRegister(TriggerRegister triggerRegister) {
 		GlobalData.triggerRegister = triggerRegister;
 	}
+
 	public static GoalRegister getGoalRegister() {
-		if(goalRegister==null){
+		if (goalRegister == null) {
 			setGoalRegister(new GoalRegister());
 		}
 		return goalRegister;
 	}
+
 	public static void setGoalRegister(GoalRegister goalRegister) {
 		GlobalData.goalRegister = goalRegister;
 	}
 
-	
-	
-	
 }

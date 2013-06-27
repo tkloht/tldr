@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.auth.AccountHelper;
 import com.datastore.UserInfoDatastore;
+import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.ConnectionHelper;
 import com.tldr.gamelogic.ConditionCheckerTest;
 import com.tldr.gamelogic.GoalRegister;
@@ -111,6 +112,15 @@ public class HomeActivity extends FragmentActivity implements
 			currentMenu = item.getItemId();
 			break;
 		case R.id.menuShowCompass:
+			AccountHelper autha;
+			UserInfoDatastore datastorea;
+			autha = new AccountHelper(this);
+			datastorea = new UserInfoDatastore(null, autha.getCredential());
+			UserInfo currentUser = GlobalData.getCurrentUser();
+			currentUser.setFinishedGoals(new ArrayList<Long>());
+			currentUser.setAcceptedTasks(new ArrayList<Long>());
+			datastorea.updateUser(currentUser);
+			break;
 		case R.id.menuOnlyShowAcceptedTasks:
 		case R.id.menuShowPlayer:
 			if (item.isChecked())
@@ -141,7 +151,7 @@ public class HomeActivity extends FragmentActivity implements
 		case R.id.menuSubscribeAll:
 			// GlobalData.getConnectionHelper().subscribe("CurrentGear");
 			// ConditionCheckerTest.test3();
-			//TODO total gehacked muss man dringen verbessern
+			// TODO total gehacked muss man dringen verbessern
 			AccountHelper auth;
 			UserInfoDatastore datastore;
 			auth = new AccountHelper(this);
