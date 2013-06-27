@@ -36,7 +36,9 @@ public class TriggerRegister {
 			} else {
 				cList = new ArrayList<ConditionCheck>();
 				this.exlapCondition.put(identifier, cList);
-				GlobalData.getConnectionHelper().subscribe(identifier);
+				if (GlobalData.getConnectionHelper() != null) {
+					GlobalData.getConnectionHelper().subscribe(identifier);
+				}
 			}
 			cList.add(conditionCheck);
 			break;
@@ -58,13 +60,13 @@ public class TriggerRegister {
 					for (ConditionCheck cc : cList) {
 						Object value = dataObject.getElement(0).getValue();
 						if (value != null) {
-							if(cc.updateData(value)){
+							if (cc.updateData(value)) {
 								done.add(cc);
 							}
-							//TODO if ture  dann unsuscriben
+							// TODO if ture dann unsuscriben
 						}
 					}
-					for(ConditionCheck ccd: done){
+					for (ConditionCheck ccd : done) {
 						cList.remove(ccd);
 					}
 				}

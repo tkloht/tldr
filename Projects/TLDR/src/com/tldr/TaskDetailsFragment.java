@@ -55,6 +55,8 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	private ListView goalList;
 	private AccountHelper auth;
 	private UserInfoDatastore datastore; 
+	private Task selected;
+	private List<Long> goalIds;
 
 	
 	@Override
@@ -92,6 +94,11 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	        	 GlobalData.setCurrentUser(user);
 	        	 
 	        	 datastore.updateUser(user);
+	        	 Map<Long, GoalStructure> goals=GlobalData.getAllGoals();
+
+	        	 for(Long gid:goalIds){
+		        	 GlobalData.getGoalRegister().addGoal(goals.get(gid));
+	        	 }
 	             Toast.makeText(getActivity(), "Accepted Task, id:" + id  , Toast.LENGTH_LONG).show();
 	             
 	         }
@@ -134,7 +141,6 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	private void fillGoalList(){
 		List<Task> allTasks=GlobalData.getAllTasks();
 		Map<Long, GoalStructure> goals=GlobalData.getAllGoals();
-		Task selected=null;
 		List<Map<String, String>> listObjects = new ArrayList<Map<String,String>>();
 		if(id!=null){
 			for( Task t:allTasks){
@@ -143,7 +149,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 				}
 			}
 			if(selected!=null){
-				List<Long> goalIds = selected.getGoals();
+				goalIds = selected.getGoals();
 				for(Long gid:goalIds){
 					HashMap<String, String> singleListItem = new HashMap<String, String>();
 					singleListItem.put("description", goals.get(gid).getDescription());
