@@ -136,10 +136,10 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
                 R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE },
                 new int[] { R.id.title, R.id.description, R.id.distance});
         // updating listview
-        acceptedListView.setAdapter(adapter);
+        completedListView.setAdapter(adapter);
         
         MyOnClickListener completedOCL = new MyOnClickListener(TAG_TASK, list, completedTasks, null, this);
-        acceptedListView.setOnItemClickListener(completedOCL);
+        completedListView.setOnItemClickListener(completedOCL);
 
 		
 		// FAKE accepted data
