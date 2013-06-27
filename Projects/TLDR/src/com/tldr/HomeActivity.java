@@ -21,6 +21,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.tldr.exlap.ConnectionHelper;
+import com.tldr.gamelogic.ConditionCheckerTest;
 import com.tldr.tools.ToolBox;
 
 public class HomeActivity extends FragmentActivity implements
@@ -120,6 +121,7 @@ public class HomeActivity extends FragmentActivity implements
 			sendRecognizeIntent();
 			break;
 		case R.id.menuConnectExlap:
+			ConditionCheckerTest.test();
 			if (connectionHelper != null){
 				try {
 					connectionHelper.performDiscovery();
