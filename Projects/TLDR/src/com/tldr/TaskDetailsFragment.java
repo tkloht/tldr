@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Fragment;
-import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,15 +15,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.auth.AccountHelper;
+import com.datastore.DatastoreResultHandler;
+import com.datastore.TaskDatastore;
+import com.datastore.UserInfoDatastore;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,10 +36,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.api.client.util.ArrayValueMap;
+import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.taskendpoint.model.Task;
 
-public class TaskDetailsFragment extends Fragment{
+public class TaskDetailsFragment extends Fragment implements DatastoreResultHandler{
 	HashMap<String, String> hashMap;
 	private MapView mMapView;
 	private GoogleMap mMap;
@@ -46,8 +50,10 @@ public class TaskDetailsFragment extends Fragment{
 	private double geo_lat;
 	private double geo_lon;
 	private Long id;
-	
 	private ListView goalList;
+	private AccountHelper auth;
+	private UserInfoDatastore datastore; 
+
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -59,6 +65,7 @@ public class TaskDetailsFragment extends Fragment{
 		this.geo_lat = bundle.getDouble("geo_lat");
 		this.geo_lon = bundle.getDouble("geo_lon");
 		id=bundle.getLong("id");
+
 		try {
 			MapsInitializer.initialize(getActivity());
 		} catch (GooglePlayServicesNotAvailableException e) {
@@ -68,9 +75,30 @@ public class TaskDetailsFragment extends Fragment{
 		mMapView.onCreate(mBundle);
 		setUpMapIfNeeded(v);
 		
+		auth = new AccountHelper(getActivity()); 	 
+		datastore = new UserInfoDatastore(this, auth.getCredential());
+		final Button button = (Button) v.findViewById(R.id.accept_button);
+	    button.setOnClickListener(new View.OnClickListener() {
+	         public void onClick(View v) {
+	        	 UserInfo user = GlobalData.getCurrentUser();
+	        	 List<Long> acceptedTasks = user.getAcceptedTasks();
+	        	 if (acceptedTasks == null) {
+	        		 acceptedTasks = new ArrayList<Long>();
+	        	 }
+	        	 acceptedTasks.add(id);
+	        	 user.setAcceptedTasks(acceptedTasks);
+	        	 GlobalData.setCurrentUser(user);
+	        	 
+	        	 datastore.updateUser(user);
+	             Toast.makeText(getActivity(), "Accepted Task, id:" + id  , Toast.LENGTH_LONG).show();
+	             
+	         }
+	     });
+		
 		return v;
 	}
 	
+
 	
 
 	@Override
@@ -170,6 +198,15 @@ public class TaskDetailsFragment extends Fragment{
 	public void onDestroy() {
 		mMapView.onDestroy();
 		super.onDestroy();
+	}
+
+
+
+
+	@Override
+	public void handleRequestResult(int requestId, Object result) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
