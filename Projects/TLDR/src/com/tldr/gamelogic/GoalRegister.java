@@ -32,6 +32,7 @@ public class GoalRegister {
 	 */
 	public boolean addGoal(GoalStructure goal){
 		final String desc = goal.getDescription();
+		final long idgoals = goal.getId();
 		this.registeredGoals.add(goal);
 		List<Map<String, String>> conditionsList= (List<Map<String, String>>) goal.getJsonParse().get("conditions");
 		for(Map<String, String> condition:conditionsList){
@@ -39,7 +40,9 @@ public class GoalRegister {
 				
 				@Override
 				public void onTrue() {
-					Log.i("TLDR", " FINISHED Condition:"+desc);					
+					//Hier muessten erstenaml allee contidions true sein bevor isch fnished gloals setze
+					Log.i("TLDR", " FINISHED Condition:"+desc);	
+					Log.i("TLDR", " FINISHED Condition:"+idgoals);					
 				}
 			});
 			triggerRegister.register(cc);

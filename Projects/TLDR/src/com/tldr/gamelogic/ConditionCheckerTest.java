@@ -40,6 +40,7 @@ public class ConditionCheckerTest {
 		GoalStructure gs = null;
 		try {
 			gs = JsonParser.parseJsonGoalString(goalString);
+			gs.setId(12345l);
 		} catch (FormatException e) {
 
 		}
