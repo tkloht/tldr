@@ -29,6 +29,7 @@ public class HomeActivity extends FragmentActivity implements
 	private final static int SPEECH_REQUEST_CODE = 123;
 	private int currentMenu=R.id.menu_map;
 	private FragmentCommunicator currentFragment;
+	public static Fragment currentFrag;
 
 	Menu menu;
 
@@ -51,6 +52,7 @@ public class HomeActivity extends FragmentActivity implements
 		currentFragment=(FragmentCommunicator) fragment;
 		transaction = fm.beginTransaction();
 		transaction.replace(R.id.homeActivity, fragment);
+		currentFrag=fragment;
 		transaction.commit();
 		
 		
@@ -83,6 +85,7 @@ public class HomeActivity extends FragmentActivity implements
 			currentFragment=(FragmentCommunicator) fragment;
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			currentFrag=fragment;
 			transaction.commit();
 			currentMenu=item.getItemId();
 			break;
@@ -94,6 +97,7 @@ public class HomeActivity extends FragmentActivity implements
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			currentFrag=fragment;
 			transaction.commit();
 			currentMenu=item.getItemId();
 			break;
@@ -105,6 +109,7 @@ public class HomeActivity extends FragmentActivity implements
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			currentFrag=fragment;
 			transaction.commit();
 			currentMenu=item.getItemId();
 			break;
@@ -162,6 +167,7 @@ public class HomeActivity extends FragmentActivity implements
 			currentFragment=(FragmentCommunicator) fragment;
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			currentFrag=fragment;
 			transaction.commit();
 			break;
 		case R.id.menu_tasks:
@@ -169,6 +175,7 @@ public class HomeActivity extends FragmentActivity implements
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			currentFrag=fragment;
 			transaction.commit();
 			break;
 		case R.id.menu_community:
@@ -176,6 +183,7 @@ public class HomeActivity extends FragmentActivity implements
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			currentFrag=fragment;
 			transaction.commit();
 			break;
 

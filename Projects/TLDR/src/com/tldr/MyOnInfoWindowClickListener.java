@@ -78,6 +78,7 @@ public class MyOnInfoWindowClickListener implements OnInfoWindowClickListener {
 			bundle.putSerializable("HashMap", myTask);
 			bundle.putDouble("geo_lat", tasksHashMap.get(marker).getGeoLat());
 			bundle.putDouble("geo_lon", tasksHashMap.get(marker).getGeoLon());
+			bundle.putLong("id", tasksHashMap.get(marker).getId());
 		}
 		f1.setArguments(bundle);
 		FragmentTransaction ft = fragment.getFragmentManager()

@@ -5,18 +5,38 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 import android.widget.TextSwitcher;
 
-import com.tldr.MainActivity;
+import com.tldr.GlobalData;
 import com.tldr.MapFragment.AutoCompletionMarker;
 
 public final class ToolBox {
 	public final static String TAG_REAL_DISTANCE="real_distance";
+	
+	
+	public static Location receiveCurrentLocation(Activity context){
+		Location current = GlobalData.getLastknownPosition();
+		if(current==null)
+		{
+			LocationManager locationManager = (LocationManager) context.getSystemService(
+					Context.LOCATION_SERVICE);
+			if(locationManager!= null){
+				current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				if(current == null){
+					current = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+				}
+			}	
+		}
+		return current;
+	}
 	
 	public static void showErrorMessage(EditText view, String message) {
 		int ecolor = Color.RED; // whatever color you want
@@ -25,6 +45,13 @@ public final class ToolBox {
 		ssbuilder = new SpannableStringBuilder(message);
 		ssbuilder.setSpan(fgcspan, 0, message.length(), 0);
 		view.setError(ssbuilder);
+	}
+	
+	public static SpannableStringBuilder buildColoredString(String text, int color){
+		ForegroundColorSpan fgcspan = new ForegroundColorSpan(color);
+		SpannableStringBuilder ssbuilder;
+		ssbuilder = new SpannableStringBuilder(text);
+		return ssbuilder;
 	}
 	
 	public static void animateTextSwitcher(TextSwitcher txtSwitch, String txt, Activity context) {

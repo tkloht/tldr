@@ -110,7 +110,6 @@ public class MapFragment extends Fragment implements LocationListener,
 
 		locationManager = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
-
 		if (locationManager != null) {
 			boolean gpsIsEnabled = locationManager
 					.isProviderEnabled(LocationManager.GPS_PROVIDER);

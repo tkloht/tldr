@@ -18,6 +18,7 @@ public class MyOnClickListener implements OnItemClickListener{
 		private final int TAG_TASK = 1;  
 		private final static String TAG_TITLE="title";
 		private final static String TAG_NAME="name";
+		private final static String TAG_TRANSACTION="ListItemView";
 	
 		int tag; 
 		List<HashMap<String, String>> list;
@@ -76,9 +77,9 @@ public class MyOnClickListener implements OnItemClickListener{
 			}
 			f1.setArguments(bundle);
 			FragmentTransaction ft = fragment.getFragmentManager().beginTransaction();
-			ft.replace(fragment.getId(), f1);
-			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-			ft.addToBackStack(null);
+			ft.remove(HomeActivity.currentFrag).add(R.id.homeActivity, f1).addToBackStack(null);
+//			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
 			ft.commit();
 
 		}

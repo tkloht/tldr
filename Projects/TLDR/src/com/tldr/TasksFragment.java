@@ -85,7 +85,7 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 		completedListView=(ListView) view.findViewById(R.id.list_completed_tasks);
 		acceptedListView=(ListView) view.findViewById(R.id.list_accepted_tasks);
 		currentView=R.id.list_nearby_tasks;
-		
+		Location current = ToolBox.receiveCurrentLocation(getActivity());
 		
 		// FAKE completed data
 		Random rand = new Random();
@@ -112,28 +112,90 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 
 		
 		// FAKE accepted data
-		String[] titles2 = {"Wirtschaftsspionage", "Verfolgungsjagt"};
-		String[] descriptions2 = {"Finde heraus welche Benzinpreise der Feind verlangt!", "Verfolge die Route eines feindlichen Busses!"};
+//		String[] titles2 = {"Wirtschaftsspionage", "Verfolgungsjagt"};
+//		String[] descriptions2 = {"Finde heraus welche Benzinpreise der Feind verlangt!", "Verfolge die Route eines feindlichen Busses!"};
+//		List<HashMap<String, String>> list2 = new ArrayList<HashMap<String, String>>();
+//		for (int i = 0; i < titles.length; i++){
+//			HashMap<String, String> newMap= new HashMap<String, String>();
+//			newMap.put(TAG_TITLE, titles2[i]);
+//			newMap.put(TAG_DESCRIPTION, descriptions2[i]);
+//			int rndValue=rand.nextInt(400)+50;
+//			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
+//			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+//			ToolBox.addInRealDistanceOrder(list2, newMap);
+//		}
+//		adapter = new SimpleAdapter(getActivity(), list2,
+//				R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE }, 
+//				new int[] { R.id.title, R.id.description, R.id.distance});
+//		acceptedListView.setAdapter(adapter);
+//		
+//		MyOnClickListener acceptedOCL = new MyOnClickListener(TAG_TASK, list2, null, null, this);
+//		acceptedListView.setOnItemClickListener(acceptedOCL);
+		
 		List<HashMap<String, String>> list2 = new ArrayList<HashMap<String, String>>();
-		for (int i = 0; i < titles.length; i++){
+		List<Task> tasks= GlobalData.getAllTasks();
+		List<Task> acceptedTasks=GlobalData.getAcceptedTasks();
+		for(Task t:acceptedTasks)
+		{
+			
 			HashMap<String, String> newMap= new HashMap<String, String>();
-			newMap.put(TAG_TITLE, titles2[i]);
-			newMap.put(TAG_DESCRIPTION, descriptions2[i]);
-			int rndValue=rand.nextInt(400)+50;
-			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
-			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+			newMap.put(TAG_TITLE, t.getTitle());
+			newMap.put(TAG_DESCRIPTION, (t.getDescription().length()<500?t.getDescription():t.getDescription().substring(0, 49)+".."));
+			float[] distance = new float[]{0.0f};
+			Log.d("TLDR", "Task Position: "+t.getGeoLat()+" "+t.getGeoLon());
+			if(current!=null){
+				Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
+			}
+			int dist = Math.round(distance[0]);
+			DecimalFormat df = new DecimalFormat("#.#");
+			newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+df.format((dist/1000))+"km"));
+			newMap.put(ToolBox.TAG_REAL_DISTANCE, dist+"");
 			ToolBox.addInRealDistanceOrder(list2, newMap);
 		}
-		adapter = new SimpleAdapter(getActivity(), list2,
-				R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE }, 
-				new int[] { R.id.title, R.id.description, R.id.distance});
-		acceptedListView.setAdapter(adapter);
 		
-		MyOnClickListener acceptedOCL = new MyOnClickListener(TAG_TASK, list2, null, null, this);
-		acceptedListView.setOnItemClickListener(acceptedOCL);
+        ListAdapter adapter2 = new SimpleAdapter(
+        		getActivity(), list2,
+                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE },
+                new int[] { R.id.title, R.id.description, R.id.distance});
+        // updating listview
+        acceptedListView.setAdapter(adapter2);
+        
+        MyOnClickListener acceptedOCL = new MyOnClickListener(TAG_TASK, list2, acceptedTasks, null, this);
+        acceptedListView.setOnItemClickListener(acceptedOCL);
 		
-        // Create a progress bar to display while the list loads
-		taskDatastore.getNearbyTasks();
+		
+		List<HashMap<String, String>> list3 = new ArrayList<HashMap<String, String>>();
+		for(Task t:tasks)
+		{
+			HashMap<String, String> newMap= new HashMap<String, String>();
+			newMap.put(TAG_TITLE, t.getTitle());
+			newMap.put(TAG_DESCRIPTION, (t.getDescription().length()<500?t.getDescription():t.getDescription().substring(0, 49)+".."));
+			float[] distance = new float[]{0.0f};
+			Log.d("TLDR", "Task Position: "+t.getGeoLat()+" "+t.getGeoLon());
+			if(current!=null){
+				Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
+			}
+			int dist = Math.round(distance[0]);
+			DecimalFormat df = new DecimalFormat("#.#");
+			newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+df.format((dist/1000))+"km"));
+			newMap.put(ToolBox.TAG_REAL_DISTANCE, dist+"");
+			ToolBox.addInRealDistanceOrder(list3, newMap);
+		}
+		
+        ListAdapter adapter3 = new SimpleAdapter(
+        		getActivity(), list3,
+                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE },
+                new int[] { R.id.title, R.id.description, R.id.distance});
+        // updating listview
+        nearbyListView.setAdapter(adapter3);
+        
+        MyOnClickListener nearbyOCL = new MyOnClickListener(TAG_TASK, list3, tasks, null, this);
+        nearbyListView.setOnItemClickListener(nearbyOCL);
+
+		
+		
+		
+//		handleRequestResult(BaseDatastore.REQUEST_TASK_FETCHNEARBY, GlobalData.getAllTasks());
 		
 	}
 
@@ -142,49 +204,7 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 	@Override
 	public void handleRequestResult(int requestId, Object result) {
 		// TODO Auto-generated method stub
-		if(requestId==BaseDatastore.REQUEST_TASK_FETCHNEARBY){
-			Location current = GlobalData.getLastknownPosition();
-			Activity activity = getActivity();
-			if(activity !=null){ //TODO warum wird activity null? beim rotieren.
-				LocationManager locationManager = (LocationManager) activity.getSystemService(
-						Context.LOCATION_SERVICE);
-				if(locationManager!= null){
-					current = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-					if(current == null){
-						current = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-					}
-				}
-			}
-			List<Task> tasks=(List<Task>) result;
-			List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-			for(Task t:tasks)
-			{
-				HashMap<String, String> newMap= new HashMap<String, String>();
-				newMap.put(TAG_TITLE, t.getTitle());
-				newMap.put(TAG_DESCRIPTION, (t.getDescription().length()<500?t.getDescription():t.getDescription().substring(0, 49)+".."));
-				float[] distance = new float[]{0.0f};
-				Log.d("TLDR", "Task Position: "+t.getGeoLat()+" "+t.getGeoLon());
-				if(current!=null){
-					Location.distanceBetween(current.getLatitude(), current.getLongitude(), t.getGeoLat(), t.getGeoLon(), distance);
-				}
-				int dist = Math.round(distance[0]);
-				DecimalFormat df = new DecimalFormat("#.#");
-				newMap.put(TAG_DISTANCE, (dist<1000? dist+"m" : "~"+df.format((dist/1000))+"km"));
-				newMap.put(ToolBox.TAG_REAL_DISTANCE, dist+"");
-				ToolBox.addInRealDistanceOrder(list, newMap);
-			}
-			if(activity !=null){
-		        ListAdapter adapter = new SimpleAdapter(
-		        		activity, list,
-		                R.layout.layout_nearby_listitem, new String[] { TAG_TITLE, TAG_DESCRIPTION, TAG_DISTANCE },
-		                new int[] { R.id.title, R.id.description, R.id.distance});
-		        // updating listview
-		        nearbyListView.setAdapter(adapter);
-		        
-		        MyOnClickListener nearbyOCL = new MyOnClickListener(TAG_TASK, list, tasks, null, this);
-		        nearbyListView.setOnItemClickListener(nearbyOCL);
-			}
-		}
+
 	}
 	
 

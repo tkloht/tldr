@@ -55,8 +55,8 @@ public class UserInfoDatastore extends BaseDatastore{
 	
 	@Override
 	protected void onPostExecute(UserInfo registeredUser) {
-	
-			context.handleRequestResult(REQUEST_USERINFO_UPDATEUSER, registeredUser);
+			if(context!=null)
+				context.handleRequestResult(REQUEST_USERINFO_UPDATEUSER, registeredUser);
 	
 	}
 }	
@@ -78,7 +78,7 @@ public class UserInfoDatastore extends BaseDatastore{
 	
 	@Override
 	protected void onPostExecute(UserInfo registeredUser) {
-	
+		if(context!=null)
 			context.handleRequestResult(REQUEST_USERINFO_REGISTER, registeredUser);
 	
 	}
@@ -101,7 +101,7 @@ public class UserInfoDatastore extends BaseDatastore{
 	
 	@Override
 	protected void onPostExecute(CollectionResponseUserInfo registeredUser) {
-	
+		if(context!=null)
 			context.handleRequestResult(REQUEST_USERINFO_NEARBYUSERS, registeredUser.getItems());
 	
 	}

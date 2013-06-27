@@ -153,7 +153,11 @@ public class TaskDatastore extends BaseDatastore {
 	@Override
 	protected void onPostExecute(CollectionResponseTask tasks) {
 	
-			context.handleRequestResult(REQUEST_TASK_FETCHNEARBY, tasks.getItems());
+			if(context!=null)
+				if(tasks!=null)
+					context.handleRequestResult(REQUEST_TASK_FETCHNEARBY, tasks.getItems());
+				else
+					context.handleRequestResult(REQUEST_TASK_FETCHNEARBY, new ArrayList<Task>());
 	
 	}
 }
@@ -175,7 +179,7 @@ public class TaskDatastore extends BaseDatastore {
 	
 	@Override
 	protected void onPostExecute(CollectionResponseGoal goals) {
-	
+		if(context!=null)
 			context.handleRequestResult(REQUEST_TASK_FETCHGOALS, goals.getItems());
 	
 	}
