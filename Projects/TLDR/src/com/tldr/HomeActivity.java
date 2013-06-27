@@ -22,12 +22,13 @@ import android.widget.Toast;
 
 import com.tldr.exlap.ConnectionHelper;
 import com.tldr.gamelogic.ConditionCheckerTest;
+import com.tldr.gamelogic.GoalRegister;
 import com.tldr.tools.ToolBox;
 
 public class HomeActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
 	private final static int SPEECH_REQUEST_CODE = 123;
-	private int currentMenu=R.id.menu_map;
+	private int currentMenu = R.id.menu_map;
 	private FragmentCommunicator currentFragment;
 	public static Fragment currentFrag;
 
@@ -43,20 +44,19 @@ public class HomeActivity extends FragmentActivity implements
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setIcon(R.drawable.tldr_anotonomy_logo);
-		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.tldr_autonomybg));
+		actionBar.setBackgroundDrawable(getResources().getDrawable(
+				R.drawable.tldr_autonomybg));
 		actionBar.setTitle("");
-		
+
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction transaction;
 		Fragment fragment = new MapFragment();
-		currentFragment=(FragmentCommunicator) fragment;
+		currentFragment = (FragmentCommunicator) fragment;
 		transaction = fm.beginTransaction();
 		transaction.replace(R.id.homeActivity, fragment);
-		currentFrag=fragment;
+		currentFrag = fragment;
 		transaction.commit();
-		
-		
-		
+
 	}
 
 	@Override
@@ -82,12 +82,12 @@ public class HomeActivity extends FragmentActivity implements
 			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 			fragment = new MapFragment();
 			fragment.setArguments(new Bundle());
-			currentFragment=(FragmentCommunicator) fragment;
+			currentFragment = (FragmentCommunicator) fragment;
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
-			currentFrag=fragment;
+			currentFrag = fragment;
 			transaction.commit();
-			currentMenu=item.getItemId();
+			currentMenu = item.getItemId();
 			break;
 		case R.id.menu_tasks:
 			item.setIcon(R.drawable.tasks_pressed);
@@ -97,9 +97,9 @@ public class HomeActivity extends FragmentActivity implements
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
-			currentFrag=fragment;
+			currentFrag = fragment;
 			transaction.commit();
-			currentMenu=item.getItemId();
+			currentMenu = item.getItemId();
 			break;
 		case R.id.menu_community:
 			item.setIcon(R.drawable.community_pressed);
@@ -109,9 +109,9 @@ public class HomeActivity extends FragmentActivity implements
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
-			currentFrag=fragment;
+			currentFrag = fragment;
 			transaction.commit();
-			currentMenu=item.getItemId();
+			currentMenu = item.getItemId();
 			break;
 		case R.id.menuShowCompass:
 		case R.id.menuOnlyShowAcceptedTasks:
@@ -125,34 +125,34 @@ public class HomeActivity extends FragmentActivity implements
 			sendRecognizeIntent();
 			break;
 		case R.id.menuConnectExlap:
-			if (GlobalData.getConnectionHelper() != null){
+			if (GlobalData.getConnectionHelper() != null) {
 				try {
 					GlobalData.getConnectionHelper().performDiscovery();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	        }else{
-	        	GlobalData.setConnectionHelper(new ConnectionHelper());
-	            try {
-	            	GlobalData.getConnectionHelper().performDiscovery();
-	                Log.e("tldr-exlap", "after discover");
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	            }
-	        }
+			} else {
+				GlobalData.setConnectionHelper(new ConnectionHelper());
+				try {
+					GlobalData.getConnectionHelper().performDiscovery();
+					Log.e("tldr-exlap", "after discover");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			break;
-		case R.id.menuSubscribeAll:			
-//			GlobalData.getConnectionHelper().subscribe("CurrentGear");
-			ConditionCheckerTest.test3();
-	        Log.e("tldr-exlap", "after subscribe");
-	        Toast.makeText(this, "after subscribe", Toast.LENGTH_SHORT).show();
+		case R.id.menuSubscribeAll:
+			// GlobalData.getConnectionHelper().subscribe("CurrentGear");
+//			ConditionCheckerTest.test3();
+			GlobalData.getGoalRegister();
+			Log.e("tldr-exlap", "after subscribe");
+			Toast.makeText(this, "after subscribe", Toast.LENGTH_SHORT).show();
 			break;
 
 		default:
 			break;
 		}
-		
-		
+
 		return true;
 	}
 
@@ -164,10 +164,10 @@ public class HomeActivity extends FragmentActivity implements
 		case R.id.menu_map:
 			fragment = new MapFragment();
 			fragment.setArguments(new Bundle());
-			currentFragment=(FragmentCommunicator) fragment;
+			currentFragment = (FragmentCommunicator) fragment;
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
-			currentFrag=fragment;
+			currentFrag = fragment;
 			transaction.commit();
 			break;
 		case R.id.menu_tasks:
@@ -175,7 +175,7 @@ public class HomeActivity extends FragmentActivity implements
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
-			currentFrag=fragment;
+			currentFrag = fragment;
 			transaction.commit();
 			break;
 		case R.id.menu_community:
@@ -183,14 +183,14 @@ public class HomeActivity extends FragmentActivity implements
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
-			currentFrag=fragment;
+			currentFrag = fragment;
 			transaction.commit();
 			break;
 
 		default:
 			break;
 		}
-		currentMenu=fragmentId;
+		currentMenu = fragmentId;
 	}
 
 	@Override
@@ -208,15 +208,14 @@ public class HomeActivity extends FragmentActivity implements
 		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
 		startActivityForResult(intent, SPEECH_REQUEST_CODE);
 	}
-	
+
 	protected void onNewIntent(Intent intent) {
-	    super.onNewIntent(intent);
-		ToolBox.showAlert(this, "GCM",
-				intent.getStringExtra("message"), "Dismiss",
-		new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		});		
+		super.onNewIntent(intent);
+		ToolBox.showAlert(this, "GCM", intent.getStringExtra("message"),
+				"Dismiss", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				});
 	}
 
 	@Override
@@ -232,35 +231,35 @@ public class HomeActivity extends FragmentActivity implements
 				if (matches.size() == 0) {
 					resultNotification = "Heard nothing";
 				} else {
-					for(String match:matches){
-						resultNotification +=match;
+					for (String match : matches) {
+						resultNotification += match;
 					}
 
 				}
 				resultNotification = resultNotification.toLowerCase();
-				boolean success=false;
-				if (resultNotification.contains("show"))
-				{
-					if(resultNotification.contains("tasklist") || (resultNotification
-								.contains("task") && resultNotification
-								.contains("list"))|| resultNotification.contains("tasks")) {
+				boolean success = false;
+				if (resultNotification.contains("show")) {
+					if (resultNotification.contains("tasklist")
+							|| (resultNotification.contains("task") && resultNotification
+									.contains("list"))
+							|| resultNotification.contains("tasks")) {
 						switchView(R.id.menu_tasks);
-						success=true;
-					}
-					else if(resultNotification.contains("map")){
+						success = true;
+					} else if (resultNotification.contains("map")) {
 						switchView(R.id.menu_map);
-						success=true;
-					}
-					else if(resultNotification.contains("community")){
+						success = true;
+					} else if (resultNotification.contains("community")) {
 						switchView(R.id.menu_community);
-						success=true;
+						success = true;
 					}
 				}
-				if(!success)
-					 if(currentMenu==R.id.menu_map)
-						 currentFragment.receiveMessage(FragmentCommunicator.SPEECH_REQUEST_MESSAGE, resultNotification);
-//					ToolBox.showAlert(this, "Speech Result", resultNotification,
-//						"Dismiss", null);
+				if (!success)
+					if (currentMenu == R.id.menu_map)
+						currentFragment.receiveMessage(
+								FragmentCommunicator.SPEECH_REQUEST_MESSAGE,
+								resultNotification);
+				// ToolBox.showAlert(this, "Speech Result", resultNotification,
+				// "Dismiss", null);
 			}
 		}
 	}
