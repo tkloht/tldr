@@ -3,7 +3,8 @@
     android:id="@+id/task_details"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:scrollbars="vertical" >
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -76,7 +77,7 @@
             android:id="@+id/accept_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="accept"
+            android:text="Annehmen"
             style="?android:attr/buttonStyleInset"
              />
 
