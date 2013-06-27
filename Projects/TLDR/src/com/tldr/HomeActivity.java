@@ -162,6 +162,9 @@ public class HomeActivity extends FragmentActivity implements
 		FragmentTransaction transaction;
 		switch (fragmentId) {
 		case R.id.menu_map:
+			menu.findItem(R.id.menu_map).setIcon(R.drawable.map_pressed);
+			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
+			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 			fragment = new MapFragment();
 			fragment.setArguments(new Bundle());
 			currentFragment = (FragmentCommunicator) fragment;
@@ -171,6 +174,9 @@ public class HomeActivity extends FragmentActivity implements
 			transaction.commit();
 			break;
 		case R.id.menu_tasks:
+			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks_pressed);
+			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
+			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new TasksFragment();
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
@@ -179,6 +185,9 @@ public class HomeActivity extends FragmentActivity implements
 			transaction.commit();
 			break;
 		case R.id.menu_community:
+			menu.findItem(R.id.menu_community).setIcon(R.drawable.community_pressed);
+			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
+			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new CommunityFragment();
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
