@@ -2,14 +2,17 @@ package com.tldr.gamelogic;
 
 import java.util.Map;
 
+import com.tldr.exlap.TriggerRegister;
+import com.tldr.exlap.TriggerRegister.TriggerDomains;
+
 public class ConditionCheck {
 
 	public enum Data {
-		SPEED
+		SPEED, CURRENTGEAR
 	}
 
 	public enum Operator {
-		LE
+		LE, EQ
 	}
 
 	public enum CLAZZ {
@@ -19,8 +22,12 @@ public class ConditionCheck {
 	private DataParser parser;
 	private DataChecker checker;
 
+	private TriggerRegister.TriggerDomains domain;
+	private String identifier;
+
 	public ConditionCheck(Map<String, String> contidion) {
 		if (contidion.containsKey("data")) {
+			setIdentifier(contidion.get("data"));
 			Data data = Data.valueOf(contidion.get("data").toUpperCase());
 			Operator operator = Operator.valueOf(contidion.get("operator")
 					.toUpperCase());
@@ -31,7 +38,8 @@ public class ConditionCheck {
 	}
 
 	private void setParser(Data data) {
-		if (data == Data.SPEED) {
+		if (data == Data.SPEED || data == Data.CURRENTGEAR) {
+			this.setDomain(TriggerDomains.EXLAP);
 			this.parser = new DataParser<Double>() {
 
 				@Override
@@ -67,11 +75,43 @@ public class ConditionCheck {
 
 			};
 		}
+		if (clazz == CLAZZ.Double && operator == Operator.EQ) {
+			this.checker = new DataChecker<Double>() {
+				double value;
+
+				@Override
+				public void setValue(Double value) {
+					this.value = value;
+				}
+
+				@Override
+				public boolean checkData(Double data) {
+					return data == this.value;
+				}
+
+			};
+		}
 
 	}
 
 	public boolean updateData(Object data) {
 		return this.checker.checkData(parser.parseData(data));
+	}
+
+	public TriggerRegister.TriggerDomains getDomain() {
+		return domain;
+	}
+
+	public void setDomain(TriggerRegister.TriggerDomains domain) {
+		this.domain = domain;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	public interface DataParser<T> {

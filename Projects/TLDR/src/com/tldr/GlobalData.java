@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import android.location.Location;
 
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
+import com.tldr.exlap.ConnectionHelper;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.goalendpoint.model.Goal;
 import com.tldr.messageEndpoint.MessageEndpoint;
@@ -19,6 +20,7 @@ public class GlobalData {
 	private static Location lastknownPosition = null;
 	private static MessageEndpoint messageEndpoint = null;
 	private static UserInfo currentUser = null;
+	private static ConnectionHelper connectionHelper;
 	
 	private static HashMap<Long, GoalStructure> allGoals;
 	
@@ -92,6 +94,12 @@ public class GlobalData {
 
 	public static void setCurrentUser(UserInfo currentUser) {
 		GlobalData.currentUser = currentUser;
+	}
+	public static ConnectionHelper getConnectionHelper() {
+		return connectionHelper;
+	}
+	public static void setConnectionHelper(ConnectionHelper connectionHelperr) {
+		connectionHelper = connectionHelperr;
 	}
 
 	

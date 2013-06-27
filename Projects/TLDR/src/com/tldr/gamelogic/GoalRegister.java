@@ -16,9 +16,7 @@ public class GoalRegister {
 	 * @param goal
 	 * @return true wenn goal noch nicht existierte, false wenn schon
 	 */
-	public boolean addGoal(GoalStructure goal){
-		
-		
+	public boolean addGoal(GoalStructure goal){		
 		return true;
 	}
 

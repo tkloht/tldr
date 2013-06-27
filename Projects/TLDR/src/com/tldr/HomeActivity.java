@@ -29,7 +29,6 @@ public class HomeActivity extends FragmentActivity implements
 	private final static int SPEECH_REQUEST_CODE = 123;
 	private int currentMenu=R.id.menu_map;
 	private FragmentCommunicator currentFragment;
-	private ConnectionHelper connectionHelper;
 
 	Menu menu;
 
@@ -121,17 +120,16 @@ public class HomeActivity extends FragmentActivity implements
 			sendRecognizeIntent();
 			break;
 		case R.id.menuConnectExlap:
-			ConditionCheckerTest.test();
-			if (connectionHelper != null){
+			if (GlobalData.getConnectionHelper() != null){
 				try {
-					connectionHelper.performDiscovery();
+					GlobalData.getConnectionHelper().performDiscovery();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 	        }else{
-	        	connectionHelper = new ConnectionHelper();
+	        	GlobalData.setConnectionHelper(new ConnectionHelper());
 	            try {
-	                connectionHelper.performDiscovery();
+	            	GlobalData.getConnectionHelper().performDiscovery();
 	                Log.e("tldr-exlap", "after discover");
 	            } catch (IOException e) {
 	                e.printStackTrace();
@@ -139,7 +137,8 @@ public class HomeActivity extends FragmentActivity implements
 	        }
 			break;
 		case R.id.menuSubscribeAll:			
-	        connectionHelper.subscribe("CurrentGear");
+//			GlobalData.getConnectionHelper().subscribe("CurrentGear");
+			ConditionCheckerTest.test2();
 	        Log.e("tldr-exlap", "after subscribe");
 	        Toast.makeText(this, "after subscribe", Toast.LENGTH_SHORT).show();
 			break;
