@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/task_details"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
 
     <FrameLayout
@@ -32,41 +32,54 @@
         android:layout_height="wrap_content"
         android:text="Task Description" />
 
-    <RelativeLayout
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="10pt"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/details_map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/linL"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true" />
-
-        <LinearLayout
-            android:id="@+id/linL"
-            android:layout_width="match_parent"
+        android:layout_height="fill_parent" >
+			<TextView
+            android:id="@+id/task_goal_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" 
-            android:layout_alignParentBottom="true">
+            android:layout_gravity="left"
+            android:text="Missionsziele"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+			<LinearLayout 
+			    android:orientation="horizontal"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    >
+			
+		    	<ListView 
+		    	
+		        android:id="@+id/goal_list"
+		        android:layout_weight="1"
+		        android:layout_width="fill_parent"
+		        android:layout_height="match_parent" 
+		        />
+		        <com.google.android.gms.maps.MapView
+		            android:id="@+id/details_map"
+		            android:layout_weight="1"
+		            android:layout_width="fill_parent"
+		            android:layout_height="100pt"
 
-            <Button
-                android:id="@+id/accept_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/details_map"
-                android:layout_weight="1"
-                android:text="accept" />
+		            android:clickable="true"
+		            android:focusable="true"
+		            android:focusableInTouchMode="true" />   
+		   	    
+		</LinearLayout>
 
-            <Button
-                android:id="@+id/hide_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="hide" />
-        </LinearLayout>
-    </RelativeLayout>
+        <Button
+            android:layout_marginTop="15pt"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="accept"
+            style="?android:attr/buttonStyleInset"
+             />
+
+    </LinearLayout>
 
 </LinearLayout>

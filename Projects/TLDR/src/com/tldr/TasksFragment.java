@@ -99,6 +99,7 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 			int rndValue=rand.nextInt(400)+50;
 			newMap.put(TAG_DISTANCE, "~"+rndValue+"km");
 			newMap.put(ToolBox.TAG_REAL_DISTANCE, (rndValue*1000)+".0");
+			
 			ToolBox.addInRealDistanceOrder(list, newMap);
 		}
 		ListAdapter adapter = new SimpleAdapter(getActivity(), list,

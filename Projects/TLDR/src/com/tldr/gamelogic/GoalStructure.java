@@ -22,6 +22,10 @@ public class GoalStructure {
 		return id;
 	}
 	
+	public String getDescription(){
+		return (String) jsonParse.get("description");
+	}
+	
 	public GoalStructure addCondition(String data, String operator, String value){
 		List<Map<String, String>> conditionsList;
 		if(jsonParse.containsKey("conditions")){
