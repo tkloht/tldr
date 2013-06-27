@@ -180,6 +180,10 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 		}
 	}
 	
-
+	@Override
+	public void onResume () {
+		((HomeActivity) getActivity()).animateMenuIcons(1);
+		super.onResume();
+	}
 
 }

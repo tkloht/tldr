@@ -56,6 +56,7 @@ public class HomeActivity extends FragmentActivity implements
 		currentFragment = (FragmentCommunicator) fragment;
 		transaction = fm.beginTransaction();
 		transaction.replace(R.id.homeActivity, fragment);
+		transaction.addToBackStack(null);
 		currentFrag = fragment;
 		transaction.commit();
 
@@ -79,38 +80,32 @@ public class HomeActivity extends FragmentActivity implements
 		Log.e("com.tldr.homeActivity", "menuitem selected: " + item.toString());
 		switch (item.getItemId()) {
 		case R.id.menu_map:
-			item.setIcon(R.drawable.map_pressed);
-			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
-			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 			fragment = new MapFragment();
 			fragment.setArguments(new Bundle());
 			currentFragment = (FragmentCommunicator) fragment;
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			transaction.addToBackStack(null);
 			currentFrag = fragment;
 			transaction.commit();
 			currentMenu = item.getItemId();
 			break;
 		case R.id.menu_tasks:
-			item.setIcon(R.drawable.tasks_pressed);
-			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
-			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new TasksFragment();
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			transaction.addToBackStack(null);
 			currentFrag = fragment;
 			transaction.commit();
 			currentMenu = item.getItemId();
 			break;
 		case R.id.menu_community:
-			item.setIcon(R.drawable.community_pressed);
-			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
-			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new CommunityFragment();
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			transaction.addToBackStack(null);
 			currentFrag = fragment;
 			transaction.commit();
 			currentMenu = item.getItemId();
@@ -163,43 +158,58 @@ public class HomeActivity extends FragmentActivity implements
 		return true;
 	}
 
+	public void animateMenuIcons(int id){
+		switch (id) {
+		case 0:
+			if (menu != null){
+				menu.findItem(R.id.menu_map).setIcon(R.drawable.map_pressed);
+				menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
+				menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
+			}
+			break;
+		case 1:
+			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
+			menu.findItem(R.id.menu_community).setIcon(R.drawable.community_pressed);
+			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
+			break;
+		case 2:
+			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
+			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
+			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks_pressed);
+			break;
+		}
+	}
+	
 	private void switchView(int fragmentId) {
 		Fragment fragment;
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction transaction;
 		switch (fragmentId) {
 		case R.id.menu_map:
-			menu.findItem(R.id.menu_map).setIcon(R.drawable.map_pressed);
-			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
-			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 			fragment = new MapFragment();
 			fragment.setArguments(new Bundle());
 			currentFragment = (FragmentCommunicator) fragment;
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			transaction.addToBackStack(null);
 			currentFrag = fragment;
 			transaction.commit();
 			break;
 		case R.id.menu_tasks:
-			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks_pressed);
-			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
-			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new TasksFragment();
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			transaction.addToBackStack(null);
 			currentFrag = fragment;
 			transaction.commit();
 			break;
 		case R.id.menu_community:
-			menu.findItem(R.id.menu_community).setIcon(
-					R.drawable.community_pressed);
-			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
-			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
 			fragment = new CommunityFragment();
 			fragment.setArguments(new Bundle());
 			transaction = fm.beginTransaction();
 			transaction.replace(R.id.homeActivity, fragment);
+			transaction.addToBackStack(null);
 			currentFrag = fragment;
 			transaction.commit();
 			break;
@@ -279,6 +289,13 @@ public class HomeActivity extends FragmentActivity implements
 				// "Dismiss", null);
 			}
 		}
+	}
+	
+	public void onBackPressed(){
+	      FragmentManager fm = getFragmentManager();
+	        if (fm.getBackStackEntryCount() > 0) {
+	            fm.popBackStack();
+	        }
 	}
 
 }

@@ -301,6 +301,7 @@ public class MapFragment extends Fragment implements LocationListener,
 	public void onResume() {
 		super.onResume();
 		mMapView.onResume();
+		((HomeActivity) getActivity()).animateMenuIcons(0);
 	}
 
 	@Override

@@ -207,5 +207,10 @@ public class TasksFragment extends Fragment implements DatastoreResultHandler{
 
 	}
 	
+	@Override
+	public void onResume () {
+		((HomeActivity) getActivity()).animateMenuIcons(2);
+		super.onResume();
+	}
 
 }
