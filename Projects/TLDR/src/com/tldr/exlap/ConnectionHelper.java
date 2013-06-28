@@ -200,7 +200,7 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 		if (GlobalData.getCurrentUser().getEmail()
 				.equals("doriankno@googlemail.com")) {
 			 Log.e("tldr-exlap", "dorian workaround");
-			 this.startService("socket://192.168.1.106:28500");
+			 this.startService("socket://192.168.43.69:28500");
 		} else {
 			DiscoveryManager disco = new DiscoveryManager(
 					DiscoveryManager.SCHEME_SOCKET);
