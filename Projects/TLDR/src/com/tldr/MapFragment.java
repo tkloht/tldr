@@ -440,7 +440,10 @@ public class MapFragment extends Fragment implements LocationListener,
 		}
 		if (requestId == BaseDatastore.REQUEST_USERINFO_NEARBYUSERS) {
 			List<UserInfo> users = (List<UserInfo>) result;
+			List<UserInfo> usersDef = new ArrayList<UserInfo>();
+			List<UserInfo> usersMof = new ArrayList<UserInfo>();
 			Location current = GlobalData.getLastknownPosition();
+			GlobalData.setAllUsers(users);
 			if (users != null) {
 				for (UserInfo u : users) {
 					if (!u.getId().equals(GlobalData.getCurrentUser().getId())
@@ -470,8 +473,19 @@ public class MapFragment extends Fragment implements LocationListener,
 						usersList.add(newMap);
 					}
 					
+					switch (u.getFaction()){
+					case (1):
+						usersDef.add(u);
+					break;
+					case (2):
+						usersMof.add(u);
+					break;
+					}
 				}
 				myOnInfoWindowClickListerer.setUsers(usersHashMap, usersList);
+				
+				GlobalData.setFractionUsers(1, usersDef);
+				GlobalData.setFractionUsers(2, usersMof);
 			}
 		}
 	}

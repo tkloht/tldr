@@ -30,9 +30,8 @@ public class GlobalData {
 
 	private static List<Task> allTasks;
 	private static List<UserInfo> allUsers;
-	private static List<UserInfo> usersDef;
-	private static List<UserInfo> usersMof;
-	
+private static List<UserInfo> usersDef;
+private static List<UserInfo> usersMof;	
 	public static final int FRACTION_DEFIANCE = 1;
 	public static final int FRACTION_MINISTRY_OF_FREEDOM = 2;
 
@@ -85,9 +84,9 @@ public class GlobalData {
 		return lReturn;
 	}
 
-	public static Task getTastById(Long id) {
+	public static Task getTaskById(Long id) {
 		for (Task t : allTasks) {
-			if (t.getId() == id) {
+			if (t.getId().equals(id)) {
 				return t;
 			}
 		}
@@ -95,7 +94,7 @@ public class GlobalData {
 	}
 
 	public static GoalStructure getGoalsFromTask(Long taskId) {
-		return allGoals.get(getTastById(taskId).getGoals().get(0));
+		return allGoals.get(getTaskById(taskId).getGoals().get(0));
 	}
 
 	public static HashMap<Long, GoalStructure> getAllGoals() {

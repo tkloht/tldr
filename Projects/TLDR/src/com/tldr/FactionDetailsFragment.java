@@ -58,7 +58,7 @@ public class FactionDetailsFragment extends Fragment {
 				members++;
 			}
 		}
-		((TextView) getActivity().findViewById(R.id.memberNumber)).setText(members);
+		((TextView) getActivity().findViewById(R.id.memberNumber)).setText(members+"");
 		
 		
 		
@@ -66,15 +66,30 @@ public class FactionDetailsFragment extends Fragment {
 		List<UserInfo> fractionUsers = GlobalData.getFractionUsers(GlobalData.getCurrentUser().getFaction());
 		for(UserInfo u: fractionUsers)
 		{
-			
-			HashMap<String, String> newMap= new HashMap<String, String>();
-			newMap.put("username", u.getUsername());
+			if (u.getAcceptedTasks() != null){
+				for (Long l: u.getAcceptedTasks()){
+					Task t = GlobalData.getTaskById(l);				
+					HashMap<String, String> newMap= new HashMap<String, String>();
+					newMap.put("user_name", u.getUsername());
+					newMap.put("action", " accepted ");
+					newMap.put("task_name", t.getTitle());
+					list.add(newMap);
+				}
+			}
+//			for (Long l: u.getCompletedTasks()){
+//				Task t = GlobalData.getTastById(l);				
+//				HashMap<String, String> newMap= new HashMap<String, String>();
+//				newMap.put("user_name", u.getUsername());
+//				newMap.put("action", " completed ");
+//				newMap.put("task_name", t.getTitle());
+//				list.add(newMap);
+//			}
 		}
 		
         ListAdapter adapter = new SimpleAdapter(
         		getActivity(), list,
-                R.layout.layout_nearby_listitem, new String[] { "username", "1", "2" },
-                new int[] { R.id.title, R.id.description, R.id.distance});
+                R.layout.layout_news_listitem, new String[] { "user_name", "action", "task_name" },
+                new int[] { R.id.user_name, R.id.action, R.id.task_name});
         // updating listview
         newsListView.setAdapter(adapter);
 	}
