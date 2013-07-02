@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView.FindListener;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tldr.gamelogic.Factions;
 import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
 
@@ -47,7 +49,7 @@ public class ProfileDetailsFragment extends Fragment{
 	private double geo_lon;
 	HashMap<String, String> hashMap;
 	private Marker userMarker;
-
+	private ImageView factionlogo;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -80,6 +82,9 @@ public class ProfileDetailsFragment extends Fragment{
         TextView user_distance = (TextView) getView().findViewById(R.id.user_distance);
         user_name.setText(hashMap.get("name"));
         user_distance.setText(hashMap.get("distance"));
+        
+        factionlogo = (ImageView) getActivity().findViewById(R.id.fractionPicture);
+        Factions.setProfileFractionLogo(factionlogo);
         
         InputMethodManager imm = (InputMethodManager) view.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
