@@ -18,15 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.auth.AccountHelper;
 import com.datastore.DatastoreResultHandler;
-import com.datastore.TaskDatastore;
 import com.datastore.UserInfoDatastore;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,11 +36,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.api.client.util.ArrayValueMap;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.taskendpoint.model.Task;
+import com.ui.SimpleCheckBoxListAdapter;
 
 public class TaskDetailsFragment extends Fragment implements DatastoreResultHandler{
 	HashMap<String, String> hashMap;
@@ -57,6 +56,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	private UserInfoDatastore datastore; 
 	private Task selected;
 	private List<Long> goalIds;
+	private SimpleCheckBoxListAdapter goalListAdapter;
 
 	
 	@Override
@@ -139,9 +139,12 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	}
 	
 	private void fillGoalList(){
+		
+		Map<Integer, LatLng> points = new HashMap<Integer, LatLng>();
 		List<Task> allTasks=GlobalData.getAllTasks();
 		Map<Long, GoalStructure> goals=GlobalData.getAllGoals();
 		List<Map<String, String>> listObjects = new ArrayList<Map<String,String>>();
+		List<Boolean> checked= new ArrayList<Boolean>();
 		if(id!=null){
 			for( Task t:allTasks){
 				if(id.equals(t.getId())){
@@ -151,37 +154,60 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 			if(selected!=null){
 				goalIds = selected.getGoals();
 				for(Long gid:goalIds){
+					boolean add=true;
 					HashMap<String, String> singleListItem = new HashMap<String, String>();
-					singleListItem.put("description", goals.get(gid).getDescription());
+					GoalStructure gs = goals.get(gid);
+					String desc=gs.getDescription();
+					int sequenceNr=0;
+					if(desc.contains("##")){
+						sequenceNr=Integer.parseInt(desc.split("##")[0]);
+						desc=desc.split("##")[1];
+						
+					}
+					if(sequenceNr>0)
+						add=false;
+					singleListItem.put("description", desc);
 					Map<String, Object> goalParse = goals.get(gid).getJsonParse();
 					ArrayList<Map<String, String>> conditions= (ArrayList<Map<String, String>>) goalParse.get("conditions");
 					for(Map<String, String> condition:conditions){
-						if(condition.get("data").equals("drive_polyline")){
-							List<LatLng> points=new ArrayList<LatLng>();
-							String polyLineStr = condition.get("value");
-							String[] split = polyLineStr.split(";");
-							for(String latLon:split){
-								String[] coords = latLon.split(",");
-								points.add(new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1])));
+						if(condition.get("data").equals("polyline_point")){
+							String latLon=condition.get("value");
+							String[] coords = latLon.split(",");
+							LatLng point=new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+							points.put(sequenceNr, point);
 							}
-							points.add(points.get(0));
-							mMap.addPolyline(new PolylineOptions().add(points.toArray(new LatLng[]{})).color(Color.BLUE));
-						}
 					}
 					
 					
+					if(add){
+						listObjects.add(singleListItem);
 					
-					listObjects.add(singleListItem);
+						if(GlobalData.getCurrentUser().getFinishedGoals()!=null&&GlobalData.getCurrentUser().getFinishedGoals().contains(gid)){
+							checked.add(true);
+						}
+						else
+							checked.add(false);
+					}
 				}
 			}
 		}
 		
-        ListAdapter adapter = new SimpleAdapter(
+        goalListAdapter = new SimpleCheckBoxListAdapter(
         		getActivity(),listObjects,
                 R.layout.goal_listitem, new String[] { "description" },
-                new int[] { R.id.goal_desc});
+                new int[] { R.id.goal_desc}, checked.toArray(new Boolean[]{true}));
         // updating listview
-        goalList.setAdapter(adapter);
+
+        goalList.setAdapter(goalListAdapter);
+        
+        //SetUpMatPolylineIfNeeded
+        if(points.size()>0){
+        	PolylineOptions po = new PolylineOptions();
+        	for(int i=0; points.containsKey(i); i++)
+        		po.add(points.get(i));
+        	po.color(Color.BLUE);
+        	mMap.addPolyline(po);
+        }
 		
 	}
 	
@@ -201,7 +227,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 		mMap.getUiSettings().setAllGesturesEnabled(false);
 		mMap.getUiSettings().setCompassEnabled(false);
 		mMap.getUiSettings().setZoomControlsEnabled(false);
-		mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+		mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(geo_lat, geo_lon)));
 		this.taskMarker = mMap.addMarker(new MarkerOptions().position(
 					new LatLng(geo_lat, geo_lon))
