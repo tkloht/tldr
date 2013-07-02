@@ -29,6 +29,12 @@ public class GlobalData {
 	private static HashMap<Long, GoalStructure> allGoals;
 
 	private static List<Task> allTasks;
+	private static List<UserInfo> allUsers;
+	private static List<UserInfo> usersDef;
+	private static List<UserInfo> usersMof;
+	
+	public static final int FRACTION_DEFIANCE = 1;
+	public static final int FRACTION_MINISTRY_OF_FREEDOM = 2;
 
 	public static List<Task> getAcceptedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();
@@ -104,9 +110,37 @@ public class GlobalData {
 	public static List<Task> getAllTasks() {
 		return allTasks;
 	}
+	
+	public static List<UserInfo> getAllUsers() {
+		return allUsers;
+	}
+	
+	public static List<UserInfo> getFractionUsers(int fraction) {
+		switch (fraction){
+		case (FRACTION_DEFIANCE):
+			return usersDef;
+		case (FRACTION_MINISTRY_OF_FREEDOM):
+			return usersMof;
+		}
+		return null;
+	}
+	
+	public static void setFractionUsers(int fraction, List<UserInfo> users) {
+		switch (fraction){
+		case (FRACTION_DEFIANCE):
+			GlobalData.usersDef = users;
+			break;
+		case (FRACTION_MINISTRY_OF_FREEDOM):
+			GlobalData.usersMof = users;
+			break;
+		}
+	}
 
 	public static void setAllTasks(List<Task> allTasks) {
 		GlobalData.allTasks = allTasks;
+	}
+	public static void setAllUsers(List<UserInfo> allUsers) {
+		GlobalData.allUsers = allUsers;
 	}
 
 	public static Location getLastknownPosition() {
@@ -162,5 +196,6 @@ public class GlobalData {
 	public static void setGoalRegister(GoalRegister goalRegister) {
 		GlobalData.goalRegister = goalRegister;
 	}
+	
 
 }

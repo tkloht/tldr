@@ -28,5 +28,24 @@
             android:layout_margin="5dp"
             android:src="@drawable/tldr_def_mini" />
     </FrameLayout>
+    
+	<TextView
+            android:id="@+id/memberNumberLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Members:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+	<TextView
+            android:id="@+id/memberNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <ListView
+        android:id="@+id/list_fraction_news"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        />
 
 </LinearLayout>

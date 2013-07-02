@@ -1,5 +1,6 @@
 package com.tldr;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -332,6 +333,22 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 			for (UserInfo ui : nearbyUsers) {
 				Log.d("TLDR", ui.getEmail() + " " + ui.getUsername());
 			}
+			GlobalData.setAllUsers(nearbyUsers);
+			
+			List<UserInfo> usersDef = new ArrayList<UserInfo>();
+			List<UserInfo> usersMof = new ArrayList<UserInfo>();
+			for (UserInfo u: nearbyUsers){
+				switch (u.getFaction()){
+				case (1):
+					usersDef.add(u);
+					break;
+				case (2):
+					usersMof.add(u);
+					break;
+				}
+			}
+			GlobalData.setFractionUsers(1, usersDef);
+			GlobalData.setFractionUsers(2, usersMof);
 
 			break;
 		case BaseDatastore.REQUEST_TASK_FETCHNEARBY:
