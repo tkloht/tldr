@@ -66,7 +66,7 @@ android:layout_height="fill_parent"
 			<LinearLayout 
 			    android:orientation="horizontal"
 			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
+			    android:layout_height="fill_parent"
 			    >
 			
 		    	<ListView 
@@ -74,7 +74,7 @@ android:layout_height="fill_parent"
 		        android:id="@+id/goal_list"
 		        android:layout_weight="1"
 		        android:layout_width="fill_parent"
-		        android:layout_height="match_parent" 
+		        android:layout_height="100pt" 
 		        />
 		        <com.google.android.gms.maps.MapView
 		            android:id="@+id/details_map"
