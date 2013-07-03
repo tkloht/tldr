@@ -2,18 +2,16 @@ package com.tldr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import android.location.Location;
 
+import com.datastore.UserInfoDatastore;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.ConnectionHelper;
 import com.tldr.exlap.TriggerRegister;
 import com.tldr.gamelogic.GoalRegister;
 import com.tldr.gamelogic.GoalStructure;
-import com.tldr.goalendpoint.model.Goal;
 import com.tldr.messageEndpoint.MessageEndpoint;
 import com.tldr.taskendpoint.model.Task;
 
@@ -22,24 +20,29 @@ public class GlobalData {
 	private static Location lastknownPosition = null;
 	private static MessageEndpoint messageEndpoint = null;
 	private static UserInfo currentUser = null;
+	private static UserInfoDatastore datastore = null;
 	private static ConnectionHelper connectionHelper;
 	private static TriggerRegister triggerRegister;
-	private static GoalRegister goalRegister;
+	private static GoalRegister goalRegister = null;
+	private static boolean firstStart = true;
+	private static boolean exlapConnected = false;
 
 	private static HashMap<Long, GoalStructure> allGoals;
 
 	private static List<Task> allTasks;
 	private static List<UserInfo> allUsers;
-private static List<UserInfo> usersDef;
-private static List<UserInfo> usersMof;	
+	private static List<UserInfo> usersDef;
+	private static List<UserInfo> usersMof;
 	public static final int FRACTION_DEFIANCE = 1;
 	public static final int FRACTION_MINISTRY_OF_FREEDOM = 2;
 
 	public static List<Task> getAcceptedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();
+		List<Task> competed = getCompletedTasks();
 		for (Task t : allTasks) {
 			if (currentUser.getAcceptedTasks() != null
-					&& currentUser.getAcceptedTasks().contains(t.getId())) {
+					&& currentUser.getAcceptedTasks().contains(t.getId())
+					&& !competed.contains(t)) {
 				lReturn.add(t);
 			}
 		}
@@ -47,22 +50,29 @@ private static List<UserInfo> usersMof;
 	}
 
 	public static List<Task> getCompletedTasks() {
-		  List<Task> lReturn = new ArrayList<Task>();
-		  for (Task t : allTasks) {
-		   if (currentUser.getAcceptedTasks() != null
-		     && currentUser.getAcceptedTasks().contains(t.getId())) {
-		    if (currentUser.getFinishedGoals() != null) {
-		     for (Long l : t.getGoals()) {
-		      if (currentUser.getFinishedGoals().contains(l)) {
-		       lReturn.add(t);
-		      }
-		     }
-		    }
-		   }
-		  }
-		  return lReturn;
-		 }
-	
+		List<Task> lReturn = new ArrayList<Task>();
+		for (Task t : allTasks) {
+			if (currentUser.getAcceptedTasks() != null
+					&& currentUser.getAcceptedTasks().contains(t.getId())) {
+				if (currentUser.getFinishedGoals() != null) {
+					boolean done = false;
+					for (Long l : t.getGoals()) {
+						if (currentUser.getFinishedGoals().contains(l)) {
+							done = true;
+						} else {
+							done = false;
+							break;
+						}
+					}
+					if (done) {
+						lReturn.add(t);
+					}
+				}
+			}
+		}
+		return lReturn;
+	}
+
 	public static List<GoalStructure> getAcceptedUnfinishedGoals() {
 		List<GoalStructure> lReturn = new ArrayList<GoalStructure>();
 		List<Task> acceptedTasks = getAcceptedTasks();
@@ -109,13 +119,13 @@ private static List<UserInfo> usersMof;
 	public static List<Task> getAllTasks() {
 		return allTasks;
 	}
-	
+
 	public static List<UserInfo> getAllUsers() {
 		return allUsers;
 	}
-	
+
 	public static List<UserInfo> getFractionUsers(int fraction) {
-		switch (fraction){
+		switch (fraction) {
 		case (FRACTION_DEFIANCE):
 			return usersDef;
 		case (FRACTION_MINISTRY_OF_FREEDOM):
@@ -123,9 +133,9 @@ private static List<UserInfo> usersMof;
 		}
 		return null;
 	}
-	
+
 	public static void setFractionUsers(int fraction, List<UserInfo> users) {
-		switch (fraction){
+		switch (fraction) {
 		case (FRACTION_DEFIANCE):
 			GlobalData.usersDef = users;
 			break;
@@ -138,6 +148,7 @@ private static List<UserInfo> usersMof;
 	public static void setAllTasks(List<Task> allTasks) {
 		GlobalData.allTasks = allTasks;
 	}
+
 	public static void setAllUsers(List<UserInfo> allUsers) {
 		GlobalData.allUsers = allUsers;
 	}
@@ -175,9 +186,9 @@ private static List<UserInfo> usersMof;
 	}
 
 	public static TriggerRegister getTriggerRegister() {
-		if (triggerRegister == null) {
-			setTriggerRegister(new TriggerRegister());
-		}
+		// if (triggerRegister == null) {
+		// setTriggerRegister(new TriggerRegister());
+		// }
 		return triggerRegister;
 	}
 
@@ -186,15 +197,35 @@ private static List<UserInfo> usersMof;
 	}
 
 	public static GoalRegister getGoalRegister() {
-		if (goalRegister == null) {
-			setGoalRegister(new GoalRegister());
-		}
 		return goalRegister;
 	}
 
 	public static void setGoalRegister(GoalRegister goalRegister) {
 		GlobalData.goalRegister = goalRegister;
 	}
-	
+
+	public static boolean isFirstStart() {
+		return firstStart;
+	}
+
+	public static void setFirstStart(boolean firstStart) {
+		GlobalData.firstStart = firstStart;
+	}
+
+	public static boolean isExlapConnected() {
+		return exlapConnected;
+	}
+
+	public static void setExlapConnected(boolean exlapConnected) {
+		GlobalData.exlapConnected = exlapConnected;
+	}
+
+	public static UserInfoDatastore getDatastore() {
+		return datastore;
+	}
+
+	public static void setDatastore(UserInfoDatastore datastore) {
+		GlobalData.datastore = datastore;
+	}
 
 }

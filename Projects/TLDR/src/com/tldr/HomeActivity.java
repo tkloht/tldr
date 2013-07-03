@@ -60,6 +60,13 @@ public class HomeActivity extends FragmentActivity implements
 		transaction.addToBackStack(null);
 		currentFrag = fragment;
 		transaction.commit();
+		
+		AccountHelper auth;
+		UserInfoDatastore datastore;
+		auth = new AccountHelper(this);
+		datastore = new UserInfoDatastore(null, auth.getCredential());
+		GlobalData.setDatastore(datastore);
+		GlobalData.setGoalRegister(new GoalRegister());
 
 	}
 
@@ -132,32 +139,18 @@ public class HomeActivity extends FragmentActivity implements
 			sendRecognizeIntent();
 			break;
 		case R.id.menuConnectExlap:
-			if (GlobalData.getConnectionHelper() != null) {
-				try {
-					GlobalData.getConnectionHelper().performDiscovery();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else {
+			if (GlobalData.getConnectionHelper() == null) {
 				GlobalData.setConnectionHelper(new ConnectionHelper());
-				try {
-					GlobalData.getConnectionHelper().performDiscovery();
-					Log.e("tldr-exlap", "after discover");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 			}
+			try {
+				GlobalData.getConnectionHelper().performDiscovery();
+				Log.e("tldr-exlap", "after discover");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 			break;
 		case R.id.menuSubscribeAll:
-			// GlobalData.getConnectionHelper().subscribe("CurrentGear");
-			// ConditionCheckerTest.test3();
-			// TODO total gehacked muss man dringen verbessern
-			AccountHelper auth;
-			UserInfoDatastore datastore;
-			auth = new AccountHelper(this);
-			datastore = new UserInfoDatastore(null, auth.getCredential());
-			GlobalData.getGoalRegister().setDatastore(datastore);
-			Log.e("tldr-exlap", "after subscribe");
 			Toast.makeText(this, "after subscribe", Toast.LENGTH_SHORT).show();
 			break;
 
@@ -168,18 +161,20 @@ public class HomeActivity extends FragmentActivity implements
 		return true;
 	}
 
-	public void animateMenuIcons(int id){
+	public void animateMenuIcons(int id) {
 		switch (id) {
 		case 0:
-			if (menu != null){
+			if (menu != null) {
 				menu.findItem(R.id.menu_map).setIcon(R.drawable.map_pressed);
-				menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
+				menu.findItem(R.id.menu_community)
+						.setIcon(R.drawable.community);
 				menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 			}
 			break;
 		case 1:
 			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
-			menu.findItem(R.id.menu_community).setIcon(R.drawable.community_pressed);
+			menu.findItem(R.id.menu_community).setIcon(
+					R.drawable.community_pressed);
 			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 			break;
 		case 2:
@@ -189,7 +184,7 @@ public class HomeActivity extends FragmentActivity implements
 			break;
 		}
 	}
-	
+
 	private void switchView(int fragmentId) {
 		Fragment fragment;
 		FragmentManager fm = getFragmentManager();
@@ -300,12 +295,12 @@ public class HomeActivity extends FragmentActivity implements
 			}
 		}
 	}
-	
-	public void onBackPressed(){
-	      FragmentManager fm = getFragmentManager();
-	        if (fm.getBackStackEntryCount() > 0) {
-	            fm.popBackStack();
-	        }
+
+	public void onBackPressed() {
+		FragmentManager fm = getFragmentManager();
+		if (fm.getBackStackEntryCount() > 0) {
+			fm.popBackStack();
+		}
 	}
 
 }

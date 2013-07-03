@@ -16,65 +16,81 @@ public class TriggerRegister {
 		GPS, EXLAP
 	}
 
-	private Map<String, List<ConditionCheck>> exlapCondition;
+	private Map<String, List<ConditionCheck>> registertConditions;
 
 	public TriggerRegister() {
-		this.exlapCondition = new HashMap<String, List<ConditionCheck>>();
+		this.registertConditions = new HashMap<String, List<ConditionCheck>>();
 	}
 
-	public void register(ConditionCheck conditionCheck) {
+	public boolean register(ConditionCheck conditionCheck) {
 		String identifier = conditionCheck.getIdentifier();
+		List<ConditionCheck> cList;
+		boolean registerExlapInterface = false;
+		if (this.registertConditions.containsKey(identifier)) {
+			cList = this.registertConditions.get(identifier);
+		} else {
+			cList = new ArrayList<ConditionCheck>();
+			registerExlapInterface = true;
+		}
 		switch (conditionCheck.getDomain()) {
 		case GPS:
 
 			break;
 
 		case EXLAP:
-			List<ConditionCheck> cList;
-			if (this.exlapCondition.containsKey(identifier)) {
-				cList = this.exlapCondition.get(identifier);
-			} else {
-				cList = new ArrayList<ConditionCheck>();
-				this.exlapCondition.put(identifier, cList);
+			if (GlobalData.isExlapConnected() && registerExlapInterface) {
 				if (GlobalData.getConnectionHelper() != null) {
 					GlobalData.getConnectionHelper().subscribe(identifier);
 				}
+			} else {
+				return false;
 			}
-			cList.add(conditionCheck);
 			break;
 
 		default:
 			break;
 		}
+		this.registertConditions.put(identifier, cList);
+		cList.add(conditionCheck);
+		return true;
 	}
 
 	public void onNewData(TriggerDomains domain, Object data) {
+		Object value = null;
+		String key = null;
 		switch (domain) {
 		case EXLAP:
 			DataObject dataObject = (DataObject) data;
 			if (dataObject.size() > 0) {
-				if (this.exlapCondition.containsKey(dataObject.getUrl())) {
-					List<ConditionCheck> cList = this.exlapCondition
-							.get(dataObject.getUrl());
-					List<ConditionCheck> done = new ArrayList<ConditionCheck>();
-					for (ConditionCheck cc : cList) {
-						Object value = dataObject.getElement(0).getValue();
-						if (value != null) {
-							if (cc.updateData(value)) {
-								done.add(cc);
-							}
-							// TODO if ture dann unsuscriben
-						}
-					}
-					for (ConditionCheck ccd : done) {
-						cList.remove(ccd);
-					}
+				if (this.registertConditions.containsKey(dataObject.getUrl())) {
+					key = dataObject.getUrl();
+					value = dataObject.getElement(0).getValue();
 				}
 			}
+			break;
+		case GPS:
+			key = "gps";
+			value = data;
 			break;
 
 		default:
 			break;
+		}
+
+		if (key != null && this.registertConditions.get(key) != null) {
+			List<ConditionCheck> cList = this.registertConditions.get(key);
+			List<ConditionCheck> done = new ArrayList<ConditionCheck>();
+			for (ConditionCheck cc : cList) {
+				if (value != null) {
+					if (cc.updateData(value)) {
+						done.add(cc);
+					}
+					// TODO if ture dann unsuscriben
+				}
+			}
+			for (ConditionCheck ccd : done) {
+				cList.remove(ccd);
+			}
 		}
 
 	}

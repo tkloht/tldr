@@ -15,6 +15,7 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 import android.widget.TextSwitcher;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.tldr.GlobalData;
 import com.tldr.MapFragment.AutoCompletionMarker;
 
@@ -94,6 +95,12 @@ public final class ToolBox {
 		}
 		if(!added)
 			list.add(acm);
+	}
+	
+	public static LatLng locationFromString(String latLon){
+		String[] coords = latLon.split(";");
+		LatLng point=new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+		return point;
 	}
 	
 }

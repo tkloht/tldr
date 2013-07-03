@@ -3,17 +3,20 @@ package com.tldr.gamelogic;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
+import android.location.Location;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.tldr.exlap.TriggerRegister;
 import com.tldr.exlap.TriggerRegister.TriggerDomains;
 import com.tldr.gamelogic.GoalRegister.OnTrue;
+import com.tldr.tools.ToolBox;
 
 @SuppressLint("DefaultLocale")
 public class ConditionCheck {
 
 	public enum Data {
-		NONE, DISPLAYEDVEHICLESPEED, CURRENTGEAR
+		NONE, GPS, DISPLAYEDVEHICLESPEED, CURRENTGEAR
 	}
 
 	public enum Operator {
@@ -21,7 +24,7 @@ public class ConditionCheck {
 	}
 
 	public enum CLAZZ {
-		Double
+		Double, LatLng
 	}
 
 	private DataParser parser;
@@ -44,14 +47,20 @@ public class ConditionCheck {
 				operator = Operator.valueOf(contidion.get("operator")
 						.toUpperCase());
 			}
-			if (data != null && operator != null) {
+			if (data == null || operator == null) {
 				Log.i("TLDR",
 						"Condition registation failed due to lag of coding!");
 			}
 			this.setParser(data);
 			if (this.parser != null) {
 				this.setChecker(this.parser.getDataClassName(), operator);
-				this.checker.setValue(parser.parseData(contidion.get("value")));
+				if (this.parser.getDataClassName() == CLAZZ.LatLng) {
+					this.checker.setValue(ToolBox.locationFromString(contidion
+							.get("value")));
+				} else {
+					this.checker.setValue(parser.parseData(contidion
+							.get("value")));
+				}
 			}
 
 		}
@@ -75,6 +84,23 @@ public class ConditionCheck {
 					return CLAZZ.valueOf(Double.class.getSimpleName());
 				}
 
+			};
+		}
+		if (data == Data.GPS) {
+			this.setDomain(TriggerDomains.GPS);
+
+			this.parser = new DataParser<LatLng>() {
+
+				@Override
+				public CLAZZ getDataClassName() {
+					return CLAZZ.valueOf(LatLng.class.getSimpleName());
+				}
+
+				@Override
+				public LatLng parseData(Object object) {
+					LatLng lLocation = (LatLng) object;
+					return lLocation;
+				}
 			};
 		}
 
@@ -109,6 +135,32 @@ public class ConditionCheck {
 				@Override
 				public boolean checkData(Double data) {
 					return data == this.value;
+				}
+
+			};
+		}
+		if (clazz == CLAZZ.LatLng && operator == Operator.EQ) {
+			this.checker = new DataChecker<LatLng>() {
+				private LatLng location;
+
+				@Override
+				public void setValue(LatLng value) {
+					this.location = value;
+				}
+
+				@Override
+				public boolean checkData(LatLng data) {
+					float[] distance = new float[] { 0.0f };
+					Location.distanceBetween(data.latitude, data.longitude,
+							location.latitude, location.longitude, distance);
+					int dist = Math.round(distance[0]);
+					Log.i("TLDR",
+							"GPS Goaldistance:"+dist);
+					if (dist < 15) {
+						return true;
+					} else {
+						return false;
+					}
 				}
 
 			};

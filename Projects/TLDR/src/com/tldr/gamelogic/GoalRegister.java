@@ -1,7 +1,6 @@
 package com.tldr.gamelogic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,15 +15,23 @@ public class GoalRegister {
 
 	private List<GoalStructure> registeredGoals;
 	private TriggerRegister triggerRegister;
-	private UserInfoDatastore datastore;
 
 	public GoalRegister() {
 		this.registeredGoals = new ArrayList<GoalStructure>();
+		if (GlobalData.getTriggerRegister() == null) {
+			GlobalData.setTriggerRegister(new TriggerRegister());
+		}
 		this.triggerRegister = GlobalData.getTriggerRegister();
+		registerAll();
+	}
+
+	public void registerAll() {
 		if (!GlobalData.getAcceptedUnfinishedGoals().isEmpty()) {
 			for (GoalStructure goalStructure : GlobalData
 					.getAcceptedUnfinishedGoals()) {
-				this.addGoal(goalStructure);
+				if (!this.registeredGoals.contains(goalStructure)) {
+					this.addGoal(goalStructure);
+				}
 			}
 		}
 	}
@@ -37,12 +44,10 @@ public class GoalRegister {
 	public boolean addGoal(GoalStructure goal) {
 		final String desc = goal.getDescription();
 		final long idgoals = goal.getId();
-		this.registeredGoals.add(goal);
 		List<Map<String, String>> conditionsList = (List<Map<String, String>>) goal
 				.getJsonParse().get("conditions");
 		for (Map<String, String> condition : conditionsList) {
 			ConditionCheck cc = new ConditionCheck(condition, new OnTrue() {
-
 				@Override
 				public void onTrue() {
 					// Hier muessten erstenaml allee contidions true sein bevor
@@ -51,27 +56,33 @@ public class GoalRegister {
 					Log.i("TLDR", " FINISHED Condition:" + idgoals);
 
 					UserInfo currentUser = GlobalData.getCurrentUser();
-					if(currentUser.getFinishedGoals()==null){
+					if (currentUser.getFinishedGoals() == null) {
 						currentUser.setFinishedGoals(new ArrayList<Long>());
 					}
-					currentUser.getFinishedGoals().add(idgoals);
-					datastore.updateUser(currentUser);
+					if (GlobalData.getDatastore() != null) {
+						currentUser.getFinishedGoals().add(idgoals);
+						GlobalData.getDatastore().updateUser(currentUser);
+					}
 				}
 			});
 			if (cc.successfullyInitialized()) {
-				triggerRegister.register(cc);
+				if (triggerRegister.register(cc)) {
+					this.registeredGoals.add(goal);
+					return true;
+				}
 			}
 		}
-		return true;
+		return false;
 	}
 
-	public UserInfoDatastore getDatastore() {
-		return datastore;
-	}
-
-	public void setDatastore(UserInfoDatastore datastore) {
-		this.datastore = datastore;
-	}
+	//
+	// public UserInfoDatastore getDatastore() {
+	// return datastore;
+	// }
+	//
+	// public void setDatastore(UserInfoDatastore datastore) {
+	// this.datastore = datastore;
+	// }
 
 	public interface OnTrue {
 		public void onTrue();

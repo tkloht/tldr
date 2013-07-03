@@ -50,6 +50,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
+import com.tldr.exlap.TriggerRegister.TriggerDomains;
 import com.tldr.gamelogic.Factions;
 import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
@@ -75,19 +76,18 @@ public class MapFragment extends Fragment implements LocationListener,
 	private List<Marker> userMarkers;
 	private Marker selfMarker;
 	private boolean menueActive = false;
-	private int standardEMSForSearchField=33;
-	
-	private MyOnInfoWindowClickListener myOnInfoWindowClickListerer;
-	HashMap<Marker,Task> tasksHashMap;
-	List<HashMap<String,String>> tasksList;
-	HashMap<Marker,UserInfo> usersHashMap;
-	List<HashMap<String,String>> usersList;
+	private int standardEMSForSearchField = 33;
 
-	
+	private MyOnInfoWindowClickListener myOnInfoWindowClickListerer;
+	HashMap<Marker, Task> tasksHashMap;
+	List<HashMap<String, String>> tasksList;
+	HashMap<Marker, UserInfo> usersHashMap;
+	List<HashMap<String, String>> usersList;
+
 	// UI Stuff
 	private AutoCompleteTextView searchField;
-	
-	public final static int ORIGINAL_SCREEN_WIDTH=1200;
+
+	public final static int ORIGINAL_SCREEN_WIDTH = 1200;
 
 	public void initialize() {
 		Bundle args = getArguments();
@@ -147,16 +147,17 @@ public class MapFragment extends Fragment implements LocationListener,
 						lastKnown.getLongitude()));
 			}
 		}
-		
-//		//Layout Searchfield by Dimensions
-//		Display d = getActivity().getWindowManager().getDefaultDisplay();
-//		Point p = new Point();
-//		d.getSize(p);
-//		double factor = (((double)p.x/(double)ORIGINAL_SCREEN_WIDTH));
-//		int ems = (int)(((double)standardEMSForSearchField)*factor);
-		searchField=(AutoCompleteTextView) v.findViewById(R.id.mapSearchEditText);
-//		searchField.setEms(ems);
-//		Log.d("TLDR", p.x+"x"+p.y);
+
+		// //Layout Searchfield by Dimensions
+		// Display d = getActivity().getWindowManager().getDefaultDisplay();
+		// Point p = new Point();
+		// d.getSize(p);
+		// double factor = (((double)p.x/(double)ORIGINAL_SCREEN_WIDTH));
+		// int ems = (int)(((double)standardEMSForSearchField)*factor);
+		searchField = (AutoCompleteTextView) v
+				.findViewById(R.id.mapSearchEditText);
+		// searchField.setEms(ems);
+		// Log.d("TLDR", p.x+"x"+p.y);
 		return v;
 	}
 
@@ -214,20 +215,22 @@ public class MapFragment extends Fragment implements LocationListener,
 				}
 			}
 		});
-		
-		tasksHashMap = new HashMap<Marker,Task>();
-		tasksList = new ArrayList<HashMap<String,String>>();
-		usersHashMap = new HashMap<Marker,UserInfo>();
-		usersList = new ArrayList<HashMap<String,String>>();
-		myOnInfoWindowClickListerer = new MyOnInfoWindowClickListener(this, tasksHashMap, usersHashMap, tasksList, usersList);
+
+		tasksHashMap = new HashMap<Marker, Task>();
+		tasksList = new ArrayList<HashMap<String, String>>();
+		usersHashMap = new HashMap<Marker, UserInfo>();
+		usersList = new ArrayList<HashMap<String, String>>();
+		myOnInfoWindowClickListerer = new MyOnInfoWindowClickListener(this,
+				tasksHashMap, usersHashMap, tasksList, usersList);
 		mMap.setOnInfoWindowClickListener(myOnInfoWindowClickListerer);
-		
+
 		InputMethodManager imm = (InputMethodManager) view.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 		mMapView.requestFocus();
 		userDatastore.getNearbyUsers();
-		handleRequestResult(BaseDatastore.REQUEST_TASK_FETCHNEARBY, GlobalData.getAllTasks());
+		handleRequestResult(BaseDatastore.REQUEST_TASK_FETCHNEARBY,
+				GlobalData.getAllTasks());
 	}
 
 	private void acceptAllNearbyTasks() {
@@ -279,8 +282,8 @@ public class MapFragment extends Fragment implements LocationListener,
 		}
 		taskMarkers = new ArrayList<Marker>();
 		userMarkers = new ArrayList<Marker>();
-//		taskDatastore.createFakeTasks();
-//		taskDatastore.getNearbyTasks();
+		// taskDatastore.createFakeTasks();
+		// taskDatastore.getNearbyTasks();
 
 	}
 
@@ -293,7 +296,12 @@ public class MapFragment extends Fragment implements LocationListener,
 	private void flyTo(LatLng location) {
 		if (location != null) {
 			mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
-			mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
+			if (GlobalData.isFirstStart()) {
+				mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
+				GlobalData.setFirstStart(false);
+			} else {
+				mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+			}
 		}
 	}
 
@@ -321,16 +329,25 @@ public class MapFragment extends Fragment implements LocationListener,
 		// flyTo(location);
 		GlobalData.setLastknownPosition(location);
 		if (GlobalData.getCurrentUser() != null) {
+			LatLng latLon = null;
 			try {
-				this.selfMarker.setPosition(new LatLng(mMap.getMyLocation()
-						.getLatitude(), mMap.getMyLocation().getLongitude()));
+				latLon = (new LatLng(mMap.getMyLocation().getLatitude(), mMap
+						.getMyLocation().getLongitude()));
 			} catch (Exception e) {
-				this.selfMarker.setPosition(new LatLng(location.getLatitude(),
+				latLon = (new LatLng(location.getLatitude(),
 						location.getLongitude()));
 			}
+			if (latLon != null) {
+				this.selfMarker.setPosition(latLon);
+				if (GlobalData.getTriggerRegister() != null) {
+					GlobalData.getTriggerRegister().onNewData(
+							TriggerDomains.GPS, latLon);
+				}
+			}
 			userDatastore.updateUser(GlobalData.getCurrentUser()
-					.setGeoLon(location.getLongitude())
-					.setGeoLat(location.getLatitude()));
+					.setGeoLon(latLon.longitude)
+					.setGeoLat(latLon.latitude));
+			//ist genuaer so!
 		}
 
 	}
@@ -413,19 +430,22 @@ public class MapFragment extends Fragment implements LocationListener,
 					Log.d("TLDR", newMarker.toString());
 					ToolBox.addInRealDistanceOrder(autoCompletionObjects,
 							new AutoCompletionMarker(newMarker, distance[0]));
-					
+
 					tasksHashMap.put(newMarker, t);
-					HashMap<String,String> newMap = new HashMap<String,String>();
+					HashMap<String, String> newMap = new HashMap<String, String>();
 					newMap.put("title", t.getTitle());
 					newMap.put("desc", t.getDescription());
 					int dist = Math.round(distance[0]);
 					DecimalFormat df = new DecimalFormat("#.#");
-					newMap.put("distance", (dist<1000? dist+"m" : "~"+df.format(((dist)/1000))+"km"));
+					newMap.put(
+							"distance",
+							(dist < 1000 ? dist + "m" : "~"
+									+ df.format(((dist) / 1000)) + "km"));
 					tasksList.add(newMap);
 
 				}
 				myOnInfoWindowClickListerer.setTasks(tasksHashMap, tasksList);
-				
+
 				searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(
 						this.getActivity(),
 						android.R.layout.simple_dropdown_item_1line,
@@ -459,31 +479,33 @@ public class MapFragment extends Fragment implements LocationListener,
 
 						userMarkers.add(newMarker);
 
-						
 						usersHashMap.put(newMarker, u);
-						HashMap<String,String> newMap = new HashMap<String,String>();
+						HashMap<String, String> newMap = new HashMap<String, String>();
 						newMap.put("name", u.getUsername());
 						float[] distance = new float[] { 0.0f };
-						if(current!=null){
-							Location.distanceBetween(current.getLatitude(), current.getLongitude(), u.getGeoLat(), u.getGeoLon(), distance);
+						if (current != null) {
+							Location.distanceBetween(current.getLatitude(),
+									current.getLongitude(), u.getGeoLat(),
+									u.getGeoLon(), distance);
 						}
 						int dist = Math.round(distance[0]);
 						DecimalFormat df = new DecimalFormat("#.#");
-						newMap.put("distance", (dist<1000? dist+"m" : "~"+df.format(((dist)/1000))+"km"));
+						newMap.put("distance", (dist < 1000 ? dist + "m" : "~"
+								+ df.format(((dist) / 1000)) + "km"));
 						usersList.add(newMap);
 					}
-					
-					switch (u.getFaction()){
+
+					switch (u.getFaction()) {
 					case (1):
 						usersDef.add(u);
-					break;
+						break;
 					case (2):
 						usersMof.add(u);
-					break;
+						break;
 					}
 				}
 				myOnInfoWindowClickListerer.setUsers(usersHashMap, usersList);
-				
+
 				GlobalData.setFractionUsers(1, usersDef);
 				GlobalData.setFractionUsers(2, usersMof);
 			}
@@ -553,7 +575,7 @@ public class MapFragment extends Fragment implements LocationListener,
 				}
 			});
 		}
-//		boolean state = buttonOverlay.getVisibility() == View.VISIBLE;
+		// boolean state = buttonOverlay.getVisibility() == View.VISIBLE;
 		selfMarker.setVisible(menueActive);
 		buttonOverlay.setVisibility(menueActive ? View.GONE : View.VISIBLE);
 		mMap.getUiSettings().setAllGesturesEnabled(menueActive);
@@ -566,18 +588,17 @@ public class MapFragment extends Fragment implements LocationListener,
 		Bundle bundle = new Bundle();
 
 		Location current = GlobalData.getLastknownPosition();
-		
-		HashMap<String,String> myUser = new HashMap<String,String>();
+
+		HashMap<String, String> myUser = new HashMap<String, String>();
 		myUser.put("distance", "-");
 		myUser.put("name", GlobalData.getCurrentUser().getUsername());
 
 		bundle.putSerializable("HashMap", myUser);
 		bundle.putDouble("geo_lat", current.getLatitude());
 		bundle.putDouble("geo_lon", current.getLongitude());
-		
+
 		f1.setArguments(bundle);
-		FragmentTransaction ft = this.getFragmentManager()
-				.beginTransaction();
+		FragmentTransaction ft = this.getFragmentManager().beginTransaction();
 		ft.replace(this.getId(), f1);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 		ft.addToBackStack(null);

@@ -28,7 +28,8 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 
 	private ExlapClient ec;
 	private DataListener dataListener = this;
-	
+
+	private int tryCounter = 3;
 
 	private Handler m_carInfoHandler = new Handler() {
 		@Override
@@ -47,9 +48,10 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 	};
 
 	public void onData(DataObject dataObject) {
-//		System.out.println(">>> Got <Data/>: " + dataObject.toString());
+		// System.out.println(">>> Got <Data/>: " + dataObject.toString());
 		if (dataObject != null) {
-			GlobalData.getTriggerRegister().onNewData(TriggerDomains.EXLAP, dataObject);
+			GlobalData.getTriggerRegister().onNewData(TriggerDomains.EXLAP,
+					dataObject);
 			m_carInfoHandler.sendMessage(m_carInfoHandler.obtainMessage(1,
 					dataObject));
 		}
@@ -70,16 +72,27 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 	 *            Socket address e.g. "socket://192.168.1.76:28500"
 	 */
 	public void startService(final String address) {
-		Thread service = new Thread(new Runnable() {
+		final Thread service = new Thread(new Runnable() {
 			public void run() {
 				ec = new ExlapClient(address);
 				ec.addDataListener(dataListener);
 				ec.connect();
 				if (ec.isConnected()) {
 					Log.i("ConnectionHelper", "isConnected on Port" + address);
-				} else
+					GlobalData.setExlapConnected(true);
+					if (GlobalData.getGoalRegister() != null) {
+						GlobalData.getGoalRegister().registerAll();
+					}
+				} else {
+					tryCounter--;
+					if (tryCounter > 0) {
+						startService(address);
+					} else {
+						GlobalData.setExlapConnected(false);
+					}
 					Log.i("ConnectionHelper", "Unable to connect to: "
-							+ address);
+							+ address + ". Try:" + tryCounter);
+				}
 			}
 		});
 		service.start();
@@ -188,19 +201,32 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 			startService(serviceDescription.getAddress());
 			break;
 		default:
-			break;
+
 		}
 	}
 
 	public void discoveryFinished(boolean discoverySuccessfull) {
 		System.out.println("Discovery finished or terminated");
+		if (!discoverySuccessfull) {
+			tryCounter--;
+			if (tryCounter > 0) {
+				try {
+					performDiscovery();
+					Log.i("ConnectionHelper", "Try:" + tryCounter);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				GlobalData.setExlapConnected(false);
+			}
+		}
 	}
 
 	public void performDiscovery() throws IOException {
 		if (GlobalData.getCurrentUser().getEmail()
 				.equals("doriankno@googlemail.com")) {
-			 Log.e("tldr-exlap", "dorian workaround");
-			 this.startService("socket://192.168.43.69:28500");
+			Log.e("tldr-exlap", "dorian workaround");
+			this.startService("socket://192.168.1.106:28500");
 		} else {
 			DiscoveryManager disco = new DiscoveryManager(
 					DiscoveryManager.SCHEME_SOCKET);
@@ -210,6 +236,5 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 				System.out.println("ERROR. Root cause: " + e.getMessage());
 			}
 		}
-
 	}
 }
