@@ -239,7 +239,7 @@ public class MapFragment extends Fragment implements LocationListener,
 		}
 		handleRequestResult(BaseDatastore.REQUEST_TASK_FETCHNEARBY,
 				GlobalData.getAllTasks());
-		resetGoalMarkers();
+		resetMarkers();
 	}
 
 	private void acceptAllNearbyTasks() {
@@ -286,6 +286,22 @@ public class MapFragment extends Fragment implements LocationListener,
 		// taskDatastore.getNearbyTasks();
 
 	}
+	
+	private void fillMapWithOverlays(){
+		mMap.clear();
+		mMap.setMyLocationEnabled(true);
+		mMap.setOnMarkerClickListener(this);
+		userDatastore.getNearbyUsers();
+		handleRequestResult(BaseDatastore.REQUEST_TASK_FETCHNEARBY,
+				GlobalData.getAllTasks());
+		resetMarkers();
+		flyTo(GlobalData.getLastknownPosition());
+		selfMarker = mMap.addMarker(new MarkerOptions().position(
+				new LatLng(GlobalData.getLastknownPosition().getLatitude(),
+						GlobalData.getLastknownPosition().getLongitude()))
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.tldr_button_car)));
+	}
 
 	private void flyTo(Location location) {
 		if (location != null) {
@@ -295,7 +311,7 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	private void flyTo(LatLng location) {
 		if (location != null) {
-			mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
+			mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 			if (GlobalData.isFirstStart()) {
 				mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
 				GlobalData.setFirstStart(false);
@@ -327,6 +343,7 @@ public class MapFragment extends Fragment implements LocationListener,
 	@Override
 	public void onLocationChanged(Location location) {
 		// flyTo(location);
+		
 		GlobalData.setLastknownPosition(location);
 		if (GlobalData.getCurrentUser() != null) {
 			LatLng latLon = null;
@@ -338,7 +355,9 @@ public class MapFragment extends Fragment implements LocationListener,
 						location.getLongitude()));
 			}
 			if (latLon != null) {
-				this.selfMarker.setPosition(latLon);
+				if(selfMarker==null)
+					fillMapWithOverlays();
+				selfMarker.setPosition(latLon);
 				if (GlobalData.getTriggerRegister() != null) {
 					GlobalData.getTriggerRegister().onNewData(
 							TriggerDomains.GPS, latLon);
@@ -348,20 +367,78 @@ public class MapFragment extends Fragment implements LocationListener,
 					.setGeoLon(latLon.longitude)
 					.setGeoLat(latLon.latitude));
 			//ist genuaer so!
-			resetGoalMarkers();
+			fillMapWithOverlays();
 		}
 
 	}
 	
-	private void resetGoalMarkers(){
+	private void resetMarkers(){
 		List<Task> acceptedTasks;
 		acceptedTasks = GlobalData.getAcceptedTasks();
 		for(Task t:acceptedTasks){
 			List<PolylineOptions> poL = ToolBox.generatePolylineFromIDs(t.getGoals(), GlobalData.getCurrentUser().getFinishedGoals());
-			for(PolylineOptions po:poL){
+			for(PolylineOptions po:poL){	
+				
 				mMap.addPolyline(po);
 			}	
 		}
+		List<AutoCompletionMarker> autoCompletionObjects = new ArrayList<MapFragment.AutoCompletionMarker>();
+		int i = 0;
+		Location current = GlobalData.getLastknownPosition();
+		List<Task> tasks = GlobalData.getAllTasks();
+		for (Task t : tasks) {
+			float[] distance = new float[] { 0.0f };
+			if (current != null) {
+				Location.distanceBetween(current.getLatitude(),
+						current.getLongitude(), t.getGeoLat(),
+						t.getGeoLon(), distance);
+			}
+			Marker newMarker;
+			if(GlobalData.getAcceptedTasks().contains(t))
+				newMarker= mMap.addMarker(new MarkerOptions()
+						.position(new LatLng(t.getGeoLat(), t.getGeoLon()))
+						.title(t.getTitle())
+						.snippet(
+								(t.getDescription().length() < 30 ? t
+										.getDescription() : t
+										.getDescription().substring(0, 29)
+										+ ".."))
+						.icon(BitmapDescriptorFactory
+								.fromResource(R.drawable.tldr_target_sm)));
+			else
+				newMarker= mMap.addMarker(new MarkerOptions()
+				.position(new LatLng(t.getGeoLat(), t.getGeoLon()))
+				.title(t.getTitle())
+				.snippet(
+						(t.getDescription().length() < 30 ? t
+								.getDescription() : t
+								.getDescription().substring(0, 29)
+								+ ".."))
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.target)));				
+			taskMarkers.add(newMarker);
+			Log.d("TLDR", newMarker.toString());
+			ToolBox.addInRealDistanceOrder(autoCompletionObjects,
+					new AutoCompletionMarker(newMarker, distance[0]));
+
+			tasksHashMap.put(newMarker, t);
+			HashMap<String, String> newMap = new HashMap<String, String>();
+			newMap.put("title", t.getTitle());
+			newMap.put("desc", t.getDescription());
+			int dist = Math.round(distance[0]);
+			DecimalFormat df = new DecimalFormat("#.#");
+			newMap.put(
+					"distance",
+					(dist < 1000 ? dist + "m" : "~"
+							+ df.format(((dist) / 1000)) + "km"));
+			tasksList.add(newMap);
+		}
+		myOnInfoWindowClickListerer.setTasks(tasksHashMap, tasksList);
+
+		searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(
+				this.getActivity(),
+				android.R.layout.simple_dropdown_item_1line,
+				autoCompletionObjects));
 	}
 
 	@Override
@@ -414,55 +491,6 @@ public class MapFragment extends Fragment implements LocationListener,
 	@Override
 	public void handleRequestResult(int requestId, Object result) {
 		// TODO Auto-generated method stub
-		if (requestId == BaseDatastore.REQUEST_TASK_FETCHNEARBY) {
-
-			List<Task> tasks = (List<Task>) result;
-			if (tasks != null) {
-				List<AutoCompletionMarker> autoCompletionObjects = new ArrayList<MapFragment.AutoCompletionMarker>();
-				int i = 0;
-				Location current = GlobalData.getLastknownPosition();
-				for (Task t : tasks) {
-					float[] distance = new float[] { 0.0f };
-					if (current != null) {
-						Location.distanceBetween(current.getLatitude(),
-								current.getLongitude(), t.getGeoLat(),
-								t.getGeoLon(), distance);
-					}
-					Marker newMarker = mMap.addMarker(new MarkerOptions()
-							.position(new LatLng(t.getGeoLat(), t.getGeoLon()))
-							.title(t.getTitle())
-							.snippet(
-									(t.getDescription().length() < 30 ? t
-											.getDescription() : t
-											.getDescription().substring(0, 29)
-											+ ".."))
-							.icon(BitmapDescriptorFactory
-									.fromResource(R.drawable.target)));
-					taskMarkers.add(newMarker);
-					Log.d("TLDR", newMarker.toString());
-					ToolBox.addInRealDistanceOrder(autoCompletionObjects,
-							new AutoCompletionMarker(newMarker, distance[0]));
-
-					tasksHashMap.put(newMarker, t);
-					HashMap<String, String> newMap = new HashMap<String, String>();
-					newMap.put("title", t.getTitle());
-					newMap.put("desc", t.getDescription());
-					int dist = Math.round(distance[0]);
-					DecimalFormat df = new DecimalFormat("#.#");
-					newMap.put(
-							"distance",
-							(dist < 1000 ? dist + "m" : "~"
-									+ df.format(((dist) / 1000)) + "km"));
-					tasksList.add(newMap);
-				}
-				myOnInfoWindowClickListerer.setTasks(tasksHashMap, tasksList);
-
-				searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(
-						this.getActivity(),
-						android.R.layout.simple_dropdown_item_1line,
-						autoCompletionObjects));
-			}
-		}
 		if (requestId == BaseDatastore.REQUEST_USERINFO_UPDATEUSER) {
 			UserInfo userResult = (UserInfo) result;
 			if (userResult != null) {
