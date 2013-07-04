@@ -228,8 +228,18 @@ public class MapFragment extends Fragment implements LocationListener,
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 		mMapView.requestFocus();
 		userDatastore.getNearbyUsers();
+		if (GlobalData.getLastknownPosition() != null) {
+			// generateMarkers(lastknown);
+			flyTo(GlobalData.getLastknownPosition());
+			this.selfMarker = mMap.addMarker(new MarkerOptions().position(
+					new LatLng(GlobalData.getLastknownPosition().getLatitude(),
+							GlobalData.getLastknownPosition().getLongitude()))
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.tldr_button_car)));
+		}
 		handleRequestResult(BaseDatastore.REQUEST_TASK_FETCHNEARBY,
 				GlobalData.getAllTasks());
+		resetGoalMarkers();
 	}
 
 	private void acceptAllNearbyTasks() {
@@ -270,15 +280,6 @@ public class MapFragment extends Fragment implements LocationListener,
 	private void setUpMap() {
 		mMap.setMyLocationEnabled(true);
 		mMap.setOnMarkerClickListener(this);
-		if (GlobalData.getLastknownPosition() != null) {
-			// generateMarkers(lastknown);
-			flyTo(GlobalData.getLastknownPosition());
-			this.selfMarker = mMap.addMarker(new MarkerOptions().position(
-					new LatLng(GlobalData.getLastknownPosition().getLatitude(),
-							GlobalData.getLastknownPosition().getLongitude()))
-					.icon(BitmapDescriptorFactory
-							.fromResource(R.drawable.tldr_button_car)));
-		}
 		taskMarkers = new ArrayList<Marker>();
 		userMarkers = new ArrayList<Marker>();
 		// taskDatastore.createFakeTasks();
@@ -347,8 +348,20 @@ public class MapFragment extends Fragment implements LocationListener,
 					.setGeoLon(latLon.longitude)
 					.setGeoLat(latLon.latitude));
 			//ist genuaer so!
+			resetGoalMarkers();
 		}
 
+	}
+	
+	private void resetGoalMarkers(){
+		List<Task> acceptedTasks;
+		acceptedTasks = GlobalData.getAcceptedTasks();
+		for(Task t:acceptedTasks){
+			List<PolylineOptions> poL = ToolBox.generatePolylineFromIDs(t.getGoals(), GlobalData.getCurrentUser().getFinishedGoals());
+			for(PolylineOptions po:poL){
+				mMap.addPolyline(po);
+			}	
+		}
 	}
 
 	@Override
@@ -441,10 +454,6 @@ public class MapFragment extends Fragment implements LocationListener,
 							(dist < 1000 ? dist + "m" : "~"
 									+ df.format(((dist) / 1000)) + "km"));
 					tasksList.add(newMap);
-					List<PolylineOptions> poL = ToolBox.generatePolylineFromIDs(t.getGoals(), GlobalData.getCurrentUser().getFinishedGoals());
-					for(PolylineOptions po:poL){
-						mMap.addPolyline(po);
-					}
 				}
 				myOnInfoWindowClickListerer.setTasks(tasksHashMap, tasksList);
 

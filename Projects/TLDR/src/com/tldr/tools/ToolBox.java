@@ -127,9 +127,6 @@ public final class ToolBox {
 		if(finishedGoals==null){
 			finishedGoals= new ArrayList<Long>();
 		}
-		if(finishedGoals.contains(88001L)){
-			finishedGoals.remove(88001L);
-		}
 		for(GoalStructure goal:goals){
 			int seq;
 			List<Map<String, String>> conditions = (List<Map<String, String>>) goal.getJsonParse().get("conditions");

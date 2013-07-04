@@ -34,17 +34,20 @@ public class ConditionCheck {
 	private String identifier;
 	private OnTrue onTrue;
 
-	public ConditionCheck(Map<String, String> contidion, OnTrue onTrue) {
-		if (contidion.containsKey("data")) {
+	public ConditionCheck(Map<String, String> condition, OnTrue onTrue) {
+		if (condition.containsKey("data")) {
+			String dataString=condition.get("data");
 			this.onTrue = onTrue;
-			setIdentifier(contidion.get("data"));
+			if(dataString.equals("polyline_point"))
+				dataString="gps";
+			setIdentifier(dataString);
 			Data data = null;
-			if (containsData(contidion.get("data").toUpperCase())) {
-				data = Data.valueOf(contidion.get("data").toUpperCase());
+			if (containsData(dataString.toUpperCase())) {
+				data = Data.valueOf(dataString.toUpperCase());
 			}
 			Operator operator = null;
-			if (containsOperator(contidion.get("operator").toUpperCase())) {
-				operator = Operator.valueOf(contidion.get("operator")
+			if (containsOperator(condition.get("operator").toUpperCase())) {
+				operator = Operator.valueOf(condition.get("operator")
 						.toUpperCase());
 			}
 			if (data == null || operator == null) {
@@ -55,10 +58,10 @@ public class ConditionCheck {
 			if (this.parser != null) {
 				this.setChecker(this.parser.getDataClassName(), operator);
 				if (this.parser.getDataClassName() == CLAZZ.LatLng) {
-					this.checker.setValue(ToolBox.locationFromString(contidion
+					this.checker.setValue(ToolBox.locationFromString(condition
 							.get("value")));
 				} else {
-					this.checker.setValue(parser.parseData(contidion
+					this.checker.setValue(parser.parseData(condition
 							.get("value")));
 				}
 			}
@@ -156,7 +159,7 @@ public class ConditionCheck {
 					int dist = Math.round(distance[0]);
 					Log.i("TLDR",
 							"GPS Goaldistance:"+dist);
-					if (dist < 15) {
+					if (dist < 50) {
 						return true;
 					} else {
 						return false;
