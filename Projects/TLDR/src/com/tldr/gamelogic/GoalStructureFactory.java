@@ -12,7 +12,7 @@ public class GoalStructureFactory {
 		int count=0;
 		for(String latLongString:splitLatLongs){
 			GoalStructure nextPoint = new GoalStructure().addBaseData((count++)+"##"+description, "null");
-			nextPoint.addCondition("polyline_point", "eq", latLongString);
+			nextPoint.addCondition(GoalStructure.CONDITION_TYPE_POLYLINE_POINT, "eq", latLongString);
 			nextPoint.addReward(rewardType, reward+"");
 			lReturn.add(nextPoint);
 		}

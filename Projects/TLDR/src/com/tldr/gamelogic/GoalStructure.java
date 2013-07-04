@@ -5,10 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.tldr.tools.ToolBox;
+
 public class GoalStructure {
 
 	private Map<String, Object> jsonParse;
 	private Long id;
+	
+	public final static String CONDITION_TYPE_POLYLINE_POINT="polyline_point";
+	
 	public GoalStructure(){
 		jsonParse=new HashMap<String, Object>();
 		
@@ -69,6 +75,8 @@ public class GoalStructure {
 	{
 		return jsonParse;
 	}
+	
+
 	
 	
 }

@@ -8,13 +8,11 @@ import java.util.List;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +47,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.TriggerRegister.TriggerDomains;
 import com.tldr.gamelogic.Factions;
@@ -442,7 +441,10 @@ public class MapFragment extends Fragment implements LocationListener,
 							(dist < 1000 ? dist + "m" : "~"
 									+ df.format(((dist) / 1000)) + "km"));
 					tasksList.add(newMap);
-
+					List<PolylineOptions> poL = ToolBox.generatePolylineFromIDs(t.getGoals(), GlobalData.getCurrentUser().getFinishedGoals());
+					for(PolylineOptions po:poL){
+						mMap.addPolyline(po);
+					}
 				}
 				myOnInfoWindowClickListerer.setTasks(tasksHashMap, tasksList);
 

@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.taskendpoint.model.Task;
+import com.tldr.tools.ToolBox;
 import com.ui.SimpleCheckBoxListAdapter;
 
 public class TaskDetailsFragment extends Fragment implements DatastoreResultHandler{
@@ -57,6 +58,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	private Task selected;
 	private List<Long> goalIds;
 	private SimpleCheckBoxListAdapter goalListAdapter;
+	private List<GoalStructure> relatedGoals;
 
 	
 	@Override
@@ -139,12 +141,12 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	}
 	
 	private void fillGoalList(){
-		
-		Map<Integer, LatLng> points = new HashMap<Integer, LatLng>();
 		List<Task> allTasks=GlobalData.getAllTasks();
 		Map<Long, GoalStructure> goals=GlobalData.getAllGoals();
 		List<Map<String, String>> listObjects = new ArrayList<Map<String,String>>();
 		List<Boolean> checked= new ArrayList<Boolean>();
+		relatedGoals= new ArrayList<GoalStructure>();
+		
 		if(id!=null){
 			for( Task t:allTasks){
 				if(id.equals(t.getId())){
@@ -157,6 +159,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 					boolean add=true;
 					HashMap<String, String> singleListItem = new HashMap<String, String>();
 					GoalStructure gs = goals.get(gid);
+					relatedGoals.add(gs);
 					String desc=gs.getDescription();
 					int sequenceNr=0;
 					if(desc.contains("##")){
@@ -166,19 +169,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 					}
 					if(sequenceNr>0)
 						add=false;
-					singleListItem.put("description", desc);
-					Map<String, Object> goalParse = goals.get(gid).getJsonParse();
-					ArrayList<Map<String, String>> conditions= (ArrayList<Map<String, String>>) goalParse.get("conditions");
-					for(Map<String, String> condition:conditions){
-						if(condition.get("data").equals("polyline_point")){
-							String latLon=condition.get("value");
-							String[] coords = latLon.split(",");
-							LatLng point=new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
-							points.put(sequenceNr, point);
-							}
-					}
-					
-					
+					singleListItem.put("description", desc);									
 					if(add){
 						listObjects.add(singleListItem);
 					
@@ -201,13 +192,11 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
         goalList.setAdapter(goalListAdapter);
         
         //SetUpMatPolylineIfNeeded
-        if(points.size()>0){
-        	PolylineOptions po = new PolylineOptions();
-        	for(int i=0; points.containsKey(i); i++)
-        		po.add(points.get(i));
-        	po.color(Color.BLUE);
+        List<PolylineOptions> poL=ToolBox.generatePolyline(relatedGoals, GlobalData.getCurrentUser().getFinishedGoals());
+        for(PolylineOptions po:poL){	
         	mMap.addPolyline(po);
         }
+        
 		
 	}
 	

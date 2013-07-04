@@ -1,7 +1,9 @@
 package com.tldr.tools;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,8 +18,10 @@ import android.widget.EditText;
 import android.widget.TextSwitcher;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.tldr.GlobalData;
 import com.tldr.MapFragment.AutoCompletionMarker;
+import com.tldr.gamelogic.GoalStructure;
 
 public final class ToolBox {
 	public final static String TAG_REAL_DISTANCE="real_distance";
@@ -98,9 +102,100 @@ public final class ToolBox {
 	}
 	
 	public static LatLng locationFromString(String latLon){
-		String[] coords = latLon.split(";");
+		String[] coords;
+		if(latLon.contains(";"))
+			coords = latLon.split(";");
+		else
+			coords = latLon.split(",");
 		LatLng point=new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
 		return point;
+	}
+	
+	public static List<PolylineOptions> generatePolylineFromIDs(List<Long> goals, List<Long> finishedGoals){
+		Map<Long, GoalStructure> map=GlobalData.getAllGoals();
+		List<GoalStructure> gs_list= new ArrayList<GoalStructure>();
+		for(Long g: goals){
+			gs_list.add(map.get(g));
+		}
+		return generatePolyline(gs_list, finishedGoals);
+	}
+	public static List<PolylineOptions> generatePolyline(List<GoalStructure> goals, List<Long> finishedGoals){
+		PolylineOptions line_unfinished = new PolylineOptions();
+		PolylineOptions line_finished = new PolylineOptions();
+		List<PolylineOptions> lReturn = new ArrayList<PolylineOptions>();
+		HashMap<Integer, LatLng> lineStructure= new HashMap<Integer, LatLng>();
+		if(finishedGoals==null){
+			finishedGoals= new ArrayList<Long>();
+		}
+		if(finishedGoals.contains(88001L)){
+			finishedGoals.remove(88001L);
+		}
+		for(GoalStructure goal:goals){
+			int seq;
+			List<Map<String, String>> conditions = (List<Map<String, String>>) goal.getJsonParse().get("conditions");
+			if(goal.getDescription().contains("##")){
+				seq=Integer.parseInt(goal.getDescription().split("##")[0]);
+				seq++;
+			}
+			else
+				seq=1;
+			if(conditions!=null){
+				for(Map<String, String> cond:conditions){
+					if(cond.get("data").equals(GoalStructure.CONDITION_TYPE_POLYLINE_POINT)){
+						if(finishedGoals.contains(goal.getId())){
+							lineStructure.put(seq, ToolBox.locationFromString(cond.get("value")));
+						}
+						else
+						{
+							lineStructure.put(-seq, ToolBox.locationFromString(cond.get("value")));
+						}
+					}
+				}
+			}
+		}
+		//Compute lines
+		LatLng lastLocation=null;
+		boolean lastFinished=false;
+		for(int i=1; lineStructure.containsKey(i)||lineStructure.containsKey(-i); i++){
+			if(i==1){ //do not draw
+				if(lineStructure.containsKey(i)){
+					lastLocation=lineStructure.get(i);
+					lastFinished=true;
+				}
+				else
+				{
+					lastLocation=lineStructure.get(-i);
+					lastFinished=false;
+				}
+			}
+			else
+			{
+				PolylineOptions nextLine = new PolylineOptions();
+				if(lineStructure.containsKey(i)){
+					if(lastFinished)
+						nextLine.color(Color.GREEN);
+					else
+						nextLine.color(Color.BLUE);
+					nextLine.add(lastLocation);
+					nextLine.add(lineStructure.get(i));
+					lReturn.add(nextLine);
+					lastLocation=lineStructure.get(i);
+					lastFinished=true;
+				}
+				else
+				{
+					nextLine.color(Color.BLUE);
+					nextLine.add(lastLocation);
+					nextLine.add(lineStructure.get(-i));
+					lReturn.add(nextLine);
+					lastLocation=lineStructure.get(-i);
+					lastFinished=false;
+				}	
+			}
+		}
+		
+		return lReturn;
+		
 	}
 	
 }
