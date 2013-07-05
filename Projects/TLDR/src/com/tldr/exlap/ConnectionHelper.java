@@ -2,6 +2,7 @@ package com.tldr.exlap;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 import com.tldr.GlobalData;
 import com.tldr.exlap.TriggerRegister.TriggerDomains;
@@ -28,6 +29,7 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 
 	private ExlapClient ec;
 	private DataListener dataListener = this;
+	private static HashMap<String, Url> registersUrls = new HashMap<String, Url>();
 
 	private int tryCounter = 3;
 
@@ -48,7 +50,7 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 	};
 
 	public void onData(DataObject dataObject) {
-		// System.out.println(">>> Got <Data/>: " + dataObject.toString());
+//		 System.out.println(">>> Got <Data/>: " + dataObject.toString());
 		if (dataObject != null) {
 			GlobalData.getTriggerRegister().onNewData(TriggerDomains.EXLAP,
 					dataObject);
@@ -118,8 +120,9 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 				UrlList urlList = ec.getDir("*");
 				@SuppressWarnings("unchecked")
 				Url url = urlList.getElement(params[0]);
-				if (url.getType() == Url.TYPE_OBJECT) {
 					String urlName = url.getName();
+					if (url.getType() == Url.TYPE_OBJECT) {
+						registersUrls.put(urlName, url);
 					System.out.print("Interface on \"" + urlName + "\"...");
 					System.out.println(" DONE. Interface="
 							+ ec.getInterface(urlName).toString());
@@ -186,6 +189,21 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 			}
 		}
 
+	}
+	
+	public void  unsubscribe(String urlName){
+		try {
+			ec.unsubscribeObject(urlName);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExlapException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void discoveryEvent(int eventType,

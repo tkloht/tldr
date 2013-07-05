@@ -16,11 +16,11 @@ import com.tldr.tools.ToolBox;
 public class ConditionCheck {
 
 	public enum Data {
-		NONE, GPS, DISPLAYEDVEHICLESPEED, CURRENTGEAR
+		NONE, GPS, DISPLAYEDVEHICLESPEED, CURRENTGEAR, VEHICLESPEED
 	}
 
 	public enum Operator {
-		NONE, LE, EQ
+		NONE, LE, EQ, EQR
 	}
 
 	public enum CLAZZ {
@@ -36,10 +36,10 @@ public class ConditionCheck {
 
 	public ConditionCheck(Map<String, String> condition, OnTrue onTrue) {
 		if (condition.containsKey("data")) {
-			String dataString=condition.get("data");
+			String dataString = condition.get("data");
 			this.onTrue = onTrue;
-			if(dataString.equals("polyline_point"))
-				dataString="gps";
+			if (dataString.equals("polyline_point"))
+				dataString = "gps";
 			setIdentifier(dataString);
 			Data data = null;
 			if (containsData(dataString.toUpperCase())) {
@@ -71,7 +71,7 @@ public class ConditionCheck {
 
 	private void setParser(Data data) {
 		if (data == Data.NONE || data == Data.DISPLAYEDVEHICLESPEED
-				|| data == Data.CURRENTGEAR) {
+				|| data == Data.CURRENTGEAR || data == Data.VEHICLESPEED) {
 			this.setDomain(TriggerDomains.EXLAP);
 			this.parser = new DataParser<Double>() {
 
@@ -126,6 +126,27 @@ public class ConditionCheck {
 
 			};
 		}
+		if (clazz == CLAZZ.Double && operator == Operator.EQR) {
+			this.checker = new DataChecker<Double>() {
+				double value;
+				double variance;
+
+				@Override
+				public void setValue(Double value) {
+					this.value = value;
+					this.variance = value * 0.1;
+				}
+
+				@Override
+				public boolean checkData(Double data) {
+//					Log.i("TLDR",""+(this.value - this.variance <= data
+//							&& data <= this.value + this.variance));
+					return this.value - this.variance <= data
+							&& data <= this.value + this.variance;
+				}
+
+			};
+		}
 		if (clazz == CLAZZ.Double && operator == Operator.EQ) {
 			this.checker = new DataChecker<Double>() {
 				double value;
@@ -157,8 +178,7 @@ public class ConditionCheck {
 					Location.distanceBetween(data.latitude, data.longitude,
 							location.latitude, location.longitude, distance);
 					int dist = Math.round(distance[0]);
-					Log.i("TLDR",
-							"GPS Goaldistance:"+dist);
+					Log.i("TLDR", "GPS Goaldistance:" + dist);
 					if (dist < 100) {
 						return true;
 					} else {
@@ -177,11 +197,12 @@ public class ConditionCheck {
 
 	@SuppressWarnings("unchecked")
 	public boolean updateData(Object data) {
+//		Log.i("TLDR", "updateData" + data);
 		boolean result = false;
 		try {
 			result = this.checker.checkData(parser.parseData(data));
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 		if (result && this.onTrue != null) {
 			this.onTrue.onTrue();

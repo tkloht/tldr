@@ -1,6 +1,7 @@
 package com.tldr.gamelogic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,9 +16,11 @@ public class GoalRegister {
 
 	private List<GoalStructure> registeredGoals;
 	private TriggerRegister triggerRegister;
+	private Map<Long, Integer> checkedConditions;
 
 	public GoalRegister() {
 		this.registeredGoals = new ArrayList<GoalStructure>();
+		this.checkedConditions = new HashMap<Long, Integer>();
 		if (GlobalData.getTriggerRegister() == null) {
 			GlobalData.setTriggerRegister(new TriggerRegister());
 		}
@@ -46,31 +49,45 @@ public class GoalRegister {
 		final long idgoals = goal.getId();
 		List<Map<String, String>> conditionsList = (List<Map<String, String>>) goal
 				.getJsonParse().get("conditions");
+		this.checkedConditions.put(idgoals, conditionsList.size());
 		for (Map<String, String> condition : conditionsList) {
+			Log.i("TLDR", " REGISTER Condition:"+ condition.toString());
 			ConditionCheck cc = new ConditionCheck(condition, new OnTrue() {
 				@Override
 				public void onTrue() {
 					// Hier muessten erstenaml allee contidions true sein bevor
-					// isch fnished gloals setze
-					Log.i("TLDR", " FINISHED Condition:" + desc);
-					Log.i("TLDR", " FINISHED Condition:" + idgoals);
-					
-					GlobalData.getTextToSpeach().say("Annomalie Parameter "+desc +" erfolgreich absolviert");
+					// isch fnished gloals setze					
 
-					UserInfo currentUser = GlobalData.getCurrentUser();
-					if (currentUser.getFinishedGoals() == null) {
-						currentUser.setFinishedGoals(new ArrayList<Long>());
+					if (checkedConditions.get(idgoals) > 0) {
+						checkedConditions.put(idgoals,
+								checkedConditions.get(idgoals) - 1);
 					}
-					if (GlobalData.getDatastore() != null) {
-						currentUser.getFinishedGoals().add(idgoals);
-						GlobalData.getDatastore().updateUser(currentUser);
+					Log.i("TLDR", " FINISHED Condition:" + idgoals);
+					Log.i("TLDR", " FINISHED Condition:" + checkedConditions.get(idgoals) );
+					if (checkedConditions.get(idgoals) == 0) {
+						GlobalData.getTextToSpeach().say(
+								"Annomalie Parameter " + desc
+										+ " erfolgreich absolviert");
+
+						UserInfo currentUser = GlobalData.getCurrentUser();
+						if (currentUser.getFinishedGoals() == null) {
+							currentUser.setFinishedGoals(new ArrayList<Long>());
+						}
+						if (GlobalData.getDatastore() != null) {
+							currentUser.getFinishedGoals().add(idgoals);
+							GlobalData.getDatastore().updateUser(currentUser);
+						}
 					}
 				}
 			});
 			if (cc.successfullyInitialized()) {
+				Log.i("TLDR", "try register" + cc.getIdentifier());
 				if (triggerRegister.register(cc)) {
+					Log.i("TLDR", "done register" + cc.getIdentifier());
 					this.registeredGoals.add(goal);
 					return true;
+				}else{
+					Log.e("TLDR", "fail register" + cc.getIdentifier());
 				}
 			}
 		}

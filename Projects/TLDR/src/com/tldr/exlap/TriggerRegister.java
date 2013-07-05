@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.util.Log;
+
 import com.tldr.GlobalData;
 import com.tldr.gamelogic.ConditionCheck;
 
@@ -64,7 +66,7 @@ public class TriggerRegister {
 			if (dataObject.size() > 0) {
 				if (this.registertConditions.containsKey(dataObject.getUrl())) {
 					key = dataObject.getUrl();
-					value = dataObject.getElement(0).getValue();
+					value = dataObject.getElement(0).getValue()+"";
 				}
 			}
 			break;
@@ -90,6 +92,13 @@ public class TriggerRegister {
 			}
 			for (ConditionCheck ccd : done) {
 				cList.remove(ccd);
+			}
+			if (cList.isEmpty()) {
+				this.registertConditions.remove(key);
+				if(domain ==TriggerDomains.EXLAP){
+					GlobalData.getConnectionHelper().unsubscribe(key);
+					Log.i("TLDR", "Unsubscribe" + key);
+				}
 			}
 		}
 

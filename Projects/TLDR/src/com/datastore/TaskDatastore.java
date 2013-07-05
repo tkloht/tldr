@@ -74,6 +74,7 @@ public class TaskDatastore extends BaseDatastore {
 			List<GoalStructure> gs_polyline_t4;
 			GoalStructure gs1_tDemo = new GoalStructure();
 			GoalStructure gs2_tDemo = new GoalStructure();
+			GoalStructure two_2conditions = new GoalStructure();
 			
 			gs_t1.addBaseData("Fahre langsamer als 50km/h", "null").addCondition("Speed", "leq", "50").addReward("xp", "2000");
 			gs_t2.addBaseData("Radiofrequenz an Ampel wechseln", "traffic_lights_entry").addCondition("Speed", "leq", "10").addCondition("radio_freq", "change", "null").addReward("xp", "4000");
@@ -81,7 +82,9 @@ public class TaskDatastore extends BaseDatastore {
 			gs_t4.addBaseData("Melde Stoppschilder", "stop_sign_entry").addCondition("handbreak", "eq", "on").addReward("xp", "1600");
 			gs_polyline_t4 = GoalStructureFactory.generatePolyLineGoals("Fahre Route ab", "52.456114,13.295408;52.457742,13.298584;52.458605,13.303626;52.454512,13.299463;52.453806,13.2972;52.454434,13.295644;52.455676,13.294474", "xp", 100);
 			gs1_tDemo.addBaseData("Schalte in den 1. Gang", "null").addCondition("CurrentGear", "eq", "1").addReward("xp", "2000");
-			gs2_tDemo.addBaseData("Sei bei dem Großmeister", "null").addCondition("gps", "eq", "52.5753092766;13.3530235291").addReward("xp", "10000");
+			two_2conditions.addBaseData("Fahre 50km/h im 4 Gang.", "null").addCondition("CurrentGear", "eq", "4").addCondition("VehicleSpeed", "eqr", "50").addReward("xp", "2000");
+			
+			
 
 			try {
 				String goal_t1= JsonParser.writeNewJsonGoalString(gs_t1.getJsonParse());
@@ -90,12 +93,14 @@ public class TaskDatastore extends BaseDatastore {
 				String goal_t4= JsonParser.writeNewJsonGoalString(gs_t4.getJsonParse());
 				String goal_demo= JsonParser.writeNewJsonGoalString(gs1_tDemo.getJsonParse());
 				String goal_demo2= JsonParser.writeNewJsonGoalString(gs2_tDemo.getJsonParse());
+				String two_conditions_str= JsonParser.writeNewJsonGoalString(two_2conditions.getJsonParse());
 //				Goal g_t1=goal_service.insertGoal(new Goal().setJsonString(goal_t1)).execute();
 //				Goal g_t2=goal_service.insertGoal(new Goal().setJsonString(goal_t2)).execute();
 //				Goal g_t3=goal_service.insertGoal(new Goal().setJsonString(goal_t3)).execute();
 //				Goal g_t4=goal_service.insertGoal(new Goal().setJsonString(goal_t4)).execute();
-				Goal g1_demo=goal_service.insertGoal(new Goal().setJsonString(goal_demo)).execute();
-				Goal g2_demo=goal_service.insertGoal(new Goal().setJsonString(goal_demo2)).execute();
+//				Goal g1_demo=goal_service.insertGoal(new Goal().setJsonString(goal_demo)).execute();
+//				Goal g2_demo=goal_service.insertGoal(new Goal().setJsonString(goal_demo2)).execute();
+				Goal two_conditions = goal_service.insertGoal(new Goal().setJsonString(two_conditions_str)).execute();
 //				List<Goal> gs_parsed_polyline_t4 = new ArrayList<Goal>();
 //				for(GoalStructure gs:gs_polyline_t4){
 //					gs_parsed_polyline_t4.add(goal_service.insertGoal(new Goal().setJsonString(JsonParser.writeNewJsonGoalString(gs.getJsonParse()))).execute());
@@ -105,6 +110,7 @@ public class TaskDatastore extends BaseDatastore {
 				List<Long> goals_t3= new ArrayList<Long>();
 				List<Long> goals_t4= new ArrayList<Long>();
 				List<Long> goals_demo= new ArrayList<Long>();
+				List<Long> goals_two= new ArrayList<Long>();
 //				goals_t1.add(g_t1.getId());
 //				goals_t2.add(g_t2.getId());
 //				goals_t3.add(g_t3.getId());
@@ -113,8 +119,9 @@ public class TaskDatastore extends BaseDatastore {
 //					goals_t4.add(g.getId());
 //				}
 //				goals_t4.add(g2_t4.getId());
-				goals_demo.add(g1_demo.getId());
-				goals_demo.add(g2_demo.getId());
+//				goals_demo.add(g1_demo.getId());
+//				goals_demo.add(g2_demo.getId());
+				goals_two.add(two_conditions.getId());
 			
 			
 //			service.insertTask(new Task().setTitle("Observiere den Monbijoupark")
@@ -137,9 +144,13 @@ public class TaskDatastore extends BaseDatastore {
 //				service.insertTask(new Task().setTitle("Echte Autonomie")
 //						.setDescription("Du wurdest von Autonomy abgekopselt. Vergewissere dich einer Autonomie in dem du die Funktionen deines Fahrzeuges selber kontrolierst.")
 //								.setGeoLat(52.436114).setGeoLon(13.285428).setGoals(goals_demo)).execute();
-				service.insertTask(new Task().setTitle("Besuche den Großmeister")
-				.setDescription("Der Großmeister des Ministy of Freedom will sich sehen. Reise zu ihm!")
-						.setGeoLat(52.5753092766).setGeoLon(13.3530235291).setGoals(goals_demo)).execute();
+//				service.insertTask(new Task().setTitle("Besuche den Großmeister")
+//				.setDescription("Der Großmeister des Ministy of Freedom will sich sehen. Reise zu ihm!")
+//						.setGeoLat(52.5753092766).setGeoLon(13.3530235291).setGoals(goals_demo)).execute();
+				service.insertTask(new Task().setTitle("Reaktiviere die Alten")
+						.setDescription("Viele potenzielle Indidivuen, die sich unserer Sache anschließen können leben in dieser Gegend. Reaktiviere sie aus diesem Dauerschlaf")
+								.setGeoLat(52.5753192766).setGeoLon(13.3531235291).setGoals(goals_two)).execute();
+				
 			} catch (FormatException e) {
 				// TODO Auto-generated catch block
 				Log.e("TLDR", e.getMessage());
