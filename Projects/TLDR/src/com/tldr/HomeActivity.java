@@ -67,6 +67,7 @@ public class HomeActivity extends FragmentActivity implements
 		datastore = new UserInfoDatastore(null, auth.getCredential());
 		GlobalData.setDatastore(datastore);
 		GlobalData.setGoalRegister(new GoalRegister());
+		GlobalData.setTextToSpeach(this);
 
 	}
 

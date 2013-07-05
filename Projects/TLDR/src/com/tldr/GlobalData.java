@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Context;
 import android.location.Location;
 
 import com.datastore.UserInfoDatastore;
@@ -14,6 +15,7 @@ import com.tldr.gamelogic.GoalRegister;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.messageEndpoint.MessageEndpoint;
 import com.tldr.taskendpoint.model.Task;
+import com.tldr.tools.KnightRider;
 
 public class GlobalData {
 
@@ -26,6 +28,7 @@ public class GlobalData {
 	private static GoalRegister goalRegister = null;
 	private static boolean firstStart = true;
 	private static boolean exlapConnected = false;
+	private static KnightRider textToSpeach;
 
 	private static HashMap<Long, GoalStructure> allGoals;
 
@@ -226,6 +229,14 @@ public class GlobalData {
 
 	public static void setDatastore(UserInfoDatastore datastore) {
 		GlobalData.datastore = datastore;
+	}
+
+	public static KnightRider getTextToSpeach() {
+		return textToSpeach;
+	}
+
+	public static void setTextToSpeach(Context c) {
+		GlobalData.textToSpeach = new KnightRider(c);
 	}
 
 }

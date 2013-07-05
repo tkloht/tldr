@@ -54,6 +54,8 @@ public class GoalRegister {
 					// isch fnished gloals setze
 					Log.i("TLDR", " FINISHED Condition:" + desc);
 					Log.i("TLDR", " FINISHED Condition:" + idgoals);
+					
+					GlobalData.getTextToSpeach().say("Annomalie Parameter "+desc +" erfolgreich absolviert");
 
 					UserInfo currentUser = GlobalData.getCurrentUser();
 					if (currentUser.getFinishedGoals() == null) {
