@@ -77,7 +77,7 @@ public class FactionDetailsFragment extends Fragment {
 			if (u.getAcceptedTasks() != null){
 				for (Long l: u.getAcceptedTasks()){
 					Task t = GlobalData.getTaskById(l);
-					Long timeLong = System.currentTimeMillis();
+					Long timeLong = GlobalData.getTimestampAccepted(u, t);
 					String time = Long.toString(timeLong);
 					Date date = new Date(timeLong);
 					DateFormat formatter = new SimpleDateFormat("d.M. H:mm:ss");
@@ -94,7 +94,7 @@ public class FactionDetailsFragment extends Fragment {
 			List<Task> completedTasks = GlobalData.getCompletedTasks(u);
 			if (completedTasks != null){
 				for (Task t: completedTasks){
-					Long timeLong = System.currentTimeMillis();
+					Long timeLong = GlobalData.getTimestampCompleted(u, t);
 					String time = Long.toString(timeLong);
 					Date date = new Date(timeLong);
 					DateFormat formatter = new SimpleDateFormat("d.M. H:mm:ss");

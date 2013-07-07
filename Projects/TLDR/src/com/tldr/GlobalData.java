@@ -121,6 +121,16 @@ public class GlobalData {
 		return lReturn;
 	}
 
+	public static Long getTimestampAccepted(UserInfo u, Task task){
+		// TODO
+		return System.currentTimeMillis();
+	}
+	
+	public static Long getTimestampCompleted(UserInfo u, Task task){
+		// TODO
+		return System.currentTimeMillis();
+	}
+	
 	public static Task getTaskById(Long id) {
 		for (Task t : allTasks) {
 			if (t.getId().equals(id)) {
