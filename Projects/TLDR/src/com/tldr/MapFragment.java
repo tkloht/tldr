@@ -282,8 +282,8 @@ public class MapFragment extends Fragment implements LocationListener,
 		mMap.setOnMarkerClickListener(this);
 		taskMarkers = new ArrayList<Marker>();
 		userMarkers = new ArrayList<Marker>();
-//		 taskDatastore.createFakeTasks();
-		// taskDatastore.getNearbyTasks();
+		 taskDatastore.createFakeTasks();// AUSKOMMENTIEREN
+		 taskDatastore.getNearbyTasks(); // AUSKOMMENTIEREN
 
 	}
 	
@@ -386,6 +386,8 @@ public class MapFragment extends Fragment implements LocationListener,
 		int i = 0;
 		Location current = GlobalData.getLastknownPosition();
 		List<Task> tasks = GlobalData.getAllTasks();
+		if (tasks != null){
+			
 		for (Task t : tasks) {
 			float[] distance = new float[] { 0.0f };
 			if (current != null) {
@@ -432,6 +434,7 @@ public class MapFragment extends Fragment implements LocationListener,
 					(dist < 1000 ? dist + "m" : "~"
 							+ df.format(((dist) / 1000)) + "km"));
 			tasksList.add(newMap);
+		}
 		}
 		myOnInfoWindowClickListerer.setTasks(tasksHashMap, tasksList);
 

@@ -1,11 +1,11 @@
 {
   "files": [
     {
-      "path": "swp-tldr-messageEndpoint-v1-20130627142546-java-1.14.2-beta-sources.jar", 
+      "path": "swp-tldr-messageEndpoint-v1-20130707162555-java-1.14.2-beta-sources.jar", 
       "type": "source"
     }, 
     {
-      "path": "swp-tldr-messageEndpoint-v1-20130627142546-java-1.14.2-beta.jar.properties", 
+      "path": "swp-tldr-messageEndpoint-v1-20130707162555-java-1.14.2-beta.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -689,7 +689,7 @@
     }
   ], 
   "language_version": "1.14.2-beta", 
-  "revision": 20130627142546, 
+  "revision": 20130707162555, 
   "id": "messageEndpoint:v1", 
   "modulePath": "com/tldr"
 }

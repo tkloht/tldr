@@ -343,6 +343,8 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 		case BaseDatastore.REQUEST_TASK_FETCHGOALS:
 			List<Goal> allGoals=(List<Goal>) result;
 			HashMap<Long, GoalStructure> parsedGoals= new HashMap<Long, GoalStructure>();
+			if (allGoals != null){
+				
 			for(Goal g:allGoals){
 				try {
 					GoalStructure newGS = JsonParser.parseJsonGoalString(g.getJsonString());
@@ -353,6 +355,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
 			}
 			GlobalData.setCurrentAcceptedTasksGoals(parsedGoals);
 			ready();

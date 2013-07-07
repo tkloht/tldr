@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/AqBIJ89DZkqRJ_H_mA2XP6t8djA\"",
+ "etag": "\"s1omim4x8ymp9_6H8kBMkfEDqpo/_aZUDUaOXmZWf7R1hPYNEPXZ63o\"",
  "discoveryVersion": "v1",
  "id": "userinfoendpoint:v1",
  "name": "userinfoendpoint",
@@ -91,6 +91,13 @@
       "format": "int64"
      }
     },
+    "acceptedTasksTS": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "format": "int64"
+     }
+    },
     "email": {
      "type": "string"
     },
@@ -99,6 +106,13 @@
      "format": "int32"
     },
     "finishedGoals": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "format": "int64"
+     }
+    },
+    "finishedGoalsTS": {
      "type": "array",
      "items": {
       "type": "string",

@@ -88,11 +88,15 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	         public void onClick(View v) {
 	        	 UserInfo user = GlobalData.getCurrentUser();
 	        	 List<Long> acceptedTasks = user.getAcceptedTasks();
+	        	 List<Long> acceptedTasksTS = user.getAcceptedTasksTS();
 	        	 if (acceptedTasks == null) {
 	        		 acceptedTasks = new ArrayList<Long>();
+	        		 acceptedTasksTS = new ArrayList<Long>();
 	        	 }
 	        	 acceptedTasks.add(id);
+	        	 acceptedTasksTS.add(System.currentTimeMillis());
 	        	 user.setAcceptedTasks(acceptedTasks);
+	        	 user.setAcceptedTasksTS(acceptedTasksTS);
 	        	 GlobalData.setCurrentUser(user);
 	        	 
 	        	 datastore.updateUser(user);

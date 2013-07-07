@@ -82,21 +82,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "userinfoendpoint.registerUserInfo" : {
-      "path" : "register",
-      "httpMethod" : "POST",
-      "scopes" : [ ],
-      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
-      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com", "511171351776-7hr5u4c8s578l88ba8h5l4960h4dej84.apps.googleusercontent.com", "511171351776-12uklecjd0f6m12b8odhp4snc42albu7.apps.googleusercontent.com", "511171351776-0jbf6pah393h5pcuq578du7r6uiri36j.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.tldr.UserInfoEndpoint.register",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "userinfoendpoint.listUserInfo" : {
       "path" : "userinfo",
       "httpMethod" : "GET",
@@ -116,6 +101,21 @@
           }
         },
         "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "userinfoendpoint.registerUserInfo" : {
+      "path" : "register",
+      "httpMethod" : "POST",
+      "scopes" : [ ],
+      "audiences" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com" ],
+      "clientIds" : [ "511171351776-3o8dc555nqai62t3pe4m7ubrgc58i2ge.apps.googleusercontent.com", "511171351776.apps.googleusercontent.com", "511171351776-7hr5u4c8s578l88ba8h5l4960h4dej84.apps.googleusercontent.com", "511171351776-12uklecjd0f6m12b8odhp4snc42albu7.apps.googleusercontent.com", "511171351776-0jbf6pah393h5pcuq578du7r6uiri36j.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.tldr.UserInfoEndpoint.register",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -154,7 +154,21 @@
               "format" : "int64"
             }
           },
+          "acceptedTasksTS" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "int64"
+            }
+          },
           "finishedGoals" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "int64"
+            }
+          },
+          "finishedGoalsTS" : {
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -198,17 +212,17 @@
           "$ref" : "UserInfo"
         }
       },
+      "com.tldr.UserInfoEndpoint.listUserInfo" : {
+        "response" : {
+          "$ref" : "CollectionResponse_UserInfo"
+        }
+      },
       "com.tldr.UserInfoEndpoint.register" : {
         "request" : {
           "$ref" : "UserInfo"
         },
         "response" : {
           "$ref" : "UserInfo"
-        }
-      },
-      "com.tldr.UserInfoEndpoint.listUserInfo" : {
-        "response" : {
-          "$ref" : "CollectionResponse_UserInfo"
         }
       }
     }

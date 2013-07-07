@@ -42,6 +42,8 @@ public class GlobalData {
 	public static List<Task> getAcceptedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();
 		List<Task> competed = getCompletedTasks();
+		if (allTasks != null){
+			
 		for (Task t : allTasks) {
 			if (currentUser.getAcceptedTasks() != null
 					&& currentUser.getAcceptedTasks().contains(t.getId())
@@ -49,11 +51,14 @@ public class GlobalData {
 				lReturn.add(t);
 			}
 		}
+		}
 		return lReturn;
 	}
 	
 	public static List<Task> getCompletedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();
+		if (allTasks != null){
+			
 		for (Task t : allTasks) {
 			if (currentUser.getAcceptedTasks() != null
 					&& currentUser.getAcceptedTasks().contains(t.getId())) {
@@ -72,6 +77,7 @@ public class GlobalData {
 					}
 				}
 			}
+		}
 		}
 		return lReturn;
 	}
@@ -112,6 +118,7 @@ public class GlobalData {
 			if (acceptedGoals.contains(id)) {
 				if (currentUser.getFinishedGoals() == null) {
 					currentUser.setFinishedGoals(new ArrayList<Long>());
+					currentUser.setFinishedGoalsTS(new ArrayList<Long>());
 				}
 				if (!currentUser.getFinishedGoals().contains(id)) {
 					lReturn.add(current);

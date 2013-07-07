@@ -1,11 +1,11 @@
 {
   "files": [
     {
-      "path": "swp-tldr-goalendpoint-v1-20130627142550-java-1.14.2-beta-sources.jar", 
+      "path": "swp-tldr-goalendpoint-v1-20130707162547-java-1.14.2-beta-sources.jar", 
       "type": "source"
     }, 
     {
-      "path": "swp-tldr-goalendpoint-v1-20130627142550-java-1.14.2-beta.jar.properties", 
+      "path": "swp-tldr-goalendpoint-v1-20130707162547-java-1.14.2-beta.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -689,7 +689,7 @@
     }
   ], 
   "language_version": "1.14.2-beta", 
-  "revision": 20130627142550, 
+  "revision": 20130707162547, 
   "id": "goalendpoint:v1", 
   "modulePath": "com/tldr"
 }

@@ -49,10 +49,13 @@ public class UserInfo {
 	private double geoLon;
 	@Persistent
 	private List<Long> acceptedTasks;
+	@Persistent
+	private List<Long> acceptedTasksTS;
 	
 	@Persistent
 	private List<Long> finishedGoals;	
-	
+	@Persistent
+	private List<Long> finishedGoalsTS;	
 	
 
 	public double getGeoLat() {
@@ -115,6 +118,22 @@ public class UserInfo {
 		this.faction = faction;
 	}
 	
+	public List<Long> getFinishedGoalsTS(){
+		return finishedGoalsTS;
+	}
+	
+	public void setFinishedGoalsTS(List<Long> finishedGoalsTS){
+		this.finishedGoalsTS = finishedGoalsTS;
+	}
+	
+	public List<Long> getAcceptedTasksTS(){
+		return acceptedTasksTS;
+	}
+	public void setAcceptedTasksTS(List<Long> acceptedTasksTS){
+		this.acceptedTasksTS = acceptedTasksTS;
+	}
+	
+
 	
 
 }

@@ -126,7 +126,9 @@ public class HomeActivity extends FragmentActivity implements
 			datastorea = new UserInfoDatastore(null, autha.getCredential());
 			UserInfo currentUser = GlobalData.getCurrentUser();
 			currentUser.setFinishedGoals(new ArrayList<Long>());
+			currentUser.setFinishedGoalsTS(new ArrayList<Long>());
 			currentUser.setAcceptedTasks(new ArrayList<Long>());
+			currentUser.setAcceptedTasksTS(new ArrayList<Long>());
 			datastorea.updateUser(currentUser);
 			break;
 		case R.id.menuOnlyShowAcceptedTasks:

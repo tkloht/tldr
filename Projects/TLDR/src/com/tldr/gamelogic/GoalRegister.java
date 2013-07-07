@@ -72,9 +72,11 @@ public class GoalRegister {
 						UserInfo currentUser = GlobalData.getCurrentUser();
 						if (currentUser.getFinishedGoals() == null) {
 							currentUser.setFinishedGoals(new ArrayList<Long>());
+							currentUser.setFinishedGoalsTS(new ArrayList<Long>());
 						}
 						if (GlobalData.getDatastore() != null) {
 							currentUser.getFinishedGoals().add(idgoals);
+							currentUser.getFinishedGoalsTS().add(System.currentTimeMillis());
 							GlobalData.getDatastore().updateUser(currentUser);
 						}
 					}
