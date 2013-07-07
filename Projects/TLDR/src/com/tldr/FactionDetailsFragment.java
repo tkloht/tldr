@@ -59,8 +59,12 @@ public class FactionDetailsFragment extends Fragment {
 			}
 		}
 		((TextView) getActivity().findViewById(R.id.memberNumber)).setText(members+"");
-		
-		
+		if (GlobalData.getCurrentUser().getFaction() == 1){
+			((TextView) getActivity().findViewById(R.id.fractionName)).setText("DEFIANCE");
+		}
+		else{
+			((TextView) getActivity().findViewById(R.id.fractionName)).setText("MINISTRY OF FREEDOM");
+		}
 		
 		List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 		List<UserInfo> fractionUsers = GlobalData.getFractionUsers(GlobalData.getCurrentUser().getFaction());

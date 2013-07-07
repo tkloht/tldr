@@ -23,35 +23,62 @@
             android:id="@+id/fractionDetailLogo"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_margin="5dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:layout_margin="5dp"
             android:src="@drawable/tldr_def_mini" />
     </FrameLayout>
-    
-    <LinearLayout 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		>        
-	<TextView
+
+    <TextView
+        android:id="@+id/fractionName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FRACTION"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
             android:id="@+id/memberNumberLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Members:"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-            
-	<TextView
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
             android:id="@+id/memberNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="10dp">
+        
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/border" >
+
+        <TextView
+            android:id="@+id/fractionName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEWSFEED:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
         <ListView
-        android:id="@+id/list_fraction_news"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
-        />
+            android:id="@+id/list_fraction_news"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>
