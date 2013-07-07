@@ -129,14 +129,27 @@ public class GlobalData {
 	}
 
 	public static Long getTimestampAccepted(UserInfo u, Task task){
-		// TODO
-		return System.currentTimeMillis();
+		List<Long> tasks = u.getAcceptedTasks();
+		for (int i = 0; i < tasks.size();i++){
+			if (tasks.get(i).equals(task.getId())){
+				return u.getAcceptedTasksTS().get(i);
+			}
+		}
+		return 0L;
 	}
 	
 	public static Long getTimestampCompleted(UserInfo u, Task task){
-		// TODO
-		return System.currentTimeMillis();
-	}
+		List<Long> goals = u.getFinishedGoals();
+		Long max = 0L; 
+		for (int i = 0; i < goals.size(); i++){
+			for (Long l: task.getGoals()){
+				if (l.equals(goals.get(i)) && u.getFinishedGoalsTS().get(i).compareTo(max)>1){
+					max = u.getFinishedGoalsTS().get(i);
+				}
+			}
+		}
+		return 0L;
+		}
 	
 	public static Task getTaskById(Long id) {
 		for (Task t : allTasks) {
