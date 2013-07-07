@@ -78,6 +78,9 @@ public class ConditionCheck {
 				@Override
 				public Double parseData(Object object) {
 					String dString = (String) object;
+					if(dString.equals("null")){
+						dString="0.0";
+					}
 					double rtn = Double.parseDouble(dString);
 					return rtn;
 				}

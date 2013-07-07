@@ -45,6 +45,10 @@ public class TriggerRegister {
 					GlobalData.getConnectionHelper().subscribe(identifier);
 				}
 			} else {
+				if(this.registertConditions.containsKey(identifier)){
+					break;
+				}
+				Log.i("Trigerregister", "Skipted no Exlap");
 				return false;
 			}
 			break;
@@ -53,6 +57,7 @@ public class TriggerRegister {
 			break;
 		}
 		this.registertConditions.put(identifier, cList);
+		Log.i("Trigerregister", "Condition inserted");
 		cList.add(conditionCheck);
 		return true;
 	}
@@ -66,7 +71,7 @@ public class TriggerRegister {
 			if (dataObject.size() > 0) {
 				if (this.registertConditions.containsKey(dataObject.getUrl())) {
 					key = dataObject.getUrl();
-					value = dataObject.getElement(0).getValue()+"";
+					value = dataObject.getElement(0).getValue() + "";
 				}
 			}
 			break;
@@ -93,13 +98,13 @@ public class TriggerRegister {
 			for (ConditionCheck ccd : done) {
 				cList.remove(ccd);
 			}
-			if (cList.isEmpty()) {
-				this.registertConditions.remove(key);
-				if(domain ==TriggerDomains.EXLAP){
-					GlobalData.getConnectionHelper().unsubscribe(key);
-					Log.i("TLDR", "Unsubscribe" + key);
-				}
-			}
+			// if (cList.isEmpty()) {
+			// this.registertConditions.remove(key);
+			// if(domain ==TriggerDomains.EXLAP){
+			// GlobalData.getConnectionHelper().unsubscribe(key);
+			// Log.i("TLDR", "Unsubscribe" + key);
+			// }
+			// }
 		}
 
 	}

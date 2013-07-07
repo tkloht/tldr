@@ -50,7 +50,7 @@ public class GoalRegister {
 		List<Map<String, String>> conditionsList = (List<Map<String, String>>) goal
 				.getJsonParse().get("conditions");
 		this.checkedConditions.put(idgoals, conditionsList.size());
-		for (Map<String, String> condition : conditionsList) {
+		for (final Map<String, String> condition : conditionsList) {
 			Log.i("TLDR", " REGISTER Condition:"+ condition.toString());
 			ConditionCheck cc = new ConditionCheck(condition, new OnTrue() {
 				@Override
@@ -63,6 +63,7 @@ public class GoalRegister {
 								checkedConditions.get(idgoals) - 1);
 					}
 					Log.i("TLDR", " FINISHED Condition:" + idgoals);
+					Log.i("TLDR", " FINISHED Condition:" + condition);
 					Log.i("TLDR", " FINISHED Condition:" + checkedConditions.get(idgoals) );
 					if (checkedConditions.get(idgoals) == 0) {
 						GlobalData.getTextToSpeach().say(
@@ -87,13 +88,12 @@ public class GoalRegister {
 				if (triggerRegister.register(cc)) {
 					Log.i("TLDR", "done register" + cc.getIdentifier());
 					this.registeredGoals.add(goal);
-					return true;
 				}else{
 					Log.e("TLDR", "fail register" + cc.getIdentifier());
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	//
