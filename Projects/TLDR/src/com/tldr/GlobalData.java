@@ -51,7 +51,7 @@ public class GlobalData {
 		}
 		return lReturn;
 	}
-
+	
 	public static List<Task> getCompletedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();
 		for (Task t : allTasks) {
@@ -61,6 +61,30 @@ public class GlobalData {
 					boolean done = false;
 					for (Long l : t.getGoals()) {
 						if (currentUser.getFinishedGoals().contains(l)) {
+							done = true;
+						} else {
+							done = false;
+							break;
+						}
+					}
+					if (done) {
+						lReturn.add(t);
+					}
+				}
+			}
+		}
+		return lReturn;
+	}
+	
+	public static List<Task> getCompletedTasks(UserInfo u) {
+		List<Task> lReturn = new ArrayList<Task>();
+		for (Task t : allTasks) {
+			if (u.getAcceptedTasks() != null
+					&& u.getAcceptedTasks().contains(t.getId())) {
+				if (u.getFinishedGoals() != null) {
+					boolean done = false;
+					for (Long l : t.getGoals()) {
+						if (u.getFinishedGoals().contains(l)) {
 							done = true;
 						} else {
 							done = false;

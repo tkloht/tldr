@@ -101,6 +101,20 @@ public final class ToolBox {
 			list.add(acm);
 	}
 	
+	public static void addInTimeOrder(List<HashMap<String, String>> list, HashMap<String, String> element){
+		long time=Long.parseLong(element.get("ts"));
+		boolean added=false;
+		for(int i=0; i<list.size(); i++){
+			long t1=Long.parseLong(list.get(i).get("ts"));
+			if(!added&&time>t1){
+				list.add(i, element);
+				added=true;
+			}
+		}
+		if(!added)
+			list.add(element);
+	}
+	
 	public static LatLng locationFromString(String latLon){
 		String[] coords;
 		if(latLon.contains(";"))

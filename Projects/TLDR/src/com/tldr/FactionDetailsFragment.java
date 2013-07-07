@@ -1,7 +1,11 @@
 package com.tldr;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,28 +76,44 @@ public class FactionDetailsFragment extends Fragment {
 		{
 			if (u.getAcceptedTasks() != null){
 				for (Long l: u.getAcceptedTasks()){
-					Task t = GlobalData.getTaskById(l);				
+					Task t = GlobalData.getTaskById(l);
+					Long timeLong = System.currentTimeMillis();
+					String time = Long.toString(timeLong);
+					Date date = new Date(timeLong);
+					DateFormat formatter = new SimpleDateFormat("d.M. H:mm:ss");
+					String dateFormatted = formatter.format(date);
 					HashMap<String, String> newMap= new HashMap<String, String>();
 					newMap.put("user_name", u.getUsername());
 					newMap.put("action", " accepted ");
 					newMap.put("task_name", t.getTitle());
-					list.add(newMap);
+					newMap.put("ts", time);
+					newMap.put("date", dateFormatted+ ": ");
+					ToolBox.addInTimeOrder(list, newMap);
 				}
 			}
-//			for (Long l: u.getCompletedTasks()){
-//				Task t = GlobalData.getTastById(l);				
-//				HashMap<String, String> newMap= new HashMap<String, String>();
-//				newMap.put("user_name", u.getUsername());
-//				newMap.put("action", " completed ");
-//				newMap.put("task_name", t.getTitle());
-//				list.add(newMap);
-//			}
+			List<Task> completedTasks = GlobalData.getCompletedTasks(u);
+			if (completedTasks != null){
+				for (Task t: completedTasks){
+					Long timeLong = System.currentTimeMillis();
+					String time = Long.toString(timeLong);
+					Date date = new Date(timeLong);
+					DateFormat formatter = new SimpleDateFormat("d.M. H:mm:ss");
+					String dateFormatted = formatter.format(date);
+					HashMap<String, String> newMap= new HashMap<String, String>();
+					newMap.put("user_name", u.getUsername());
+					newMap.put("action", " completed ");
+					newMap.put("task_name", t.getTitle());
+					newMap.put("ts", time);
+					newMap.put("date", dateFormatted+ ": ");
+					ToolBox.addInTimeOrder(list, newMap);
+				}
+			}
 		}
 		
         ListAdapter adapter = new SimpleAdapter(
         		getActivity(), list,
-                R.layout.layout_news_listitem, new String[] { "user_name", "action", "task_name" },
-                new int[] { R.id.user_name, R.id.action, R.id.task_name});
+                R.layout.layout_news_listitem, new String[] { "date", "user_name", "action", "task_name" },
+                new int[] { R.id.date, R.id.user_name, R.id.action, R.id.task_name});
         // updating listview
         newsListView.setAdapter(adapter);
 	}
