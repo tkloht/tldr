@@ -91,9 +91,9 @@ public class TaskDatastore extends BaseDatastore {
 			
 			gs_e2a.addBaseData("Parke!", "null").addCondition("handbreak", "eq", "on").addReward("xp", "1300");
 			gs_e2b.addBaseData("Schalte die Klimaanlage an!", "parking_space_entry").addCondition("aircondition", "eq", "on").addReward("xp", "1700");
-			gs_e1a.addBaseData("Lade Agenten ein!", "null").addCondition("SeatBeltLock", "eq", "on").addReward("xp", "1000");
+			gs_e1a.addBaseData("Lade Agenten ein!", "null").addCondition("SeatBeltLock", "eq", "locked").addReward("xp", "1000");
 			gs_e1b_polyline = GoalStructureFactory.generatePolyLineGoals("Fahre Route ab", "52.52286,13.321506;52.522828,13.322027;52.521196,13.322357;52.520921,13.32137;52.519681,13.319739;52.517514,13.325061;52.515516,13.327936;52.516691,13.329395", "xp", 100);
-			gs_e1c.addBaseData("Lade Agenten aus!", "null").addCondition("SeatBeltLock", "eq", "off").addReward("xp", "2000");
+			gs_e1c.addBaseData("Lade Agenten aus!", "null").addCondition("SeatBeltLock", "eq", "unlocked").addReward("xp", "2000");
 			
 
 			try {
