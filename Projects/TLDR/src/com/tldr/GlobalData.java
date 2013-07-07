@@ -131,7 +131,7 @@ public class GlobalData {
 	public static Long getTimestampAccepted(UserInfo u, Task task){
 		List<Long> tasks = u.getAcceptedTasks();
 		for (int i = 0; i < tasks.size();i++){
-			if (tasks.get(i).equals(task.getId())){
+			if (tasks.get(i).equals(task.getId()) && u.getAcceptedTasksTS() != null){
 				return u.getAcceptedTasksTS().get(i);
 			}
 		}
@@ -143,7 +143,7 @@ public class GlobalData {
 		Long max = 0L; 
 		for (int i = 0; i < goals.size(); i++){
 			for (Long l: task.getGoals()){
-				if (l.equals(goals.get(i)) && u.getFinishedGoalsTS().get(i).compareTo(max)>1){
+				if (l.equals(goals.get(i)) && u.getFinishedGoalsTS().get(i).compareTo(max)>1 && u.getFinishedGoalsTS() != null){
 					max = u.getFinishedGoalsTS().get(i);
 				}
 			}
