@@ -124,13 +124,14 @@ public class HomeActivity extends FragmentActivity implements
 			transaction.commit();
 			currentMenu = item.getItemId();
 			break;
-
 		case R.id.action_settings:
 			fragment = new SettingsFragment();
 			 fm.beginTransaction()
-             .replace(R.id.homeActivity, fragment)
+			 .addToBackStack(null)
+			 .replace(R.id.homeActivity, fragment)
              .commit();
 			 currentFrag = fragment;
+			 currentMenu = item.getItemId();
 			break;
 
 		default:
@@ -161,6 +162,10 @@ public class HomeActivity extends FragmentActivity implements
 			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
 			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks_pressed);
 			break;
+		case 3:
+			menu.findItem(R.id.menu_map).setIcon(R.drawable.map);
+			menu.findItem(R.id.menu_community).setIcon(R.drawable.community);
+			menu.findItem(R.id.menu_tasks).setIcon(R.drawable.tasks);
 		}
 	}
 
@@ -196,6 +201,14 @@ public class HomeActivity extends FragmentActivity implements
 			transaction.addToBackStack(null);
 			currentFrag = fragment;
 			transaction.commit();
+			break;
+		case R.id.action_settings:
+			fragment = new SettingsFragment();
+			 fm.beginTransaction()
+			 .addToBackStack(null)
+			 .replace(R.id.homeActivity, fragment)
+             .commit();
+			 currentFrag = fragment;
 			break;
 
 		default:

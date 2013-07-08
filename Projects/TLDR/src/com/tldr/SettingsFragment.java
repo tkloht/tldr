@@ -158,5 +158,11 @@ public class SettingsFragment extends PreferenceFragment implements
 
 		}
 	}
+	
+	@Override
+	public void onResume () {
+		((HomeActivity) getActivity()).animateMenuIcons(3);
+		super.onResume();
+	}
 
 }
