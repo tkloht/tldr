@@ -16,7 +16,7 @@ import com.tldr.tools.ToolBox;
 public class ConditionCheck {
 
 	public enum Data {
-		NONE, GPS, DISPLAYEDVEHICLESPEED, CURRENTGEAR, VEHICLESPEED
+		NONE, GPS, DISPLAYEDVEHICLESPEED, CURRENTGEAR, VEHICLESPEED, SEATBELTLOCK, AIRCONDITIONINGCONTROL
 	}
 
 	public enum Operator {
@@ -24,7 +24,7 @@ public class ConditionCheck {
 	}
 
 	public enum CLAZZ {
-		Double, LatLng
+		Double, LatLng, String
 	}
 
 	private DataParser parser;
@@ -70,6 +70,24 @@ public class ConditionCheck {
 	}
 
 	private void setParser(Data data) {
+		if (data == Data.SEATBELTLOCK || data == Data.AIRCONDITIONINGCONTROL) {
+			this.setDomain(TriggerDomains.EXLAP);
+			this.parser = new DataParser<String>() {
+
+				@Override
+				public String parseData(Object object) {
+					String dString = (String) object;
+					return dString;
+				}
+
+				@Override
+				public CLAZZ getDataClassName() {
+					return CLAZZ.valueOf(String.class.getSimpleName());
+				}
+
+			};
+		}
+
 		if (data == Data.NONE || data == Data.DISPLAYEDVEHICLESPEED
 				|| data == Data.CURRENTGEAR || data == Data.VEHICLESPEED) {
 			this.setDomain(TriggerDomains.EXLAP);
@@ -78,8 +96,8 @@ public class ConditionCheck {
 				@Override
 				public Double parseData(Object object) {
 					String dString = (String) object;
-					if(dString.equals("null")){
-						dString="0.0";
+					if (dString.equals("null")) {
+						dString = "0.0";
 					}
 					double rtn = Double.parseDouble(dString);
 					return rtn;
@@ -92,6 +110,7 @@ public class ConditionCheck {
 
 			};
 		}
+
 		if (data == Data.GPS) {
 			this.setDomain(TriggerDomains.GPS);
 
@@ -142,10 +161,26 @@ public class ConditionCheck {
 
 				@Override
 				public boolean checkData(Double data) {
-//					Log.i("TLDR",""+(this.value - this.variance <= data
-//							&& data <= this.value + this.variance));
+					// Log.i("TLDR",""+(this.value - this.variance <= data
+					// && data <= this.value + this.variance));
 					return this.value - this.variance <= data
 							&& data <= this.value + this.variance;
+				}
+
+			};
+		}
+		if (clazz == CLAZZ.String && operator == Operator.EQ) {
+			this.checker = new DataChecker<String>() {
+				String value;
+
+				@Override
+				public void setValue(String value) {
+					this.value = value;
+				}
+
+				@Override
+				public boolean checkData(String data) {
+					return this.value.equals(data);
 				}
 
 			};
@@ -200,7 +235,7 @@ public class ConditionCheck {
 
 	@SuppressWarnings("unchecked")
 	public boolean updateData(Object data) {
-//		Log.i("TLDR", "updateData" + data);
+		// Log.i("TLDR", "updateData" + data);
 		boolean result = false;
 		try {
 			result = this.checker.checkData(parser.parseData(data));

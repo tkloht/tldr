@@ -45,7 +45,7 @@ public class TriggerRegister {
 					GlobalData.getConnectionHelper().subscribe(identifier);
 				}
 			} else {
-				if(this.registertConditions.containsKey(identifier)){
+				if (this.registertConditions.containsKey(identifier)) {
 					break;
 				}
 				Log.i("Trigerregister", "Skipted no Exlap");
@@ -71,7 +71,11 @@ public class TriggerRegister {
 			if (dataObject.size() > 0) {
 				if (this.registertConditions.containsKey(dataObject.getUrl())) {
 					key = dataObject.getUrl();
-					value = dataObject.getElement(0).getValue() + "";
+					if (dataObject.getUrl().equals("SeatBeltLock")) {
+						value = dataObject.getElement(1).getValue();
+					} else {
+						value = dataObject.getElement(0).getValue() + "";
+					}
 				}
 			}
 			break;
