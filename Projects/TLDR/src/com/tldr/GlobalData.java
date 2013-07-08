@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.location.Location;
+import android.preference.PreferenceManager;
 
 import com.datastore.UserInfoDatastore;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
@@ -238,8 +239,8 @@ public class GlobalData {
 		return connectionHelper;
 	}
 
-	public static void setConnectionHelper(ConnectionHelper connectionHelperr) {
-		connectionHelper = connectionHelperr;
+	public static void setConnectionHelper(ConnectionHelper connectionHelper) {
+		GlobalData.connectionHelper = connectionHelper;
 	}
 
 	public static TriggerRegister getTriggerRegister() {

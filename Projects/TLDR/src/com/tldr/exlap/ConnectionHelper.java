@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 
-import com.tldr.GlobalData;
-import com.tldr.exlap.TriggerRegister.TriggerDomains;
-
-import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.Preference;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.tldr.GlobalData;
+import com.tldr.exlap.TriggerRegister.TriggerDomains;
+
 import de.exlap.AbstractInterface;
 import de.exlap.DataElement;
 import de.exlap.DataListener;
@@ -25,7 +26,7 @@ import de.exlap.discovery.DiscoveryListener;
 import de.exlap.discovery.DiscoveryManager;
 import de.exlap.discovery.ServiceDescription;
 
-public class ConnectionHelper implements DataListener, DiscoveryListener {
+public class ConnectionHelper implements DataListener, DiscoveryListener  {
 
 	private ExlapClient ec;
 	private DataListener dataListener = this;
@@ -78,7 +79,9 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 			public void run() {
 				ec = new ExlapClient(address);
 				ec.addDataListener(dataListener);
+				Log.i("connectionhelper", "preparing to connect on " + address);
 				ec.connect();
+				Log.i("connectionhelper", "connecting on " + address);
 				if (ec.isConnected()) {
 					Log.i("ConnectionHelper", "isConnected on Port" + address);
 					GlobalData.setExlapConnected(true);
@@ -250,9 +253,12 @@ public class ConnectionHelper implements DataListener, DiscoveryListener {
 					DiscoveryManager.SCHEME_SOCKET);
 			try {
 				disco.discoverServices(this, null, true);
+				
 			} catch (Exception e) {
 				System.out.println("ERROR. Root cause: " + e.getMessage());
 			}
 		}
 	}
+	
+
 }

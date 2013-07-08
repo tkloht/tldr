@@ -18,5 +18,13 @@
     <string name="map_view_edit_text_hint">Search..</string>
     <string name="pick_defiance">Defiance</string>
     <string name="pick_mof">Ministry of Freedom</string>
+    <string name="pref_show_accepted">Only show accepted tasks</string>
+    <string name="pref_show_other_players">Show other players</string>
+    <string name="pref_show_compass">Show compass</string>
+    <string name="pref_exlap_connect">Connect to Exlap</string>
+    <string name="pref_exlap_connected">Connected to Exlap?</string>
+    <string name="pref_exlap_subscribed">subscribed?</string>
+    <string name="pref_reset_userdata">Reset Userdata</string>
+    
 
 </resources>

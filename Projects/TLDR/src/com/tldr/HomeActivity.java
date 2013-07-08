@@ -1,6 +1,5 @@
 package com.tldr;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
@@ -9,22 +8,19 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Point;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.Toast;
 
 import com.auth.AccountHelper;
 import com.datastore.UserInfoDatastore;
-import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.ConnectionHelper;
-import com.tldr.gamelogic.ConditionCheckerTest;
 import com.tldr.gamelogic.GoalRegister;
 import com.tldr.tools.ToolBox;
 
@@ -33,7 +29,9 @@ public class HomeActivity extends FragmentActivity implements
 	private final static int SPEECH_REQUEST_CODE = 123;
 	private int currentMenu = R.id.menu_map;
 	private FragmentCommunicator currentFragment;
+	private ConnectionHelper connectionHelper;
 	public static Fragment currentFrag;
+	
 
 	Menu menu;
 
@@ -65,9 +63,16 @@ public class HomeActivity extends FragmentActivity implements
 		UserInfoDatastore datastore;
 		auth = new AccountHelper(this);
 		datastore = new UserInfoDatastore(null, auth.getCredential());
+		
 		GlobalData.setDatastore(datastore);
 		GlobalData.setGoalRegister(new GoalRegister());
 		GlobalData.setTextToSpeach(this);
+		connectionHelper = new ConnectionHelper();
+		GlobalData.setConnectionHelper(connectionHelper);
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		prefs.edit().putBoolean("pref_exlap_connect", false).commit();
+
 
 	}
 
@@ -119,42 +124,13 @@ public class HomeActivity extends FragmentActivity implements
 			transaction.commit();
 			currentMenu = item.getItemId();
 			break;
-		case R.id.menuShowCompass:
-			AccountHelper autha;
-			UserInfoDatastore datastorea;
-			autha = new AccountHelper(this);
-			datastorea = new UserInfoDatastore(null, autha.getCredential());
-			UserInfo currentUser = GlobalData.getCurrentUser();
-			currentUser.setFinishedGoals(new ArrayList<Long>());
-			currentUser.setFinishedGoalsTS(new ArrayList<Long>());
-			currentUser.setAcceptedTasks(new ArrayList<Long>());
-			currentUser.setAcceptedTasksTS(new ArrayList<Long>());
-			datastorea.updateUser(currentUser);
-			break;
-		case R.id.menuOnlyShowAcceptedTasks:
-		case R.id.menuShowPlayer:
-			if (item.isChecked())
-				item.setChecked(false);
-			else
-				item.setChecked(true);
-			break;
-		case R.id.action_speech_to_text:
-			sendRecognizeIntent();
-			break;
-		case R.id.menuConnectExlap:
-			if (GlobalData.getConnectionHelper() == null) {
-				GlobalData.setConnectionHelper(new ConnectionHelper());
-			}
-			try {
-				GlobalData.getConnectionHelper().performDiscovery();
-				Log.e("tldr-exlap", "after discover");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 
-			break;
-		case R.id.menuSubscribeAll:
-			Toast.makeText(this, "after subscribe", Toast.LENGTH_SHORT).show();
+		case R.id.action_settings:
+			fragment = new SettingsFragment();
+			 fm.beginTransaction()
+             .replace(R.id.homeActivity, fragment)
+             .commit();
+			 currentFrag = fragment;
 			break;
 
 		default:
