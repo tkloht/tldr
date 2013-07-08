@@ -69,11 +69,11 @@ public class TaskDatastore extends BaseDatastore {
 				// GoalStructure gs1_tDemo = new GoalStructure();
 				// GoalStructure gs2_tDemo = new GoalStructure();
 				// GoalStructure two_2conditions = new GoalStructure();
-				// GoalStructure gs_e2a = new GoalStructure();
-				// GoalStructure gs_e2b = new GoalStructure();
-				// GoalStructure gs_e1a = new GoalStructure();
-				// GoalStructure gs_e1c = new GoalStructure();
-				// List<GoalStructure> gs_e1b_polyline;
+				 GoalStructure gs_e2a = new GoalStructure();
+				 GoalStructure gs_e2b = new GoalStructure();
+				 GoalStructure gs_e1a = new GoalStructure();
+				 GoalStructure gs_e1c = new GoalStructure();
+				 List<GoalStructure> gs_e1b_polyline;
 				GoalStructure testTast = new GoalStructure();
 				GoalStructure testTast1 = new GoalStructure();
 				GoalStructure testTast2 = new GoalStructure();
@@ -104,34 +104,36 @@ public class TaskDatastore extends BaseDatastore {
 				// "4").addCondition("VehicleSpeed", "eqr",
 				// "50").addReward("xp", "2000");
 
-				// gs_e2a.addBaseData("Parke!",
-				// "null").addCondition("handbreak", "eq", "on").addReward("xp",
-				// "1300");
-				// gs_e2b.addBaseData("Schalte die Klimaanlage an!",
-				// "parking_space_entry").addCondition("aircondition", "eq",
-				// "on").addReward("xp", "1700");
-				// gs_e1a.addBaseData("Lade Agenten ein!",
-				// "null").addCondition("SeatBeltLock", "eq",
-				// "locked").addReward("xp", "1000");
-				// gs_e1b_polyline =
-				// GoalStructureFactory.generatePolyLineGoals("Fahre Route ab",
-				// "52.52286,13.321506;52.522828,13.322027;52.521196,13.322357;52.520921,13.32137;52.519681,13.319739;52.517514,13.325061;52.515516,13.327936;52.516691,13.329395",
-				// "xp", 100);
-				// gs_e1c.addBaseData("Lade Agenten aus!",
-				// "null").addCondition("SeatBeltLock", "eq",
-				// "unlocked").addReward("xp", "2000");
-				testTast.addBaseData("Schnalle eine Person vorne links fest",
-						"null").addCondition("SeatBeltLock", "eq", "locked")
-						.addReward("xp", "2000");
-				testTast1.addBaseData("Klimaanlage an!", "null")
-						.addCondition("AirconditioningControl", "eq", "true")
-						.addReward("xp", "2000");
-				testTast2.addBaseData("Fahre 10km/h", "null")
-						.addCondition("VehicleSpeed", "eqr", "10")
-						.addReward("xp", "2000");
-				testTast3.addBaseData("Schalte in den 1.", "null")
-						.addCondition("CurrentGear", "eq", "1")
-						.addReward("xp", "2000");
+				 gs_e2a.addBaseData("Parke!",
+				 "null").addCondition("handbreak", "eq", "on").addReward("xp",
+				 "1300");
+				 gs_e2b.addBaseData("Schalte die Klimaanlage an!",
+				 "parking_space_entry").addCondition("aircondition", "eq",
+				 "on").addReward("xp", "1700");
+				 gs_e1a.addBaseData("Lade Agenten ein!","null")
+				 .addCondition("gps", "eq", "52.52286;13.321506")
+				 .addCondition("SeatBeltLock", "eq","locked")
+				 .addReward("xp", "1000");
+				 gs_e1b_polyline =
+				 GoalStructureFactory.generatePolyLineGoals("Fahre Route ab",
+				 "52.52286,13.321506;52.522828,13.322027;52.521196,13.322357;52.520921,13.32137;52.519681,13.319739;52.517514,13.325061;52.515516,13.327936;52.516691,13.329395",
+				 "xp", 100);
+				 gs_e1c.addBaseData("Lade Agenten aus!","null")
+				 .addCondition("SeatBeltLock", "eq","unlocked")
+				 .addCondition("gps", "eq", "52.516691;13.329395")
+				 .addReward("xp", "2000");
+//				testTast.addBaseData("Schnalle eine Person vorne links fest",
+//						"null").addCondition("SeatBeltLock", "eq", "locked")
+//						.addReward("xp", "2000");
+//				testTast1.addBaseData("Klimaanlage an!", "null")
+//						.addCondition("AirconditioningControl", "eq", "true")
+//						.addReward("xp", "2000");
+//				testTast2.addBaseData("Fahre 10km/h", "null")
+//						.addCondition("VehicleSpeed", "eqr", "10")
+//						.addReward("xp", "2000");
+//				testTast3.addBaseData("Schalte in den 1.", "null")
+//						.addCondition("CurrentGear", "eq", "1")
+//						.addReward("xp", "2000");
 
 				try {
 					// String goal_t1=
@@ -148,14 +150,14 @@ public class TaskDatastore extends BaseDatastore {
 					// JsonParser.writeNewJsonGoalString(gs2_tDemo.getJsonParse());
 					// String two_conditions_str=
 					// JsonParser.writeNewJsonGoalString(two_2conditions.getJsonParse());
-					// String g_e2a_str =
-					// JsonParser.writeNewJsonGoalString(gs_e2a.getJsonParse());
-					// String g_e2b_str =
-					// JsonParser.writeNewJsonGoalString(gs_e2b.getJsonParse());
-					// String g_e1a_str =
-					// JsonParser.writeNewJsonGoalString(gs_e1a.getJsonParse());
-					// String g_e1c_str =
-					// JsonParser.writeNewJsonGoalString(gs_e1c.getJsonParse());
+					 String g_e2a_str =
+					 JsonParser.writeNewJsonGoalString(gs_e2a.getJsonParse());
+					 String g_e2b_str =
+					 JsonParser.writeNewJsonGoalString(gs_e2b.getJsonParse());
+					 String g_e1a_str =
+					 JsonParser.writeNewJsonGoalString(gs_e1a.getJsonParse());
+					 String g_e1c_str =
+					 JsonParser.writeNewJsonGoalString(gs_e1c.getJsonParse());
 					// Goal g_t1=goal_service.insertGoal(new
 					// Goal().setJsonString(goal_t1)).execute();
 					// Goal g_t2=goal_service.insertGoal(new
@@ -170,52 +172,52 @@ public class TaskDatastore extends BaseDatastore {
 					// Goal().setJsonString(goal_demo2)).execute();
 					// Goal two_conditions = goal_service.insertGoal(new
 					// Goal().setJsonString(two_conditions_str)).execute();
-					String tt0_str = JsonParser.writeNewJsonGoalString(testTast
-							.getJsonParse());
-					String tt1_str = JsonParser
-							.writeNewJsonGoalString(testTast1.getJsonParse());
-					String tt2_str = JsonParser
-							.writeNewJsonGoalString(testTast2.getJsonParse());
-					String tt3_str = JsonParser
-							.writeNewJsonGoalString(testTast3.getJsonParse());
+//					String tt0_str = JsonParser.writeNewJsonGoalString(testTast
+//							.getJsonParse());
+//					String tt1_str = JsonParser
+//							.writeNewJsonGoalString(testTast1.getJsonParse());
+//					String tt2_str = JsonParser
+//							.writeNewJsonGoalString(testTast2.getJsonParse());
+//					String tt3_str = JsonParser
+//							.writeNewJsonGoalString(testTast3.getJsonParse());
 
-					// Goal g_e2a = goal_service.insertGoal(new
-					// Goal().setJsonString(g_e2a_str)).execute();
-					// Goal g_e2b = goal_service.insertGoal(new
-					// Goal().setJsonString(g_e2b_str)).execute();
-					// Goal g_e1a = goal_service.insertGoal(new
-					// Goal().setJsonString(g_e1a_str)).execute();
-					// Goal g_e1c = goal_service.insertGoal(new
-					// Goal().setJsonString(g_e1c_str)).execute();
-					Goal tt0 = goal_service.insertGoal(
-							new Goal().setJsonString(tt0_str)).execute();
-					Goal tt1 = goal_service.insertGoal(
-							new Goal().setJsonString(tt1_str)).execute();
-					Goal tt2 = goal_service.insertGoal(
-							new Goal().setJsonString(tt2_str)).execute();
-					Goal tt3 = goal_service.insertGoal(
-							new Goal().setJsonString(tt3_str)).execute();
+					 Goal g_e2a = goal_service.insertGoal(new
+					 Goal().setJsonString(g_e2a_str)).execute();
+					 Goal g_e2b = goal_service.insertGoal(new
+					 Goal().setJsonString(g_e2b_str)).execute();
+					 Goal g_e1a = goal_service.insertGoal(new
+					 Goal().setJsonString(g_e1a_str)).execute();
+					 Goal g_e1c = goal_service.insertGoal(new
+					 Goal().setJsonString(g_e1c_str)).execute();
+//					Goal tt0 = goal_service.insertGoal(
+//							new Goal().setJsonString(tt0_str)).execute();
+//					Goal tt1 = goal_service.insertGoal(
+//							new Goal().setJsonString(tt1_str)).execute();
+//					Goal tt2 = goal_service.insertGoal(
+//							new Goal().setJsonString(tt2_str)).execute();
+//					Goal tt3 = goal_service.insertGoal(
+//							new Goal().setJsonString(tt3_str)).execute();
 
 					// List<Goal> gs_parsed_polyline_t4 = new ArrayList<Goal>();
 					// for(GoalStructure gs:gs_polyline_t4){
 					// gs_parsed_polyline_t4.add(goal_service.insertGoal(new
 					// Goal().setJsonString(JsonParser.writeNewJsonGoalString(gs.getJsonParse()))).execute());
 					// }
-					// List<Goal> gs_parsed_e1b_polyline = new
-					// ArrayList<Goal>();
-					// for(GoalStructure gs:gs_e1b_polyline){
-					// gs_parsed_e1b_polyline.add(goal_service.insertGoal(new
-					// Goal().setJsonString(JsonParser.writeNewJsonGoalString(gs.getJsonParse()))).execute());
-					// }
+					 List<Goal> gs_parsed_e1b_polyline = new
+					 ArrayList<Goal>();
+					 for(GoalStructure gs:gs_e1b_polyline){
+					 gs_parsed_e1b_polyline.add(goal_service.insertGoal(new
+					 Goal().setJsonString(JsonParser.writeNewJsonGoalString(gs.getJsonParse()))).execute());
+					 }
 					// List<Long> goals_t1= new ArrayList<Long>();
 					// List<Long> goals_t2= new ArrayList<Long>();
 					// List<Long> goals_t3= new ArrayList<Long>();
 					// List<Long> goals_t4= new ArrayList<Long>();
 					// List<Long> goals_demo= new ArrayList<Long>();
 					// List<Long> goals_two= new ArrayList<Long>();
-					// List<Long> goals_ende1= new ArrayList<Long>();
-					// List<Long> goals_ende2= new ArrayList<Long>();
-					List<Long> tt_goals = new ArrayList<Long>();
+					 List<Long> goals_ende1= new ArrayList<Long>();
+					 List<Long> goals_ende2= new ArrayList<Long>();
+//					List<Long> tt_goals = new ArrayList<Long>();
 					// goals_t1.add(g_t1.getId());
 					// goals_t2.add(g_t2.getId());
 					// goals_t3.add(g_t3.getId());
@@ -227,18 +229,18 @@ public class TaskDatastore extends BaseDatastore {
 					// goals_demo.add(g1_demo.getId());
 					// goals_demo.add(g2_demo.getId());
 					// goals_two.add(two_conditions.getId());
-					// goals_ende1.add(g_e1a.getId());
-					// for(Goal g: gs_parsed_e1b_polyline){
-					// goals_ende1.add(g.getId());
-					// }
-					// goals_ende1.add(g_e1c.getId());
-					// goals_ende2.add(g_e2a.getId());
-					// goals_ende2.add(g_e2b.getId());
+					 goals_ende1.add(g_e1a.getId());
+					 for(Goal g: gs_parsed_e1b_polyline){
+					 goals_ende1.add(g.getId());
+					 }
+					 goals_ende1.add(g_e1c.getId());
+					 goals_ende2.add(g_e2a.getId());
+					 goals_ende2.add(g_e2b.getId());
 
-					tt_goals.add(tt0.getId());
-					tt_goals.add(tt1.getId());
-					tt_goals.add(tt2.getId());
-					tt_goals.add(tt3.getId());
+//					tt_goals.add(tt0.getId());
+//					tt_goals.add(tt1.getId());
+//					tt_goals.add(tt2.getId());
+//					tt_goals.add(tt3.getId());
 
 					// service.insertTask(new
 					// Task().setTitle("Observiere den Monbijoupark")
@@ -272,23 +274,23 @@ public class TaskDatastore extends BaseDatastore {
 					// Task().setTitle("Reaktiviere die Alten")
 					// .setDescription("Viele potenzielle Indidivuen, die sich unserer Sache anschlieÃŸen kÃ¶nnen leben in dieser Gegend. Reaktiviere sie aus diesem Dauerschlaf")
 					// .setGeoLat(52.5753192766).setGeoLon(13.3531235291).setGoals(goals_two)).execute();
-					// service.insertTask(new
-					// Task().setTitle("Zeugenschutzprogram!")
-					// .setDescription("Ihr habt es geschafft einen Anhï¿½nger des Ministry of Freedom zum ï¿½berlaufen zu bringen. Dieser Zeuge hat wichtige Informationen und muss nun vor den Feind geschï¿½tzt werden. "
-					// +
-					// "Sorge dafï¿½r, dass er sicher aus der Reichweite des Ministries entkommt!")
-					// .setGeoLat(52.52286).setGeoLon(13.321506).setGoals(goals_ende1)).execute();
-					// service.insertTask(new Task().setTitle("Tauche unter!")
-					// .setDescription("Bei deiner letzten Mission wurdest du von Agenten des Ministry of Freedom entdeckt und wirst seitdem verfolgt. Parke und verbirg deine Hitzesignatur um unterzutauchen!")
-					// .setGeoLat(52.517837).setGeoLon(13.328733).setGoals(goals_ende2)).execute();
+					 service.insertTask(new
+					 Task().setTitle("Zeugenschutzprogram!")
+					 .setDescription("Ihr habt es geschafft einen Anhänger des Ministry of Freedom zum ï¿½berlaufen zu bringen. Dieser Zeuge hat wichtige Informationen und muss nun vor den Feind geschützt werden. "
+					 +
+					 "Sorge dafür, dass er sicher aus der Reichweite des Ministries entkommt!")
+					 .setGeoLat(52.52286).setGeoLon(13.321506).setGoals(goals_ende1)).execute();
+					 service.insertTask(new Task().setTitle("Tauche unter!")
+					 .setDescription("Bei deiner letzten Mission wurdest du von Agenten des Ministry of Freedom entdeckt und wirst seitdem verfolgt. Parke und verbirg deine Hitzesignatur um unterzutauchen!")
+					 .setGeoLat(52.517837).setGeoLon(13.328733).setGoals(goals_ende2)).execute();
 
-					service.insertTask(
-							new Task()
-									.setTitle("Unerforschte EXLAP Technologie!")
-									.setDescription(
-											"Teste die Anomalie Funktionen deines Vehicle! Benutze dabei die noch unerforschte EXLAP Technologie! Sie wurde von den Carmeq Rebellen geborgen und muss in den Dienst der Defiance gestellt werden")
-									.setGeoLat(52.513837).setGeoLon(13.321733)
-									.setGoals(tt_goals)).execute();
+//					service.insertTask(
+//							new Task()
+//									.setTitle("Unerforschte EXLAP Technologie!")
+//									.setDescription(
+//											"Teste die Anomalie Funktionen deines Vehicle! Benutze dabei die noch unerforschte EXLAP Technologie! Sie wurde von den Carmeq Rebellen geborgen und muss in den Dienst der Defiance gestellt werden")
+//									.setGeoLat(52.513837).setGeoLon(13.321733)
+//									.setGoals(tt_goals)).execute();
 
 				} catch (FormatException e) {
 					// TODO Auto-generated catch block
