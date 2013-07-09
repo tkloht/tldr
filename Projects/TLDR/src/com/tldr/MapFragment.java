@@ -328,7 +328,7 @@ public class MapFragment extends Fragment implements LocationListener,
 				GlobalData.setFirstStart(false);
 			} else {
 				
-				mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+				mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
 				
 			}
 		}
@@ -377,9 +377,9 @@ public class MapFragment extends Fragment implements LocationListener,
 								TriggerDomains.GPS, latLon);
 					}
 				}
-				userDatastore.updateUser(GlobalData.getCurrentUser()
+				GlobalData.getCurrentUser()
 						.setGeoLon(latLon.longitude)
-						.setGeoLat(latLon.latitude));
+						.setGeoLat(latLon.latitude);
 				//ist genuaer so!
 				fillMapWithOverlays();
 			}

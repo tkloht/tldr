@@ -25,7 +25,6 @@ public class FakeLocationProvider extends Thread {
 	public static final String PROVIDER_NAME = "FAKE_LOCATION_PROVIDER";
 	private Activity context;
 	private Location next;
-	private boolean needsReset=false;
 	public static FakeLocationProvider getFakeLocationProvider(long interval, LocationManager mLocationManager, LocationListener listener, Activity context){
 		if(singleton==null)
 		{
@@ -47,7 +46,6 @@ public class FakeLocationProvider extends Thread {
 	    mLocationManager.setTestProviderEnabled(PROVIDER_NAME, true);
 	    this.listener=listener;
 	    this.context=context;
-	    needsReset=false;
 	}
 	
 	
@@ -59,11 +57,10 @@ public class FakeLocationProvider extends Thread {
 
 	public void reset(){
 		List<LatLng> locations=singleton.locations;
-		if(needsReset)
-			singleton=new FakeLocationProvider(interval, mLocationManager, listener, context);
+		singleton=new FakeLocationProvider(interval, mLocationManager, listener, context);
 		singleton.setLocations(locations);
 		
-		needsReset=false;
+
 	}
 
 	public void setLocations(List<LatLng> locations) {
@@ -71,27 +68,43 @@ public class FakeLocationProvider extends Thread {
 	}
 
 	public void startFakeLocations(){
-		needsReset=true;
 		singleton.start();
 		
 	}
 	
 	@Override
 	public void run() {
-		try {
-			for (LatLng location : locations) {
-				Thread.sleep(interval);
-				next = new Location(PROVIDER_NAME);
-				next.setLatitude(location.latitude);
-				next.setLongitude(location.longitude);
-				next.setTime(System.currentTimeMillis());
-				next.setAccuracy(100);
-				Method locationJellyBeanFixMethod = Location.class.getMethod("makeComplete");
-				if (locationJellyBeanFixMethod != null) {
-				   locationJellyBeanFixMethod.invoke(next);
+		for (LatLng location : locations) {
+				try {
+					Thread.sleep(interval);
+					next = new Location(PROVIDER_NAME);
+					next.setLatitude(location.latitude);
+					next.setLongitude(location.longitude);
+					next.setTime(System.currentTimeMillis());
+					next.setAccuracy(100);
+					Method locationJellyBeanFixMethod = Location.class.getMethod("makeComplete");
+					if (locationJellyBeanFixMethod != null) {
+					   locationJellyBeanFixMethod.invoke(next);
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
-				mLocationManager.setTestProviderLocation(PROVIDER_NAME, next);
+				finally{
+					mLocationManager.setTestProviderLocation(PROVIDER_NAME, next);
+				}
 //				context.runOnUiThread(new Runnable() {
 //					
 //					@Override
@@ -102,22 +115,7 @@ public class FakeLocationProvider extends Thread {
 				
 				
 			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 	}
 
 }
