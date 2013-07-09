@@ -89,7 +89,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 	        	 UserInfo user = GlobalData.getCurrentUser();
 	        	 List<Long> acceptedTasks = user.getAcceptedTasks();
 	        	 List<Long> acceptedTasksTS = user.getAcceptedTasksTS();
-	        	 if (acceptedTasks == null) {
+	        	 if (acceptedTasks == null || acceptedTasksTS ==null) {
 	        		 acceptedTasks = new ArrayList<Long>();
 	        		 acceptedTasksTS = new ArrayList<Long>();
 	        	 }

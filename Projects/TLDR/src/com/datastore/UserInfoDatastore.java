@@ -101,7 +101,7 @@ public class UserInfoDatastore extends BaseDatastore{
 	
 	@Override
 	protected void onPostExecute(CollectionResponseUserInfo registeredUser) {
-		if(context!=null)
+		if(context!=null&&registeredUser!=null)
 			context.handleRequestResult(REQUEST_USERINFO_NEARBYUSERS, registeredUser.getItems());
 	
 	}

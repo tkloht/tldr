@@ -6,7 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.location.Location;
-import android.preference.PreferenceManager;
+import android.location.LocationManager;
 
 import com.datastore.UserInfoDatastore;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
@@ -16,6 +16,7 @@ import com.tldr.gamelogic.GoalRegister;
 import com.tldr.gamelogic.GoalStructure;
 import com.tldr.messageEndpoint.MessageEndpoint;
 import com.tldr.taskendpoint.model.Task;
+import com.tldr.tools.FakeLocationProvider;
 import com.tldr.tools.KnightRider;
 
 public class GlobalData {
@@ -30,6 +31,7 @@ public class GlobalData {
 	private static boolean firstStart = true;
 	private static boolean exlapConnected = false;
 	private static KnightRider textToSpeach;
+	private static LocationManager mLocationManager;
 
 	private static HashMap<Long, GoalStructure> allGoals;
 
@@ -39,6 +41,39 @@ public class GlobalData {
 	private static List<UserInfo> usersMof;
 	public static final int FRACTION_DEFIANCE = 1;
 	public static final int FRACTION_MINISTRY_OF_FREEDOM = 2;
+	public static boolean fake_location_data_enabled=false;
+	
+	public static FakeLocationProvider fakeLocationProvider=null;
+	
+	
+	
+	public static LocationManager getLocationManager() {
+		return mLocationManager;
+	}
+
+	public static void setLocationManager(LocationManager mLocationManager) {
+		GlobalData.mLocationManager = mLocationManager;
+		
+	}
+
+	
+	public static FakeLocationProvider getFakeLocationProvider() {
+		return fakeLocationProvider;
+	}
+
+	public static void setFakeLocationProvider(
+			FakeLocationProvider fakeLocationProvider) {
+		GlobalData.fakeLocationProvider = fakeLocationProvider;
+	}
+
+	public static boolean isFake_location_data_enabled() {
+		return fake_location_data_enabled;
+	}
+
+	public static void setFake_location_data_enabled(
+			boolean fake_location_data_enabled) {
+		GlobalData.fake_location_data_enabled = fake_location_data_enabled;
+	}
 
 	public static List<Task> getAcceptedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();

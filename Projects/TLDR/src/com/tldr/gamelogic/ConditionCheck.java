@@ -217,7 +217,7 @@ public class ConditionCheck {
 							location.latitude, location.longitude, distance);
 					int dist = Math.round(distance[0]);
 					Log.i("TLDR", "GPS Goaldistance:" + dist);
-					if (dist < 100) {
+					if (dist < 50) {
 						return true;
 					} else {
 						return false;

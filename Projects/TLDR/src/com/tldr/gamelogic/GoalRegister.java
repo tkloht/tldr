@@ -66,10 +66,6 @@ public class GoalRegister {
 					Log.i("TLDR", " FINISHED Condition:" + condition);
 					Log.i("TLDR", " FINISHED Condition:" + checkedConditions.get(idgoals) );
 					if (checkedConditions.get(idgoals) == 0) {
-						GlobalData.getTextToSpeach().say(
-								"Annomalie Parameter " + desc
-										+ " erfolgreich absolviert");
-
 						UserInfo currentUser = GlobalData.getCurrentUser();
 						if (currentUser.getFinishedGoals() == null) {
 							currentUser.setFinishedGoals(new ArrayList<Long>());
@@ -79,7 +75,14 @@ public class GoalRegister {
 							currentUser.getFinishedGoals().add(idgoals);
 							currentUser.getFinishedGoalsTS().add(System.currentTimeMillis());
 							GlobalData.getDatastore().updateUser(currentUser);
-						}
+						}	
+					
+						if(!desc.contains("##"))
+							GlobalData.getTextToSpeach().say(
+								"Annomalie Parameter " + desc
+										+ " erfolgreich absolviert");
+
+
 					}
 				}
 			});

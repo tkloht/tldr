@@ -2,6 +2,7 @@ package com.tldr;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -13,6 +14,7 @@ import android.util.Log;
 
 import com.auth.AccountHelper;
 import com.datastore.UserInfoDatastore;
+import com.google.android.gms.maps.model.LatLng;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.ConnectionHelper;
 
@@ -33,6 +35,7 @@ public class SettingsFragment extends PreferenceFragment implements
 
 		Preference connectPref = findPreference("pref_exlap_connect");
 		Preference resetDataPref = findPreference("pref_reset_userdata");
+		Preference fakeLocations = findPreference("pref_fake_location");
 		connectPref
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					public boolean onPreferenceClick(Preference preference) {
@@ -84,6 +87,31 @@ public class SettingsFragment extends PreferenceFragment implements
 					}
 
 				});
+		fakeLocations.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				// TODO Auto-generated method stub
+				List<LatLng> locations= new ArrayList<LatLng>();
+				locations.add(new LatLng(52.52286,13.321506));
+				locations.add(new LatLng(52.522828,13.322027));
+				locations.add(new LatLng(52.521196,13.322357));
+				locations.add(new LatLng(52.520921,13.32137));
+				locations.add(new LatLng(52.519681,13.319739));
+				locations.add(new LatLng(52.517514,13.325061));
+				locations.add(new LatLng(52.515516,13.327936));
+				locations.add(new LatLng(52.516691,13.329395));
+	
+				
+				
+				GlobalData.setFake_location_data_enabled(true);
+				GlobalData.getFakeLocationProvider().setLocations(locations);
+				GlobalData.getFakeLocationProvider().reset();
+				GlobalData.getFakeLocationProvider().startFakeLocations();
+				
+				return false;
+			}
+		});
 
 	}
 

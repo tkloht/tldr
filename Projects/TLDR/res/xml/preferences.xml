@@ -9,6 +9,9 @@
      <Preference android:key="pref_reset_userdata"
          android:title="@string/pref_reset_userdata"
          android:defaultValue="false"/>
+     <Preference android:key="pref_fake_location"
+	    android:title="@string/pref_fake_location"
+	    android:defaultValue="false"/>
      
    
 </PreferenceScreen>

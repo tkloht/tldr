@@ -52,6 +52,7 @@ import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.TriggerRegister.TriggerDomains;
 import com.tldr.gamelogic.Factions;
 import com.tldr.taskendpoint.model.Task;
+import com.tldr.tools.FakeLocationProvider;
 import com.tldr.tools.ToolBox;
 
 public class MapFragment extends Fragment implements LocationListener,
@@ -109,25 +110,33 @@ public class MapFragment extends Fragment implements LocationListener,
 
 		locationManager = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
+		
+		GlobalData.setLocationManager(locationManager);
+		GlobalData.setFakeLocationProvider(FakeLocationProvider.getFakeLocationProvider(5000, locationManager, this, getActivity()));
 		if (locationManager != null) {
 			boolean gpsIsEnabled = locationManager
 					.isProviderEnabled(LocationManager.GPS_PROVIDER);
 			boolean networkIsEnabled = locationManager
 					.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-			if (gpsIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 5000L, 10F, this);
-				GlobalData.setLastknownPosition(locationManager
-						.getLastKnownLocation(LocationManager.GPS_PROVIDER));
-			} else if (networkIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.NETWORK_PROVIDER, 5000L, 10F, this);
-				GlobalData
-						.setLastknownPosition(locationManager
-								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
-			} else {
-				// Show an error dialog that GPS is disabled...
+			boolean fakeLocProvEnabled= locationManager.isProviderEnabled(FakeLocationProvider.PROVIDER_NAME);
+			if(fakeLocProvEnabled){
+				locationManager.requestLocationUpdates(FakeLocationProvider.PROVIDER_NAME, 1L, 1F, this);
+			}
+			if(!GlobalData.fake_location_data_enabled){
+				if (gpsIsEnabled) {
+					locationManager.requestLocationUpdates(
+							LocationManager.GPS_PROVIDER, 5000L, 10F, this);
+					GlobalData.setLastknownPosition(locationManager
+							.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+				} else if (networkIsEnabled) {
+					locationManager.requestLocationUpdates(
+							LocationManager.NETWORK_PROVIDER, 5000L, 10F, this);
+					GlobalData
+							.setLastknownPosition(locationManager
+									.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
+				} else {
+					// Show an error dialog that GPS is disabled...
+				}
 			}
 		} else {
 			// Show some generic error dialog because something must have gone
@@ -295,12 +304,13 @@ public class MapFragment extends Fragment implements LocationListener,
 		handleRequestResult(BaseDatastore.REQUEST_TASK_FETCHNEARBY,
 				GlobalData.getAllTasks());
 		resetMarkers();
-		flyTo(GlobalData.getLastknownPosition());
+		
 		selfMarker = mMap.addMarker(new MarkerOptions().position(
 				new LatLng(GlobalData.getLastknownPosition().getLatitude(),
 						GlobalData.getLastknownPosition().getLongitude()))
 				.icon(BitmapDescriptorFactory
 						.fromResource(R.drawable.tldr_button_car)));
+		flyTo(GlobalData.getLastknownPosition());
 	}
 
 	private void flyTo(Location location) {
@@ -311,12 +321,15 @@ public class MapFragment extends Fragment implements LocationListener,
 
 	private void flyTo(LatLng location) {
 		if (location != null) {
+			Log.d("TLDR", "flying to new Location");
 			mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 			if (GlobalData.isFirstStart()) {
 				mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
 				GlobalData.setFirstStart(false);
 			} else {
+				
 				mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+				
 			}
 		}
 	}
@@ -343,33 +356,34 @@ public class MapFragment extends Fragment implements LocationListener,
 	@Override
 	public void onLocationChanged(Location location) {
 		// flyTo(location);
-		
-		GlobalData.setLastknownPosition(location);
-		if (GlobalData.getCurrentUser() != null) {
-			LatLng latLon = null;
-			try {
-				latLon = (new LatLng(mMap.getMyLocation().getLatitude(), mMap
-						.getMyLocation().getLongitude()));
-			} catch (Exception e) {
-				latLon = (new LatLng(location.getLatitude(),
-						location.getLongitude()));
-			}
-			if (latLon != null) {
-				if(selfMarker==null)
-					fillMapWithOverlays();
-				selfMarker.setPosition(latLon);
-				if (GlobalData.getTriggerRegister() != null) {
-					GlobalData.getTriggerRegister().onNewData(
-							TriggerDomains.GPS, latLon);
+		Log.d("TLDR", "Location Changed to "+location);
+		if(!GlobalData.fake_location_data_enabled||location.getProvider().equals(FakeLocationProvider.PROVIDER_NAME)){
+			GlobalData.setLastknownPosition(location);
+			if (GlobalData.getCurrentUser() != null) {
+				LatLng latLon = null;
+//				try {
+//					latLon = (new LatLng(mMap.getMyLocation().getLatitude(), mMap
+//							.getMyLocation().getLongitude()));
+//				} catch (Exception e) {
+					latLon = (new LatLng(location.getLatitude(),
+							location.getLongitude()));
+//				}
+				if (latLon != null) {
+					if(selfMarker==null)
+						fillMapWithOverlays();
+					selfMarker.setPosition(latLon);
+					if (GlobalData.getTriggerRegister() != null) {
+						GlobalData.getTriggerRegister().onNewData(
+								TriggerDomains.GPS, latLon);
+					}
 				}
+				userDatastore.updateUser(GlobalData.getCurrentUser()
+						.setGeoLon(latLon.longitude)
+						.setGeoLat(latLon.latitude));
+				//ist genuaer so!
+				fillMapWithOverlays();
 			}
-			userDatastore.updateUser(GlobalData.getCurrentUser()
-					.setGeoLon(latLon.longitude)
-					.setGeoLat(latLon.latitude));
-			//ist genuaer so!
-			fillMapWithOverlays();
 		}
-
 	}
 	
 	private void resetMarkers(){
@@ -437,11 +451,12 @@ public class MapFragment extends Fragment implements LocationListener,
 		}
 		}
 		myOnInfoWindowClickListerer.setTasks(tasksHashMap, tasksList);
-
-		searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(
-				this.getActivity(),
-				android.R.layout.simple_dropdown_item_1line,
-				autoCompletionObjects));
+		if(autoCompletionObjects.size()>0){
+			searchField.setAdapter(new ArrayAdapter<AutoCompletionMarker>(
+					this.getActivity(),
+					android.R.layout.simple_dropdown_item_1line,
+					autoCompletionObjects));
+		}
 	}
 
 	@Override
