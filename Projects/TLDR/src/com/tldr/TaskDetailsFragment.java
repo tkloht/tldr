@@ -177,7 +177,7 @@ public class TaskDetailsFragment extends Fragment implements DatastoreResultHand
 					if(add){
 						listObjects.add(singleListItem);
 					
-						if(GlobalData.getCurrentUser().getFinishedGoals()!=null&&GlobalData.getCurrentUser().getFinishedGoals().contains(gid)){
+						if(GlobalData.isParentGoalFinished(gid)){
 							checked.add(true);
 						}
 						else

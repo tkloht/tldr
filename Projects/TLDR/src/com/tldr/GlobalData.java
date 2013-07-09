@@ -14,6 +14,7 @@ import com.tldr.exlap.ConnectionHelper;
 import com.tldr.exlap.TriggerRegister;
 import com.tldr.gamelogic.GoalRegister;
 import com.tldr.gamelogic.GoalStructure;
+import com.tldr.goalendpoint.model.Goal;
 import com.tldr.messageEndpoint.MessageEndpoint;
 import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.FakeLocationProvider;
@@ -327,6 +328,46 @@ public class GlobalData {
 
 	public static void setTextToSpeach(Context c) {
 		GlobalData.textToSpeach = new KnightRider(c);
+	}
+	
+	public static boolean isParentGoalFinished(Long goalId){
+		if(currentUser.getFinishedGoals()==null){
+			return false;
+		}
+		boolean finished=true;
+		Task parentTask=getTaskForGoalId(goalId);
+		GoalStructure subGoal = allGoals.get(goalId);
+		String desc=subGoal.getDescription();
+		if(desc.contains("##")){
+			String[] split = desc.split("##");
+			List<Long> otherGoals = parentTask.getGoals();
+			for(Long gId:otherGoals){
+				GoalStructure otherGoal = allGoals.get(gId);
+				String other_desc = otherGoal.getDescription();
+				if(other_desc.contains("##"))
+				{
+					String[] other_split = other_desc.split("##");
+					if(other_split[1].equals(split[1])){ //Gehören zum selben subgoal
+						if(!currentUser.getFinishedGoals().contains(gId))
+							finished=false;
+					}
+				}
+			}
+		}
+		else
+			finished= currentUser.getFinishedGoals().contains(goalId);
+		
+		return finished;
+		
+		
+	}
+	
+	public static Task getTaskForGoalId(Long goalId){
+		for(Task t:allTasks){
+			if(t.getGoals().contains(goalId))
+				return t;
+		}
+		return null;
 	}
 
 }

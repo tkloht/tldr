@@ -77,10 +77,14 @@ public class GoalRegister {
 							GlobalData.getDatastore().updateUser(currentUser);
 						}	
 					
-						if(!desc.contains("##"))
+						if(GlobalData.isParentGoalFinished(idgoals)){
+							String descToSpeech=desc;
+							if(desc.contains("##"))
+								descToSpeech=desc.split("##")[1];
 							GlobalData.getTextToSpeach().say(
-								"Annomalie Parameter " + desc
+								"Annomalie Parameter " + descToSpeech
 										+ " erfolgreich absolviert");
+						}
 
 
 					}
