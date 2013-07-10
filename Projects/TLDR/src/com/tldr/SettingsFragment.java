@@ -77,11 +77,11 @@ public class SettingsFragment extends PreferenceFragment implements
 								.getCredential());
 						UserInfo currentUser = GlobalData.getCurrentUser();
 						currentUser.setFinishedGoals(new ArrayList<Long>());
-						// currentUser.setFinishedGoalsTS(new
-						// ArrayList<Long>());
+						 currentUser.setFinishedGoalsTS(new
+						 ArrayList<Long>());
 						currentUser.setAcceptedTasks(new ArrayList<Long>());
-						// currentUser.setAcceptedTasksTS(new
-						// ArrayList<Long>());
+						 currentUser.setAcceptedTasksTS(new
+						 ArrayList<Long>());
 						datastorea.updateUser(currentUser);
 						return false;
 					}
