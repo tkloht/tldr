@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 
 import com.datastore.UserInfoDatastore;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.ConnectionHelper;
 import com.tldr.exlap.TriggerRegister;
@@ -45,6 +46,7 @@ public class GlobalData {
 	public static boolean fake_location_data_enabled=false;
 	
 	public static FakeLocationProvider fakeLocationProvider=null;
+	private static CameraPosition cameraPosition;
 	
 	
 	
@@ -347,7 +349,7 @@ public class GlobalData {
 				if(other_desc.contains("##"))
 				{
 					String[] other_split = other_desc.split("##");
-					if(other_split[1].equals(split[1])){ //Gehören zum selben subgoal
+					if(other_split[1].equals(split[1])){ //Geh��ren zum selben subgoal
 						if(!currentUser.getFinishedGoals().contains(gId))
 							finished=false;
 					}
@@ -368,6 +370,14 @@ public class GlobalData {
 				return t;
 		}
 		return null;
+	}
+
+	public static void setCameraPosition(CameraPosition cameraPosition) {
+		GlobalData.cameraPosition =cameraPosition;
+	}
+	
+	public static CameraPosition getCameraPosition(){
+		return GlobalData.cameraPosition;
 	}
 
 }

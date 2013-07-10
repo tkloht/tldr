@@ -51,43 +51,59 @@ public class GoalRegister {
 				.getJsonParse().get("conditions");
 		this.checkedConditions.put(idgoals, conditionsList.size());
 		for (final Map<String, String> condition : conditionsList) {
-			Log.i("TLDR", " REGISTER Condition:"+ condition.toString());
+			Log.i("TLDR", " REGISTER Condition:" + condition.toString());
 			ConditionCheck cc = new ConditionCheck(condition, new OnTrue() {
 				@Override
-				public void onTrue() {
+				public boolean onTrue() {
 					// Hier muessten erstenaml allee contidions true sein bevor
-					// isch fnished gloals setze					
+					// isch fnished gloals setze
 
 					if (checkedConditions.get(idgoals) > 0) {
 						checkedConditions.put(idgoals,
 								checkedConditions.get(idgoals) - 1);
 					}
-					Log.i("TLDR", " FINISHED Condition:" + idgoals);
-					Log.i("TLDR", " FINISHED Condition:" + condition);
-					Log.i("TLDR", " FINISHED Condition:" + checkedConditions.get(idgoals) );
+					Log.i("TLDR", " DONE Condition:" + idgoals);
+					Log.i("TLDR", " DONE Condition:" + condition);
+					Log.i("TLDR",
+							" DONE Condition:" + checkedConditions.get(idgoals));
 					if (checkedConditions.get(idgoals) == 0) {
 						UserInfo currentUser = GlobalData.getCurrentUser();
 						if (currentUser.getFinishedGoals() == null) {
 							currentUser.setFinishedGoals(new ArrayList<Long>());
-							currentUser.setFinishedGoalsTS(new ArrayList<Long>());
+							currentUser
+									.setFinishedGoalsTS(new ArrayList<Long>());
 						}
 						if (GlobalData.getDatastore() != null) {
 							currentUser.getFinishedGoals().add(idgoals);
-							currentUser.getFinishedGoalsTS().add(System.currentTimeMillis());
+							currentUser.getFinishedGoalsTS().add(
+									System.currentTimeMillis());
 							GlobalData.getDatastore().updateUser(currentUser);
-						}	
-					
-						if(GlobalData.isParentGoalFinished(idgoals)){
-							String descToSpeech=desc;
-							if(desc.contains("##"))
-								descToSpeech=desc.split("##")[1];
-							GlobalData.getTextToSpeach().say(
-								"Annomalie Parameter " + descToSpeech
-										+ " erfolgreich absolviert");
 						}
 
-
+						if (GlobalData.isParentGoalFinished(idgoals)) {
+							String descToSpeech = desc;
+							if (desc.contains("##"))
+								descToSpeech = desc.split("##")[1];
+							GlobalData.getTextToSpeach().say(
+									"Annomalie Parameter " + descToSpeech
+											+ " erfolgreich absolviert");
+						}
+						return true;
 					}
+					if (checkedConditions.get(idgoals) < 0) {
+						return true;
+					}
+					return false;
+				}
+			}, new OnFalse() {
+
+				@Override
+				public boolean onFalse() {
+					Log.i("TLDR",
+							"UNDONE Condition:" + checkedConditions.get(idgoals));
+					checkedConditions.put(idgoals,
+							checkedConditions.get(idgoals) + 1);
+					return false;
 				}
 			});
 			if (cc.successfullyInitialized()) {
@@ -95,7 +111,7 @@ public class GoalRegister {
 				if (triggerRegister.register(cc)) {
 					Log.i("TLDR", "done register" + cc.getIdentifier());
 					this.registeredGoals.add(goal);
-				}else{
+				} else {
 					Log.e("TLDR", "fail register" + cc.getIdentifier());
 				}
 			}
@@ -113,7 +129,11 @@ public class GoalRegister {
 	// }
 
 	public interface OnTrue {
-		public void onTrue();
+		public boolean onTrue();
+	}
+
+	public interface OnFalse {
+		public boolean onFalse();
 	}
 
 }

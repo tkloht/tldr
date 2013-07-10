@@ -186,8 +186,8 @@ public class TaskDatastore extends BaseDatastore {
 							new Task()
 									.setTitle("Zeugenschutzprogram!")
 									.setDescription(
-											"Ihr habt es geschafft einen Anhänger des Ministry of Freedom zum überlaufen zu bringen. Dieser Zeuge hat wichtige Informationen und muss nun vor den Feind geschützt werden. "
-													+ "Sorge dafür, dass er sicher aus der Reichweite des Ministries entkommt!")
+											"Ihr habt es geschafft einen Anhï¿½nger des Ministry of Freedom zum ï¿½berlaufen zu bringen. Dieser Zeuge hat wichtige Informationen und muss nun vor den Feind geschï¿½tzt werden. "
+													+ "Sorge dafï¿½r, dass er sicher aus der Reichweite des Ministries entkommt!")
 									.setGeoLat(52.52286).setGeoLon(13.321506)
 									.setGoals(goals_ende1)).execute();
 				} catch (FormatException e) {
@@ -271,7 +271,7 @@ public class TaskDatastore extends BaseDatastore {
 							new Task()
 									.setTitle("Reaktiviere die Alten")
 									.setDescription(
-											"Viele potenzielle Indidivuen, die sich unserer Sache anschließen können leben in dieser Gegend. Reaktiviere sie aus diesem Dauerschlaf")
+											"Viele potenzielle Indidivuen, die sich unserer Sache anschlieï¿½en kï¿½nnen leben in dieser Gegend. Reaktiviere sie aus diesem Dauerschlaf")
 									.setGeoLat(52.5753192766)
 									.setGeoLon(13.3531235291)
 									.setGoals(goals_two)).execute();
@@ -294,7 +294,7 @@ public class TaskDatastore extends BaseDatastore {
 				gs1_tDemo.addBaseData("Schalte in den 1. Gang", "null")
 						.addCondition("CurrentGear", "eq", "1")
 						.addReward("xp", "2000");
-				gs2_tDemo.addBaseData("Sei beim Großmeister", "null")
+				gs2_tDemo.addBaseData("Sei beim Groï¿½meister", "null")
 				.addCondition("gps", "eq", "52.5753092766;13.3530235291")
 				.addReward("xp", "2000");
 				
@@ -316,9 +316,9 @@ public class TaskDatastore extends BaseDatastore {
 
 					service.insertTask(
 							new Task()
-									.setTitle("Besuche den Großmeister")
+									.setTitle("Besuche den Groï¿½meister")
 									.setDescription(
-											"Der Großmeister des Ministy of Freedom will sich sehen. Reise zu ihm!")
+											"Der Groï¿½meister des Ministy of Freedom will sich sehen. Reise zu ihm!")
 									.setGeoLat(52.5753092766)
 									.setGeoLon(13.3530235291)
 									.setGoals(goals_demo)).execute();
@@ -415,7 +415,7 @@ public class TaskDatastore extends BaseDatastore {
 									.setTitle("Spuren der Vergangenheit")
 									.setDescription(
 											"Angeblich existieren an der angegebenen Route noch Relikte aus vergangenen Tagen. "
-													+ "Melden Sie diese durch anziehen der Handbremse, während Sie davor stehen.")
+													+ "Melden Sie diese durch anziehen der Handbremse, wï¿½hrend Sie davor stehen.")
 									.setGeoLat(52.455669).setGeoLon(13.294496)
 									.setGoals(goals_t4)).execute();
 				} catch (FormatException e) {
@@ -449,7 +449,7 @@ public class TaskDatastore extends BaseDatastore {
 									.setTitle("Untersuchung am Salzufer")
 									.setDescription(
 											"Ein Informant hat uns mitgeteilt, dass eine oder mehrere Baustellen am Salzufer von der gegnerischen Fraktion sabotiert wurde."
-													+ "Fahren das Salzufer entlang und markieren Sie Baustellen durch kurzes Betätigen vom Warnblinker")
+													+ "Fahren das Salzufer entlang und markieren Sie Baustellen durch kurzes Betï¿½tigen vom Warnblinker")
 									.setGeoLat(52.518493).setGeoLon(13.321928)
 									.setGoals(goals_t3)).execute();
 
@@ -489,7 +489,7 @@ public class TaskDatastore extends BaseDatastore {
 									.setTitle("Sabotage")
 									.setDescription(
 											"Versuche die Ampeln der Lindauer Allee unter unsere Kontrolle zu bringen."
-													+ "Fahren Sie dazu über die Lindauer Allee und wechseln sie die Radiofrequenz, wenn Sie an einer Ampel stehen.")
+													+ "Fahren Sie dazu ï¿½ber die Lindauer Allee und wechseln sie die Radiofrequenz, wenn Sie an einer Ampel stehen.")
 									.setGeoLat(52.574211).setGeoLon(13.349095)
 									.setGoals(goals_t2)).execute();
 
@@ -522,7 +522,7 @@ public class TaskDatastore extends BaseDatastore {
 									.setTitle("Observiere den Monbijoupark")
 									.setDescription(
 											"Es wird von Autonomy Komplikationen am Monbijou Park berichtet."
-													+ "Umrunden Sie den Monbijou Park und melden Sie Unregelmäßigkeiten. "
+													+ "Umrunden Sie den Monbijou Park und melden Sie Unregelmï¿½ï¿½igkeiten. "
 													+ "Fahren sie nicht schneller als 50km/h um unentdeckt zu bleiben!")
 									.setGeoLat(52.523702).setGeoLon(13.397588)
 									.setGoals(goals_t1)).execute();
@@ -602,6 +602,7 @@ public class TaskDatastore extends BaseDatastore {
 
 		@Override
 		protected void onPostExecute(CollectionResponseGoal goals) {
+			//TODO bei goals.getItems() kamm es zum nullpointer
 			if (context != null)
 				context.handleRequestResult(REQUEST_TASK_FETCHGOALS,
 						goals.getItems());

@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.tldr.exlap.TriggerRegister;
 import com.tldr.exlap.TriggerRegister.TriggerDomains;
+import com.tldr.gamelogic.GoalRegister.OnFalse;
 import com.tldr.gamelogic.GoalRegister.OnTrue;
 import com.tldr.tools.ToolBox;
 
@@ -16,7 +17,7 @@ import com.tldr.tools.ToolBox;
 public class ConditionCheck {
 
 	public enum Data {
-		NONE, GPS, DISPLAYEDVEHICLESPEED, CURRENTGEAR, VEHICLESPEED, SEATBELTLOCK, AIRCONDITIONINGCONTROL
+		NONE, GPS, DISPLAYEDVEHICLESPEED, CURRENTGEAR, VEHICLESPEED, SEATBELTLOCK, AIRCONDITIONINGCONTROL,PARKINGBRAKEAPPLIED
 	}
 
 	public enum Operator {
@@ -33,11 +34,15 @@ public class ConditionCheck {
 	private TriggerRegister.TriggerDomains domain;
 	private String identifier;
 	private OnTrue onTrue;
+	private OnFalse onFalse;
+	private boolean done=false;
 
-	public ConditionCheck(Map<String, String> condition, OnTrue onTrue) {
+	public ConditionCheck(Map<String, String> condition, OnTrue onTrue,
+			OnFalse onFalse) {
 		if (condition.containsKey("data")) {
 			String dataString = condition.get("data");
 			this.onTrue = onTrue;
+			this.onFalse = onFalse;
 			if (dataString.equals("polyline_point"))
 				dataString = "gps";
 			setIdentifier(dataString);
@@ -70,7 +75,7 @@ public class ConditionCheck {
 	}
 
 	private void setParser(Data data) {
-		if (data == Data.SEATBELTLOCK || data == Data.AIRCONDITIONINGCONTROL) {
+		if (data == Data.SEATBELTLOCK || data == Data.AIRCONDITIONINGCONTROL|| data == Data.PARKINGBRAKEAPPLIED) {
 			this.setDomain(TriggerDomains.EXLAP);
 			this.parser = new DataParser<String>() {
 
@@ -235,15 +240,22 @@ public class ConditionCheck {
 
 	@SuppressWarnings("unchecked")
 	public boolean updateData(Object data) {
-		// Log.i("TLDR", "updateData" + data);
+//		Log.i("TLDR", "updateData" + data);
 		boolean result = false;
 		try {
 			result = this.checker.checkData(parser.parseData(data));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (result && this.onTrue != null) {
-			this.onTrue.onTrue();
+		if(!result&&done){
+			done=false;
+			this.onFalse.onFalse();
+		}
+		if (result && this.onTrue != null&&!done) {
+			result=this.onTrue.onTrue();
+			done=true;
+		}else{
+			result=false;
 		}
 		return result;
 	}
