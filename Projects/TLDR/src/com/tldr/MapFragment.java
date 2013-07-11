@@ -44,6 +44,8 @@ import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CameraPositionCreator;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -328,21 +330,23 @@ public class MapFragment extends Fragment implements LocationListener,
 	private void flyTo(LatLng location) {
 		if (location != null) {
 			// Log.d("TLDR", "flying to new Location !");
-			if(GlobalData.getCameraPosition()!=null){
-				this.zoomLevel=GlobalData.getCameraPosition().zoom;
-			}else{
-				this.zoomLevel=17f;
-			}
-			mMap.moveCamera(CameraUpdateFactory.zoomTo(zoomLevel));
-			if (GlobalData.isFirstStart()) {
-				mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
-				GlobalData.setCameraPosition(mMap.getCameraPosition());
-				mMap.moveCamera(CameraUpdateFactory.zoomTo(17));
-				GlobalData.setFirstStart(false);
-				Log.d("TLDR", "setFirstStart");
-			} else {
-				mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-			}
+//			if(GlobalData.getCameraPosition()!=null){
+//				this.zoomLevel=GlobalData.getCameraPosition().zoom;
+//			}else{
+//				this.zoomLevel=17f;
+//			}
+//			mMap.moveCamera(CameraUpdateFactory.zoomTo(zoomLevel));
+//			if (GlobalData.isFirstStart()) {
+				mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 18));
+				Log.d("TLDR", "camera animated!");
+//				GlobalData.setCameraPosition(mMap.getCameraPosition());
+//				GlobalData.setFirstStart(false);
+//				Log.d("TLDR", "setFirstStart");
+//			} else {
+//				mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
+//				mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+
+//			}
 		}
 	}
 
