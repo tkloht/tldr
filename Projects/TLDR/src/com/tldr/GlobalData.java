@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.datastore.UserInfoDatastore;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -34,7 +35,7 @@ public class GlobalData {
 	private static boolean exlapConnected = false;
 	private static KnightRider textToSpeach;
 	private static LocationManager mLocationManager;
-
+	private static LocalBroadcastManager broadcastManager;
 	private static HashMap<Long, GoalStructure> allGoals;
 
 	private static List<Task> allTasks;
@@ -406,6 +407,14 @@ public class GlobalData {
 
 	public static Activity getActivity() {
 		return activity;
+	}
+	
+	public static LocalBroadcastManager getBroadcastManager() {
+		return broadcastManager;
+	}
+
+	public static void setBroadcastManager(LocalBroadcastManager broadcastManager) {
+		GlobalData.broadcastManager = broadcastManager;
 	}
 
 }

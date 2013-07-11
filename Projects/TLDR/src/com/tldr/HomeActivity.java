@@ -7,8 +7,13 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,12 +21,14 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,7 +43,16 @@ import com.tldr.tools.ToolBox;
 
 public class HomeActivity extends FragmentActivity implements
 		ActionBar.OnNavigationListener {
+
+	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			HomeActivity.this.receivedBroadcast(intent);
+		}
+	};
+
 	private final static int SPEECH_REQUEST_CODE = 123;
+	private static int lastNotification = 0;
 	private int currentMenu = R.id.menu_map;
 	private FragmentCommunicator currentFragment;
 	private ConnectionHelper connectionHelper;
@@ -91,7 +107,36 @@ public class HomeActivity extends FragmentActivity implements
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		prefs.edit().putBoolean("pref_exlap_connect", false).commit();
+		LocalBroadcastManager broadcastManager = LocalBroadcastManager
+				.getInstance(this);
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("android.intent.action.GOAL_NOTIFICATION");
+		broadcastManager.registerReceiver(mBroadcastReceiver, intentFilter);
+		GlobalData.setBroadcastManager(broadcastManager);
 
+	}
+
+	protected void receivedBroadcast(Intent intent) {
+		Long goalId = intent.getLongExtra("GOAL_ID", 0);
+		String goalDesc = intent.getStringExtra("GOAL_DESC");
+		Log.i("tldr-exlap", "received notification intent for goal: " + goalDesc);
+		
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.ic_stat_notification_logo)
+		        .setTicker("Goal Finished")
+		        .setContentTitle("Goal Finished!")
+		        .setContentText("You have finished goal: " + goalDesc);
+
+		Intent resultIntent = new Intent(this, HomeActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
+		
+		
+		mBuilder.setContentIntent(pendingIntent);
+		NotificationManager mNotificationManager =
+		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// mId allows you to update the notification later on.
+		mNotificationManager.notify(++lastNotification, mBuilder.build());
 	}
 
 	@Override
@@ -151,6 +196,7 @@ public class HomeActivity extends FragmentActivity implements
 			break;
 		case R.id.action_speech_to_text:
 			sendRecognizeIntent();
+
 			break;
 
 		default:
@@ -252,11 +298,13 @@ public class HomeActivity extends FragmentActivity implements
 
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
-		ToolBox.showAlert(this, "GCM", intent.getStringExtra("message"),
-				"Dismiss", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-					}
-				});
+		//if (intent.getAction() != "android.intent.action.GOAL_NOTIFICATION"){
+		//ToolBox.showAlert(this, "GCM", intent.getStringExtra("message"),
+		//		"Dismiss", new DialogInterface.OnClickListener() {
+		//			public void onClick(DialogInterface dialog, int which) {
+		//			}
+		//		});
+		//}
 	}
 
 	@Override

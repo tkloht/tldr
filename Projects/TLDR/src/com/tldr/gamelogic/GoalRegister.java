@@ -5,22 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
-import android.app.Dialog;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tldr.GlobalData;
-import com.tldr.R;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.TriggerRegister;
-import com.tldr.taskendpoint.model.Task;
 
 public class GoalRegister {
 
@@ -98,7 +91,15 @@ public class GoalRegister {
 							GlobalData.getTextToSpeach().say(
 									"Annomalie Parameter " + descToSpeech
 											+ " erfolgreich absolviert");
+							LocalBroadcastManager broadcastManager = GlobalData.getBroadcastManager();
+							Log.i("tldr-exlap", "goald id: " + idgoals);
+							Intent notificationIntent = new Intent("android.intent.action.GOAL_NOTIFICATION");
+							notificationIntent.putExtra("GOAL_ID", idgoals);
+							notificationIntent.putExtra("GOAL_DESC", descToSpeech);
+							broadcastManager.sendBroadcast(notificationIntent);
 						}
+
+						
 
 						if (GlobalData.isTaskCompleted(GlobalData
 								.getTaskForGoalId(idgoals))) {
