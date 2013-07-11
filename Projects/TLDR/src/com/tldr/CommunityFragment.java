@@ -135,6 +135,10 @@ public class CommunityFragment extends Fragment implements DatastoreResultHandle
 	
 	@Override
 	public void handleRequestResult(int requestId, Object result) {
+		
+		if(result == null)
+			return;
+		
 		// TODO Auto-generated method stub
 		if(requestId==BaseDatastore.REQUEST_USERINFO_NEARBYUSERS){
 			Location current = GlobalData.getLastknownPosition();
