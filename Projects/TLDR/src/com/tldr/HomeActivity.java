@@ -3,6 +3,7 @@ package com.tldr;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -10,18 +11,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.auth.AccountHelper;
 import com.datastore.UserInfoDatastore;
 import com.tldr.exlap.ConnectionHelper;
+import com.tldr.gamelogic.Factions;
 import com.tldr.gamelogic.GoalRegister;
+import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.ToolBox;
 
 public class HomeActivity extends FragmentActivity implements
@@ -31,7 +41,14 @@ public class HomeActivity extends FragmentActivity implements
 	private FragmentCommunicator currentFragment;
 	private ConnectionHelper connectionHelper;
 	public static Fragment currentFrag;
-	
+
+	Handler doneHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			Task t = (Task) msg.obj;
+			showMissionComplete("Mission Done", t.getTitle()+" erfüllt!");
+		}
+	};
 
 	Menu menu;
 
@@ -58,21 +75,22 @@ public class HomeActivity extends FragmentActivity implements
 		transaction.addToBackStack(null);
 		currentFrag = fragment;
 		transaction.commit();
-		
+
 		AccountHelper auth;
 		UserInfoDatastore datastore;
 		auth = new AccountHelper(this);
 		datastore = new UserInfoDatastore(null, auth.getCredential());
-		
+
 		GlobalData.setDatastore(datastore);
 		GlobalData.setGoalRegister(new GoalRegister());
 		GlobalData.setTextToSpeach(this);
+		GlobalData.getGoalRegister().setDialogHandler(doneHandler);
 		connectionHelper = new ConnectionHelper();
 		GlobalData.setConnectionHelper(connectionHelper);
-		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		prefs.edit().putBoolean("pref_exlap_connect", false).commit();
 
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		prefs.edit().putBoolean("pref_exlap_connect", false).commit();
 
 	}
 
@@ -126,12 +144,10 @@ public class HomeActivity extends FragmentActivity implements
 			break;
 		case R.id.action_settings:
 			fragment = new SettingsFragment();
-			 fm.beginTransaction()
-			 .addToBackStack(null)
-			 .replace(R.id.homeActivity, fragment)
-             .commit();
-			 currentFrag = fragment;
-			 currentMenu = item.getItemId();
+			fm.beginTransaction().addToBackStack(null)
+					.replace(R.id.homeActivity, fragment).commit();
+			currentFrag = fragment;
+			currentMenu = item.getItemId();
 			break;
 
 		default:
@@ -204,11 +220,9 @@ public class HomeActivity extends FragmentActivity implements
 			break;
 		case R.id.action_settings:
 			fragment = new SettingsFragment();
-			 fm.beginTransaction()
-			 .addToBackStack(null)
-			 .replace(R.id.homeActivity, fragment)
-             .commit();
-			 currentFrag = fragment;
+			fm.beginTransaction().addToBackStack(null)
+					.replace(R.id.homeActivity, fragment).commit();
+			currentFrag = fragment;
 			break;
 
 		default:
@@ -293,6 +307,25 @@ public class HomeActivity extends FragmentActivity implements
 		if (fm.getBackStackEntryCount() > 0) {
 			fm.popBackStack();
 		}
+	}
+
+	private void showMissionComplete(String title, String message) {
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.mission_complete);
+		dialog.setTitle(title);
+		TextView text = (TextView) dialog.findViewById(R.id.tldr_complete_text);
+		text.setText(message);
+		ImageView image = (ImageView) dialog.findViewById(R.id.tldr_complete_logo);
+//		image.setImageResource(R.drawable.tldr_anotonomy_logo);
+		Factions.setProfileFractionLogo(image);
+		Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+		dialogButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
 	}
 
 }

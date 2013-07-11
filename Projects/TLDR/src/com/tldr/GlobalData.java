@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
@@ -15,7 +16,6 @@ import com.tldr.exlap.ConnectionHelper;
 import com.tldr.exlap.TriggerRegister;
 import com.tldr.gamelogic.GoalRegister;
 import com.tldr.gamelogic.GoalStructure;
-import com.tldr.goalendpoint.model.Goal;
 import com.tldr.messageEndpoint.MessageEndpoint;
 import com.tldr.taskendpoint.model.Task;
 import com.tldr.tools.FakeLocationProvider;
@@ -43,23 +43,21 @@ public class GlobalData {
 	private static List<UserInfo> usersMof;
 	public static final int FRACTION_DEFIANCE = 1;
 	public static final int FRACTION_MINISTRY_OF_FREEDOM = 2;
-	public static boolean fake_location_data_enabled=false;
-	
-	public static FakeLocationProvider fakeLocationProvider=null;
+	public static boolean fake_location_data_enabled = false;
+
+	public static FakeLocationProvider fakeLocationProvider = null;
 	private static CameraPosition cameraPosition;
-	
-	
-	
+	private static Activity activity;
+
 	public static LocationManager getLocationManager() {
 		return mLocationManager;
 	}
 
 	public static void setLocationManager(LocationManager mLocationManager) {
 		GlobalData.mLocationManager = mLocationManager;
-		
+
 	}
 
-	
 	public static FakeLocationProvider getFakeLocationProvider() {
 		return fakeLocationProvider;
 	}
@@ -81,46 +79,46 @@ public class GlobalData {
 	public static List<Task> getAcceptedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();
 		List<Task> competed = getCompletedTasks();
-		if (allTasks != null){
-			
-		for (Task t : allTasks) {
-			if (currentUser.getAcceptedTasks() != null
-					&& currentUser.getAcceptedTasks().contains(t.getId())
-					&& !competed.contains(t)) {
-				lReturn.add(t);
+		if (allTasks != null) {
+
+			for (Task t : allTasks) {
+				if (currentUser.getAcceptedTasks() != null
+						&& currentUser.getAcceptedTasks().contains(t.getId())
+						&& !competed.contains(t)) {
+					lReturn.add(t);
+				}
 			}
-		}
 		}
 		return lReturn;
 	}
-	
+
 	public static List<Task> getCompletedTasks() {
 		List<Task> lReturn = new ArrayList<Task>();
-		if (allTasks != null){
-			
-		for (Task t : allTasks) {
-			if (currentUser.getAcceptedTasks() != null
-					&& currentUser.getAcceptedTasks().contains(t.getId())) {
-				if (currentUser.getFinishedGoals() != null) {
-					boolean done = false;
-					for (Long l : t.getGoals()) {
-						if (currentUser.getFinishedGoals().contains(l)) {
-							done = true;
-						} else {
-							done = false;
-							break;
+		if (allTasks != null) {
+
+			for (Task t : allTasks) {
+				if (currentUser.getAcceptedTasks() != null
+						&& currentUser.getAcceptedTasks().contains(t.getId())) {
+					if (currentUser.getFinishedGoals() != null) {
+						boolean done = false;
+						for (Long l : t.getGoals()) {
+							if (currentUser.getFinishedGoals().contains(l)) {
+								done = true;
+							} else {
+								done = false;
+								break;
+							}
 						}
-					}
-					if (done) {
-						lReturn.add(t);
+						if (done) {
+							lReturn.add(t);
+						}
 					}
 				}
 			}
 		}
-		}
 		return lReturn;
 	}
-	
+
 	public static List<Task> getCompletedTasks(UserInfo u) {
 		List<Task> lReturn = new ArrayList<Task>();
 		for (Task t : allTasks) {
@@ -167,29 +165,41 @@ public class GlobalData {
 		return lReturn;
 	}
 
-	public static Long getTimestampAccepted(UserInfo u, Task task){
+	public static Task getTaskOfGoal(long goalId) {
+		for (Task t : allTasks) {
+			if (t.getGoals().contains(goalId)) {
+				return t;
+			}
+		}
+		return null;
+	}
+
+	public static Long getTimestampAccepted(UserInfo u, Task task) {
 		List<Long> tasks = u.getAcceptedTasks();
-		for (int i = 0; i < tasks.size();i++){
-			if (tasks.get(i).equals(task.getId()) && u.getAcceptedTasksTS() != null){
+		for (int i = 0; i < tasks.size(); i++) {
+			if (tasks.get(i).equals(task.getId())
+					&& u.getAcceptedTasksTS() != null) {
 				return u.getAcceptedTasksTS().get(i);
 			}
 		}
 		return 0L;
 	}
-	
-	public static Long getTimestampCompleted(UserInfo u, Task task){
+
+	public static Long getTimestampCompleted(UserInfo u, Task task) {
 		List<Long> goals = u.getFinishedGoals();
-		Long max = 0L; 
-		for (int i = 0; i < goals.size(); i++){
-			for (Long l: task.getGoals()){
-				if (l.equals(goals.get(i)) && u.getFinishedGoalsTS().get(i).compareTo(max)>1 && u.getFinishedGoalsTS() != null){
+		Long max = 0L;
+		for (int i = 0; i < goals.size(); i++) {
+			for (Long l : task.getGoals()) {
+				if (l.equals(goals.get(i))
+						&& u.getFinishedGoalsTS().get(i).compareTo(max) > 1
+						&& u.getFinishedGoalsTS() != null) {
 					max = u.getFinishedGoalsTS().get(i);
 				}
 			}
 		}
 		return 0L;
-		}
-	
+	}
+
 	public static Task getTaskById(Long id) {
 		for (Task t : allTasks) {
 			if (t.getId().equals(id)) {
@@ -197,6 +207,18 @@ public class GlobalData {
 			}
 		}
 		return null;
+	}
+
+	public static boolean isTaskCompleted(Task t) {
+		List<Long> taskGoals = t.getGoals();
+		boolean complete = true;
+		for (long goalId : taskGoals) {
+			if (!currentUser.getFinishedGoals().contains(goalId)) {
+				complete = false;
+				break;
+			}
+		}
+		return complete;
 	}
 
 	public static GoalStructure getGoalsFromTask(Long taskId) {
@@ -331,53 +353,59 @@ public class GlobalData {
 	public static void setTextToSpeach(Context c) {
 		GlobalData.textToSpeach = new KnightRider(c);
 	}
-	
-	public static boolean isParentGoalFinished(Long goalId){
-		if(currentUser.getFinishedGoals()==null){
+
+	public static boolean isParentGoalFinished(Long goalId) {
+		if (currentUser.getFinishedGoals() == null) {
 			return false;
 		}
-		boolean finished=true;
-		Task parentTask=getTaskForGoalId(goalId);
+		boolean finished = true;
+		Task parentTask = getTaskForGoalId(goalId);
 		GoalStructure subGoal = allGoals.get(goalId);
-		String desc=subGoal.getDescription();
-		if(desc.contains("##")){
+		String desc = subGoal.getDescription();
+		if (desc.contains("##")) {
 			String[] split = desc.split("##");
 			List<Long> otherGoals = parentTask.getGoals();
-			for(Long gId:otherGoals){
+			for (Long gId : otherGoals) {
 				GoalStructure otherGoal = allGoals.get(gId);
 				String other_desc = otherGoal.getDescription();
-				if(other_desc.contains("##"))
-				{
+				if (other_desc.contains("##")) {
 					String[] other_split = other_desc.split("##");
-					if(other_split[1].equals(split[1])){ //Geh��ren zum selben subgoal
-						if(!currentUser.getFinishedGoals().contains(gId))
-							finished=false;
+					if (other_split[1].equals(split[1])) { // Geh��ren zum
+															// selben subgoal
+						if (!currentUser.getFinishedGoals().contains(gId))
+							finished = false;
 					}
 				}
 			}
-		}
-		else
-			finished= currentUser.getFinishedGoals().contains(goalId);
-		
+		} else
+			finished = currentUser.getFinishedGoals().contains(goalId);
+
 		return finished;
-		
-		
+
 	}
-	
-	public static Task getTaskForGoalId(Long goalId){
-		for(Task t:allTasks){
-			if(t.getGoals().contains(goalId))
+
+	public static Task getTaskForGoalId(Long goalId) {
+		for (Task t : allTasks) {
+			if (t.getGoals().contains(goalId))
 				return t;
 		}
 		return null;
 	}
 
 	public static void setCameraPosition(CameraPosition cameraPosition) {
-		GlobalData.cameraPosition =cameraPosition;
+		GlobalData.cameraPosition = cameraPosition;
 	}
-	
-	public static CameraPosition getCameraPosition(){
+
+	public static CameraPosition getCameraPosition() {
 		return GlobalData.cameraPosition;
+	}
+
+	public static void setActivity(Activity activity) {
+		GlobalData.activity = activity;
+	}
+
+	public static Activity getActivity() {
+		return activity;
 	}
 
 }

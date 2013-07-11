@@ -5,18 +5,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.datastore.UserInfoDatastore;
 import com.tldr.GlobalData;
+import com.tldr.R;
 import com.tldr.com.tldr.userinfoendpoint.model.UserInfo;
 import com.tldr.exlap.TriggerRegister;
+import com.tldr.taskendpoint.model.Task;
 
 public class GoalRegister {
 
 	private List<GoalStructure> registeredGoals;
 	private TriggerRegister triggerRegister;
 	private Map<Long, Integer> checkedConditions;
+	private Handler handler;
 
 	public GoalRegister() {
 		this.registeredGoals = new ArrayList<GoalStructure>();
@@ -88,6 +99,17 @@ public class GoalRegister {
 									"Annomalie Parameter " + descToSpeech
 											+ " erfolgreich absolviert");
 						}
+
+						if (GlobalData.isTaskCompleted(GlobalData
+								.getTaskForGoalId(idgoals))) {
+							if (handler != null) {
+								Message msg = new Message();
+								msg.obj=GlobalData
+										.getTaskForGoalId(idgoals);
+								handler.sendMessage(msg);
+							}
+						}
+
 						return true;
 					}
 					if (checkedConditions.get(idgoals) < 0) {
@@ -100,7 +122,8 @@ public class GoalRegister {
 				@Override
 				public boolean onFalse() {
 					Log.i("TLDR",
-							"UNDONE Condition:" + checkedConditions.get(idgoals));
+							"UNDONE Condition:"
+									+ checkedConditions.get(idgoals));
 					checkedConditions.put(idgoals,
 							checkedConditions.get(idgoals) + 1);
 					return false;
@@ -119,21 +142,16 @@ public class GoalRegister {
 		return true;
 	}
 
-	//
-	// public UserInfoDatastore getDatastore() {
-	// return datastore;
-	// }
-	//
-	// public void setDatastore(UserInfoDatastore datastore) {
-	// this.datastore = datastore;
-	// }
-
 	public interface OnTrue {
 		public boolean onTrue();
 	}
 
 	public interface OnFalse {
 		public boolean onFalse();
+	}
+
+	public void setDialogHandler(Handler doneHandler) {
+		this.handler = doneHandler;
 	}
 
 }
