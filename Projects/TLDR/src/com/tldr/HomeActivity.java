@@ -149,6 +149,9 @@ public class HomeActivity extends FragmentActivity implements
 			currentFrag = fragment;
 			currentMenu = item.getItemId();
 			break;
+		case R.id.action_speech_to_text:
+			sendRecognizeIntent();
+			break;
 
 		default:
 			break;
