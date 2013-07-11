@@ -157,7 +157,7 @@ public class SettingsFragment extends PreferenceFragment implements
 				.equals("doriankno@googlemail.com")) {
 			Log.e("tldr-exlap", "dorian workaround");
 			GlobalData.getConnectionHelper().startService(
-					"socket://192.168.1.106:28500");
+					"socket://192.168.178.138:28500");
 			Preference connectionPref = findPreference("pref_exlap_connect");
 			connectionPref.setSummary("Dorian Special Connection Started");
 		} else {

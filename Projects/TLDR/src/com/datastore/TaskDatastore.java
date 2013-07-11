@@ -59,7 +59,7 @@ public class TaskDatastore extends BaseDatastore {
 	private class CreateFakeTasksTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... v) {
-			 createT_Zeugenschutzprogramm();
+//			 createT_Zeugenschutzprogramm();
 			// createT_TaucheUnter();
 			// createT_UnerforschteEXLAPTechnologie();
 			// createT_ReaktiviereDieAlten();
@@ -197,8 +197,8 @@ public class TaskDatastore extends BaseDatastore {
 							new Task()
 									.setTitle("Zeugenschutzprogram!")
 									.setDescription(
-											"Ihr habt es geschafft einen Anh�nger des Ministry of Freedom zum �berlaufen zu bringen. Dieser Zeuge hat wichtige Informationen und muss nun vor den Feind gesch�tzt werden. "
-													+ "Sorge daf�r, dass er sicher aus der Reichweite des Ministries entkommt!")
+											"Ihr habt es geschafft einen Anhänger des Ministry of Freedom zum Überlaufen zu bringen. Dieser Zeuge hat wichtige Informationen und muss nun vor den Feind geschützt werden. "
+													+ "Sorge dafür, dass er sicher aus der Reichweite des Ministries entkommt!")
 									.setGeoLat(52.52286).setGeoLon(13.321506)
 									.setGoals(goals_ende1)).execute();
 				} catch (FormatException e) {
@@ -217,11 +217,11 @@ public class TaskDatastore extends BaseDatastore {
 				GoalStructure gs_e2b = new GoalStructure();
 
 				gs_e2a.addBaseData("Parke!", "null")
-						.addCondition("handbreak", "eq", "on")
+						.addCondition("handbreak", "eq", "true")
 						.addReward("xp", "1300");
 				gs_e2b.addBaseData("Schalte die Klimaanlage an!",
 						"parking_space_entry")
-						.addCondition("aircondition", "eq", "on")
+						.addCondition("aircondition", "eq", "ture")
 						.addReward("xp", "1700");
 
 				try {
