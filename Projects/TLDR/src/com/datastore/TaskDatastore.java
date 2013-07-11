@@ -59,16 +59,16 @@ public class TaskDatastore extends BaseDatastore {
 	private class CreateFakeTasksTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... v) {
-//			createT_Zeugenschutzprogramm();
-//			createT_TaucheUnter();
-//			createT_UnerforschteEXLAPTechnologie();
-//			createT_ReaktiviereDieAlten();
-//			createT_BesucheDenGrossmeister();
-//			createT_EchteAutonomie();
-//			createT_SpurenDerVergangenheit();
-//			createT_UntersuchungAmSalzufer();
-//			createT_observiereDenMonbijoutpark();
-//			createT_Sabotage();
+			 createT_Zeugenschutzprogramm();
+			// createT_TaucheUnter();
+			// createT_UnerforschteEXLAPTechnologie();
+			// createT_ReaktiviereDieAlten();
+			// createT_BesucheDenGrossmeister();
+			// createT_EchteAutonomie();
+			// createT_SpurenDerVergangenheit();
+			// createT_UntersuchungAmSalzufer();
+			// createT_observiereDenMonbijoutpark();
+			// createT_Sabotage();
 
 			return null;
 
@@ -149,7 +149,18 @@ public class TaskDatastore extends BaseDatastore {
 				gs_e1b_polyline = GoalStructureFactory
 						.generatePolyLineGoals(
 								"Fahre Route ab",
-								"52.52286,13.321506;52.522828,13.322027;52.521196,13.322357;52.520921,13.32137;52.519681,13.319739;52.517514,13.325061;52.515516,13.327936;52.516691,13.329395",
+								"52.52286,13.321506;" +
+								"52.522828,13.322027;" +
+								"52.521196,13.322357;" +
+								"52.520921,13.32137;" +
+								"52.519681,13.319739;" +
+								"52.519113,13.320621;" +
+								"52.518467,13.321876;" +
+								"52.517514,13.325061;" +
+								"52.516293,13.327187;" +
+								"52.515516,13.327936;" +
+								"52.515659,13.328558;" +
+								"52.516691,13.329395",
 								"xp", 100);
 				gs_e1c.addBaseData("Lade Agenten aus!", "null")
 						.addCondition("SeatBeltLock", "eq", "unlocked")
@@ -294,10 +305,12 @@ public class TaskDatastore extends BaseDatastore {
 				gs1_tDemo.addBaseData("Schalte in den 1. Gang", "null")
 						.addCondition("CurrentGear", "eq", "1")
 						.addReward("xp", "2000");
-				gs2_tDemo.addBaseData("Sei beim Gro�meister", "null")
-				.addCondition("gps", "eq", "52.5753092766;13.3530235291")
-				.addReward("xp", "2000");
-				
+				gs2_tDemo
+						.addBaseData("Sei beim Gro�meister", "null")
+						.addCondition("gps", "eq",
+								"52.5753092766;13.3530235291")
+						.addReward("xp", "2000");
+
 				try {
 					String goal_demo = JsonParser
 							.writeNewJsonGoalString(gs1_tDemo.getJsonParse());
@@ -408,7 +421,7 @@ public class TaskDatastore extends BaseDatastore {
 					for (Goal g : gs_parsed_polyline_t4) {
 						goals_t4.add(g.getId());
 					}
-//					 goals_t4.add(g2_t4.getId());
+					// goals_t4.add(g2_t4.getId());
 
 					service.insertTask(
 							new Task()
@@ -551,10 +564,13 @@ public class TaskDatastore extends BaseDatastore {
 		//
 		// }
 
-		// Aufgabenideen: 
-		// - Waffenschmuggel: Hole eine Lieferung von der Post ab und bringe sie dem Agenten!
-		// - Speisung der Defiance: Finde heraus welches Restaurant die besten Preise bietet!
-		// - Wirtschaftsspionage: Finde heraus welche Benzinpreise der Feind verlangt! 
+		// Aufgabenideen:
+		// - Waffenschmuggel: Hole eine Lieferung von der Post ab und bringe sie
+		// dem Agenten!
+		// - Speisung der Defiance: Finde heraus welches Restaurant die besten
+		// Preise bietet!
+		// - Wirtschaftsspionage: Finde heraus welche Benzinpreise der Feind
+		// verlangt!
 		// - Verfolgungsjagt: Verfolge die Route eines feindlichen Busses!
 	}
 
@@ -602,7 +618,7 @@ public class TaskDatastore extends BaseDatastore {
 
 		@Override
 		protected void onPostExecute(CollectionResponseGoal goals) {
-			//TODO bei goals.getItems() kamm es zum nullpointer
+			// TODO bei goals.getItems() kamm es zum nullpointer
 			if (context != null)
 				context.handleRequestResult(REQUEST_TASK_FETCHGOALS,
 						goals.getItems());

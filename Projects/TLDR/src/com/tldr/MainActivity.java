@@ -237,6 +237,7 @@ public class MainActivity extends Activity implements DatastoreResultHandler, Vi
 		userInfoDatastore = new UserInfoDatastore(this,
 				accountHelper.getCredential());
 		taskDatastore = new TaskDatastore(this, accountHelper.getCredential());
+		taskDatastore.createFakeTasks();
 		userInfoDatastore.registerUser(new UserInfo().setEmail(accountHelper
 				.getCredential().getSelectedAccountName()));
 	}

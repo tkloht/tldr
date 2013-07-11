@@ -98,10 +98,15 @@ public class SettingsFragment extends PreferenceFragment implements
 				locations.add(new LatLng(52.521196,13.322357));
 				locations.add(new LatLng(52.520921,13.32137));
 				locations.add(new LatLng(52.519681,13.319739));
+				locations.add(new LatLng(52.519113,13.320621));
+				locations.add(new LatLng(52.518467,13.321876));
 				locations.add(new LatLng(52.517514,13.325061));
+				locations.add(new LatLng(52.516293,13.327187));
+				
 				locations.add(new LatLng(52.515516,13.327936));
+				locations.add(new LatLng(52.515659,13.328558));
 				locations.add(new LatLng(52.516691,13.329395));
-	
+				
 				
 				
 				GlobalData.setFake_location_data_enabled(true);
