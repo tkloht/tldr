@@ -89,24 +89,23 @@ public class GoalRegister {
 							if (desc.contains("##"))
 								descToSpeech = desc.split("##")[1];
 							GlobalData.getTextToSpeach().say(
-									"Annomalie Parameter " + descToSpeech
-											+ " erfolgreich absolviert");
-							LocalBroadcastManager broadcastManager = GlobalData.getBroadcastManager();
+									descToSpeech + " erfolgreich absolviert");
+							LocalBroadcastManager broadcastManager = GlobalData
+									.getBroadcastManager();
 							Log.i("tldr-exlap", "goald id: " + idgoals);
-							Intent notificationIntent = new Intent("android.intent.action.GOAL_NOTIFICATION");
+							Intent notificationIntent = new Intent(
+									"android.intent.action.GOAL_NOTIFICATION");
 							notificationIntent.putExtra("GOAL_ID", idgoals);
-							notificationIntent.putExtra("GOAL_DESC", descToSpeech);
+							notificationIntent.putExtra("GOAL_DESC",
+									descToSpeech);
 							broadcastManager.sendBroadcast(notificationIntent);
 						}
-
-						
 
 						if (GlobalData.isTaskCompleted(GlobalData
 								.getTaskForGoalId(idgoals))) {
 							if (handler != null) {
 								Message msg = new Message();
-								msg.obj=GlobalData
-										.getTaskForGoalId(idgoals);
+								msg.obj = GlobalData.getTaskForGoalId(idgoals);
 								handler.sendMessage(msg);
 							}
 						}
